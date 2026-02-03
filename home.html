@@ -6,16 +6,12 @@
     <title>Home - Landing Page</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-orange: #FF8C00;
-        }
-
         body {
             font-family: 'Inter', sans-serif;
             margin: 0;
             padding: 0;
-            background: #f8fafc;
-            /* Menghilangkan scroll bar default jika di desktop */
+            background: url('assets/img/background_01.png') no-repeat center center;
+            background-size: cover;
             overflow: hidden;
             position: relative;
         }
@@ -27,8 +23,7 @@
             width: 100vw;
             padding: 15px; 
             box-sizing: border-box;
-            background-color: #f8fafc;
-            transition: all 0.3s ease;
+            background-color: #E2E8F0;
         }
 
         .card {
@@ -36,10 +31,10 @@
             height: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
+            justify-content: flex-start; /* Memindahkan teks ke bagian atas */
             align-items: center;
             text-align: center;
-            padding: 60px 25px;
+            padding: 50px 20px; /* Padding atas lebih luas untuk estetika */
             box-sizing: border-box;
             position: relative;
             cursor: pointer;
@@ -48,7 +43,6 @@
             background-size: cover;
             background-position: center;
             overflow: hidden;
-            border-radius: 8px; /* Sedikit rounded untuk tampilan modern */
         }
 
         /* Gradient gelap di bagian atas agar teks putih mudah dibaca */
@@ -58,8 +52,8 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 80%;
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0) 100%);
+            height: 70%; /* Menutupi area teks di bagian atas */
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0) 100%);
             z-index: 1;
             transition: opacity 0.3s;
         }
@@ -70,6 +64,7 @@
             transform: scale(1.02);
         }
 
+        /* Memastikan teks berada di atas gradient dan berwarna putih */
         .card h2, .card p {
             position: relative;
             z-index: 2;
@@ -83,48 +78,48 @@
             letter-spacing: -0.5px;
             font-weight: 700;
             line-height: 1.2;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
+        /* Huruf pertama tetap dengan aksen Oranye */
         .card h2::first-letter {
-            color: var(--primary-orange); 
+            color: #FF8C00; 
             font-weight: 900;
             font-size: 1.8rem;
         }
 
         .card p {
             margin: 20px 0 0 0;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 400;
-            color: rgba(255, 255, 255, 0.95);
+            color: rgba(255, 255, 255, 0.9);
             line-height: 1.6;
-            max-width: 280px;
+            max-width: 260px;
         }
 
-        /* Mapping Gambar Background (Fallback ke warna jika file tidak ada) */
-        .card:nth-child(1) { background-color: #1a202c; background-image: url('assets/img/card_01.png'); }
-        .card:nth-child(2) { background-color: #2d3748; background-image: url('assets/img/card_02.png'); }
-        .card:nth-child(3) { background-color: #1a202c; background-image: url('assets/img/card_03.png'); }
-        .card:nth-child(4) { background-color: #2d3748; background-image: url('assets/img/card_04.png'); }
-        .card:nth-child(5) { background-color: #1a202c; background-image: url('assets/img/card_05.png'); }
+        /* Mapping Gambar Background untuk tiap Card */
+        .card:nth-child(1) { background-image: url('assets/img/card_01.png'); }
+        .card:nth-child(2) { background-image: url('assets/img/card_02.png'); }
+        .card:nth-child(3) { background-image: url('assets/img/card_03.png'); }
+        .card:nth-child(4) { background-image: url('assets/img/card_04.png'); }
+        .card:nth-child(5) { background-image: url('assets/img/card_05.png'); }
 
-        /* --- Animasi Masuk --- */
+        /* --- Animasi Snap --- */
         @keyframes slideFromBottom {
-            0% { opacity: 0; transform: translateY(50px); }
+            0% { opacity: 0; transform: translateY(100%); }
             100% { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes slideFromTop {
-            0% { opacity: 0; transform: translateY(-50px); }
+            0% { opacity: 0; transform: translateY(-100%); }
             100% { opacity: 1; transform: translateY(0); }
         }
 
         .card:nth-child(1), .card:nth-child(3), .card:nth-child(5) {
-            animation: slideFromBottom 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation: slideFromBottom 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
         }
 
         .card:nth-child(2), .card:nth-child(4) {
-            animation: slideFromTop 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation: slideFromTop 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
         }
 
         .card:nth-child(1) { animation-delay: 0.1s; }
@@ -136,28 +131,28 @@
         /* --- RESPONSIVE MOBILE (Single Page Scroll) --- */
         @media (max-width: 768px) {
             body {
-                overflow: auto; /* Mengizinkan scroll di body/container */
+                overflow: auto; 
             }
 
             .container {
                 flex-direction: column;
                 height: 100vh;
                 width: 100vw;
-                padding: 0; /* Full screen tanpa padding container */
+                padding: 0; 
                 gap: 0;
                 overflow-y: scroll;
-                scroll-snap-type: y mandatory; /* Efek snap vertikal */
+                scroll-snap-type: y mandatory;
                 -webkit-overflow-scrolling: touch;
             }
 
             .card {
                 flex: none;
                 width: 100%;
-                height: 100vh; /* Tiap card setinggi layar penuh */
-                scroll-snap-align: start; /* Snap ke awal card */
-                border-radius: 0; /* Kotak penuh di mobile */
-                padding: 80px 30px;
-                justify-content: center; /* Teks ke tengah layar di mobile */
+                height: 100vh; 
+                scroll-snap-align: start;
+                padding: 100px 40px;
+                justify-content: center;
+                animation: fadeInMobile 0.8s ease forwards !important; /* Override desktop animation */
             }
 
             .card h2 {
@@ -173,18 +168,13 @@
                 max-width: 90%;
             }
 
-            /* Nonaktifkan animasi transform agar tidak mengganggu scroll snap di mobile */
+            /* Menonaktifkan hover transform di mobile agar tidak mengganggu snapping */
             .card:hover {
                 transform: none;
             }
-
-            /* Ubah animasi agar hanya fade in sederhana di mobile */
-            .card:nth-child(n) {
-                animation: fadeIn 0.8s ease forwards;
-            }
         }
 
-        @keyframes fadeIn {
+        @keyframes fadeInMobile {
             from { opacity: 0; }
             to { opacity: 1; }
         }

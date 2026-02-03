@@ -44,7 +44,7 @@
 
         .horizontal-scroll:active { cursor: grabbing; scroll-behavior: auto; }
 
-        #innovationModal, #dataModal { transition: opacity 0.3s ease-in-out; }
+        #innovationModal, #dataModal, #deleteConfirmModal { transition: opacity 0.3s ease-in-out; }
         .modal-content { transition: transform 0.3s ease-out; }
     </style>
 </head>
@@ -63,10 +63,11 @@
                         <input type="text" id="searchInput" onkeyup="searchInovation()" placeholder="Cari inovasi..." class="pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm w-full transition-all">
                         <svg class="w-4 h-4 text-gray-400 absolute left-3.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </div>
-                    <button onclick="toggleDataModal()" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-xl text-sm font-semibold shadow-md transition-all active:scale-95 shrink-0">
+                    <!-- Tombol Data & Add dengan ID untuk kontrol akses -->
+                    <button id="btnToggleData" onclick="toggleDataModal()" class="hidden flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-xl text-sm font-semibold shadow-md transition-all active:scale-95 shrink-0">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> Data
                     </button>
-                    <button onclick="toggleModal()" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl text-sm font-semibold shadow-md transition-all active:scale-95 shrink-0">
+                    <button id="btnToggleAdd" onclick="toggleModal()" class="hidden flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl text-sm font-semibold shadow-md transition-all active:scale-95 shrink-0">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> Add
                     </button>
                 </div>
@@ -74,13 +75,14 @@
         </div>
     </div>
 
+    <!-- Modal Innovation -->
     <div id="innovationModal" class="fixed inset-0 z-[60] hidden overflow-y-auto">
         <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
         <div class="flex min-h-full items-center justify-center p-4">
             <div class="modal-content relative w-full max-w-4xl bg-white rounded-[2rem] shadow-2xl overflow-hidden transform scale-95 opacity-0 transition-all duration-300">
                 <div class="flex justify-between items-center p-6 border-b border-gray-100 bg-gray-50/50">
                     <div>
-                        <h3 class="text-xl font-bold text-gray-800">Formulir Inovasi Baru</h3>
+                        <h3 id="modalTitle" class="text-xl font-bold text-gray-800">Formulir Inovasi Baru</h3>
                         <p class="text-xs text-gray-500 mt-1">Lengkapi data untuk menambahkan inovasi ke Hall of Fame.</p>
                     </div>
                     <button onclick="toggleModal()" class="p-2 bg-white rounded-full shadow-sm text-gray-400 hover:text-red-500 transition-all">
@@ -88,6 +90,7 @@
                     </button>
                 </div>
                 <form id="addInnovationForm">
+                    <input type="hidden" id="editInnovationId">
                     <div class="flex flex-col md:flex-row">
                         <div class="flex-1 p-8 bg-white border-r border-gray-100">
                             <div class="flex items-center gap-2 mb-6 text-blue-600 h-5">
@@ -163,6 +166,7 @@
         </div>
     </div>
 
+    <!-- Modal Data Employee -->
     <div id="dataModal" class="fixed inset-0 z-[60] hidden overflow-y-auto">
         <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
         <div class="flex min-h-full items-center justify-center p-4">
@@ -198,7 +202,7 @@
                         <input type="tel" id="empPhone" placeholder="Contoh: 08123456789" required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none text-sm transition-all">
                     </div>
                     <div class="space-y-1.5">
-                        <label class="text-[13px] font-semibold text-gray-700 ml-1">Upload Photo (Max 700kb)</label>
+                        <label class="text-[13px] font-semibold text-gray-700 ml-1">Upload Photo</label>
                         <input type="file" id="empPhotoFile" accept="image/*" required class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 transition-all">
                         <div id="compressionStatus" class="text-[10px] text-emerald-600 mt-1 hidden italic">Sedang mengompres gambar...</div>
                     </div>
@@ -207,6 +211,26 @@
                         <button type="submit" id="submitEmpBtn" class="px-8 py-2.5 bg-emerald-600 text-white rounded-xl font-bold text-sm shadow-lg shadow-emerald-200 hover:bg-emerald-700 active:scale-95 transition-all">Simpan Data</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Konfirmasi Hapus -->
+    <div id="deleteConfirmModal" class="fixed inset-0 z-[70] hidden overflow-y-auto">
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+        <div class="flex min-h-full items-center justify-center p-4">
+            <div class="modal-content relative w-full max-w-sm bg-white rounded-[2rem] shadow-2xl p-8 transform scale-95 opacity-0 transition-all duration-300">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800">Hapus Inovasi?</h3>
+                    <p class="text-sm text-gray-500 mt-2">Tindakan ini tidak dapat dibatalkan. Apakah Anda yakin ingin menghapus data inovasi ini?</p>
+                </div>
+                <div class="flex gap-3 mt-8">
+                    <button onclick="toggleDeleteModal()" class="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-xl font-bold text-sm transition">Batal</button>
+                    <button id="confirmDeleteBtn" class="flex-1 px-4 py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-xl font-bold text-sm shadow-lg shadow-red-200 transition active:scale-95">Ya, Hapus</button>
+                </div>
             </div>
         </div>
     </div>
@@ -227,6 +251,33 @@
         let allInnovations = [];
         let masterEmployees = []; 
         let currentFilter = 'all';
+        let isAdmin = false;
+        let deleteId = null;
+
+        // --- FUNGSI PROTEKSI AKSES ADMIN ---
+        async function checkAdminAccess() {
+            const sessionData = sessionStorage.getItem('sessionUser');
+            if (!sessionData) return;
+            const user = JSON.parse(sessionData);
+
+            try {
+                const { data, error } = await supabase
+                    .from('users')
+                    .select('authority')
+                    .eq('username', user.username)
+                    .single();
+
+                if (data && data.authority.toLowerCase() === 'admin') {
+                    isAdmin = true;
+                    document.getElementById('btnToggleData').classList.remove('hidden');
+                    document.getElementById('btnToggleAdd').classList.remove('hidden');
+                    // Tampilkan semua elemen admin-only di kartu
+                    document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
+                }
+            } catch (err) {
+                console.error('Gagal verifikasi authority:', err.message);
+            }
+        }
 
         function initDragToScroll() {
             document.addEventListener('mousedown', (e) => {
@@ -295,15 +346,23 @@
             const modal = document.getElementById('innovationModal');
             const content = modal.querySelector('.modal-content');
             if (modal.classList.contains('hidden')) {
+                // Reset form jika membuka modal Add
+                if (!document.getElementById('editInnovationId').value) {
+                    document.getElementById('addInnovationForm').reset();
+                    document.getElementById('modalTitle').innerText = 'Formulir Inovasi Baru';
+                    document.getElementById('imgPreview').classList.add('hidden');
+                    document.getElementById('placeholderAvatar').classList.remove('hidden');
+                }
                 modal.classList.remove('hidden');
                 setTimeout(() => { content.classList.remove('scale-95', 'opacity-0'); content.classList.add('scale-100', 'opacity-100'); }, 10);
                 document.body.style.overflow = 'hidden';
                 loadEmployeeList(); 
-                document.getElementById('imgPreview').classList.add('hidden');
-                document.getElementById('placeholderAvatar').classList.remove('hidden');
             } else {
                 content.classList.remove('scale-100', 'opacity-100'); content.classList.add('scale-95', 'opacity-0');
-                setTimeout(() => modal.classList.add('hidden'), 300);
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    document.getElementById('editInnovationId').value = '';
+                }, 300);
                 document.body.style.overflow = 'auto';
             }
         }
@@ -319,6 +378,19 @@
                 content.classList.remove('scale-100', 'opacity-100'); content.classList.add('scale-95', 'opacity-0');
                 setTimeout(() => modal.classList.add('hidden'), 300);
                 document.body.style.overflow = 'auto';
+            }
+        }
+
+        window.toggleDeleteModal = function(id = null) {
+            deleteId = id;
+            const modal = document.getElementById('deleteConfirmModal');
+            const content = modal.querySelector('.modal-content');
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                setTimeout(() => { content.classList.remove('scale-95', 'opacity-0'); content.classList.add('scale-100', 'opacity-100'); }, 10);
+            } else {
+                content.classList.remove('scale-100', 'opacity-100'); content.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => modal.classList.add('hidden'), 300);
             }
         }
 
@@ -345,6 +417,9 @@
                 renderContent(allInnovations);
                 renderYearFilters(allInnovations);
                 setTimeout(initInfiniteRoll, 1000); 
+                if (isAdmin) {
+                   document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
+                }
             } catch (error) { console.error('Fetch error:', error.message); }
         }
 
@@ -371,10 +446,9 @@
                 });
             }
 
-            // Urutkan kunci secara descending (khusus untuk 'all', ini memastikan tahun terbaru di atas)
             const sortedKeys = Object.keys(groups).sort((a, b) => {
-                if (currentFilter === 'all') return b - a; // Urutan angka tahun descending
-                return 0; // Untuk filter per tahun, tetap gunakan urutan data asli (sudah sorted by date)
+                if (currentFilter === 'all') return b - a;
+                return 0;
             });
 
             sortedKeys.forEach(title => {
@@ -416,11 +490,28 @@
                                         <h3 class="text-base font-bold text-gray-800 mb-2 line-clamp-2 leading-tight">${item.judul}</h3>
                                         <p class="text-gray-500 text-[11px] line-clamp-4 leading-relaxed">${item.deskripsi}</p>
                                     </div>
-                                    <div class="absolute bottom-4 right-4 z-30">
+                                    <div class="absolute bottom-4 right-4 z-30 flex items-center gap-2 pointer-events-auto">
+                                        <!-- Tombol Edit (Pena Hijau Lembut) -->
+                                        <button onclick="editInnovation('${item.id}')" 
+                                           class="admin-only hidden flex items-center justify-center w-7 h-7 bg-emerald-100 hover:bg-emerald-200 text-emerald-600 rounded-full transition-all shadow-sm hover:scale-110 active:scale-95"
+                                           title="Edit Inovasi">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                                            </svg>
+                                        </button>
+                                        <!-- Tombol Hapus (Bin Merah Lembut) -->
+                                        <button onclick="toggleDeleteModal('${item.id}')" 
+                                           class="admin-only hidden flex items-center justify-center w-7 h-7 bg-red-100 hover:bg-red-200 text-red-600 rounded-full transition-all shadow-sm hover:scale-110 active:scale-95"
+                                           title="Hapus Inovasi">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                            </svg>
+                                        </button>
+                                        <!-- Tombol Open Drive -->
                                         <a href="${item.url_drive}" target="_blank" 
-                                           class="flex items-center justify-center w-7 h-7 bg-blue-600 hover:bg-blue-700 text-white rounded-full transition-all shadow-lg hover:scale-110 active:scale-95 pointer-events-auto"
+                                           class="flex items-center justify-center w-7 h-7 bg-blue-600 hover:bg-blue-700 text-white rounded-full transition-all shadow-lg hover:scale-110 active:scale-95"
                                            title="Detail Inovasi">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                                             </svg>
                                         </a>
@@ -432,7 +523,57 @@
                 `;
                 container.appendChild(groupDiv);
             });
+            
+            if (isAdmin) {
+                document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
+            }
         }
+
+        window.editInnovation = async function(id) {
+            const item = allInnovations.find(i => i.id == id);
+            if (!item) return;
+
+            document.getElementById('editInnovationId').value = item.id;
+            document.getElementById('modalTitle').innerText = 'Edit Inovasi';
+            
+            document.getElementById('inputTanggal').value = item.tanggal;
+            document.getElementById('inputNama').value = item.nama;
+            document.getElementById('inputJabatan').value = item.jabatan;
+            document.getElementById('inputDepartemen').value = item.departemen;
+            document.getElementById('inputEmail').value = item.email || '';
+            document.getElementById('inputPhone').value = item.phone || '';
+            document.getElementById('inputPhotoUrl').value = item.photo_url || '';
+            document.getElementById('inputJudul').value = item.judul;
+            document.getElementById('inputDeskripsi').value = item.deskripsi;
+            document.getElementById('inputUrlDrive').value = item.url_drive;
+
+            const imgPreview = document.getElementById('imgPreview');
+            const placeholder = document.getElementById('placeholderAvatar');
+            if (item.photo_url) {
+                imgPreview.src = item.photo_url;
+                imgPreview.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+            } else {
+                imgPreview.classList.add('hidden');
+                placeholder.classList.remove('hidden');
+            }
+
+            toggleModal();
+        }
+
+        document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+            if (!deleteId) return;
+            const btn = document.getElementById('confirmDeleteBtn');
+            btn.disabled = true; btn.innerText = 'Menghapus...';
+            
+            const { error } = await supabase.from('innovations').delete().eq('id', deleteId);
+            if (error) { alert('Gagal hapus: ' + error.message); }
+            else {
+                toggleDeleteModal();
+                loadInnovations();
+            }
+            btn.disabled = false; btn.innerText = 'Ya, Hapus';
+        });
 
         window.filterYear = function(year) {
             currentFilter = year;
@@ -491,6 +632,8 @@
         document.getElementById('addInnovationForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submitBtn'); btn.disabled = true; btn.innerText = 'Menyimpan...';
+            const editId = document.getElementById('editInnovationId').value;
+            
             const payload = {
                 tanggal: document.getElementById('inputTanggal').value,
                 nama: document.getElementById('inputNama').value,
@@ -502,9 +645,22 @@
                 deskripsi: document.getElementById('inputDeskripsi').value,
                 url_drive: document.getElementById('inputUrlDrive').value
             };
-            const { error } = await supabase.from('innovations').insert([payload]);
+
+            let error;
+            if (editId) {
+                const res = await supabase.from('innovations').update(payload).eq('id', editId);
+                error = res.error;
+            } else {
+                const res = await supabase.from('innovations').insert([payload]);
+                error = res.error;
+            }
+
             if (error) { alert('Gagal simpan: ' + error.message); } 
-            else { toggleModal(); document.getElementById('addInnovationForm').reset(); loadInnovations(); }
+            else { 
+                toggleModal(); 
+                document.getElementById('addInnovationForm').reset(); 
+                loadInnovations(); 
+            }
             btn.disabled = false; btn.innerText = 'Simpan Inovasi';
         });
 
@@ -559,6 +715,8 @@
             btn.disabled = false; btn.innerText = 'Simpan Data';
         });
 
+        // Jalankan pengecekan akses Admin & Load Data
+        checkAdminAccess();
         loadInnovations();
         loadEmployeeList();
         initDragToScroll();
