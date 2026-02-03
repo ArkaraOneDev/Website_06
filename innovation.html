@@ -31,7 +31,7 @@
         
         .innovation-group { scroll-margin-top: 100px; }
         
-        .horizontal-scroll {
+        .horizontal-scroll, .draggable-scroll {
             display: flex;
             overflow-x: auto;
             scroll-behavior: smooth;
@@ -42,7 +42,9 @@
             cursor: grab;
         }
 
-        .horizontal-scroll:active { cursor: grabbing; scroll-behavior: auto; }
+        .draggable-scroll { padding-bottom: 0; gap: 0.5rem; }
+
+        .horizontal-scroll:active, .draggable-scroll:active { cursor: grabbing; scroll-behavior: auto; }
 
         #innovationModal, #dataModal, #deleteConfirmModal { transition: opacity 0.3s ease-in-out; }
         .modal-content { transition: transform 0.3s ease-out; }
@@ -53,10 +55,21 @@
     <div class="sticky top-0 z-50 bg-[#E2E8F0]/90 backdrop-blur-md border-b border-gray-200">
         <div class="pt-4 px-6 pb-4">
             <div class="flex flex-col lg:flex-row gap-4 justify-between items-center bg-white p-2 rounded-2xl border border-gray-100 shadow-sm">
-                <div class="flex items-center gap-4 w-full lg:w-auto">
+                <div class="flex items-center gap-2 w-full lg:w-auto overflow-hidden">
                     <button onclick="filterYear('all')" id="btn-all" class="year-filter-btn px-6 py-2 rounded-xl text-xs font-bold transition-all shrink-0 active-year">Semua</button>
-                    <div class="h-8 w-[1px] bg-gray-200 hidden md:block"></div>
-                    <div id="yearButtonsContainer" class="flex gap-2 overflow-x-auto no-scrollbar py-1"></div>
+                    <div class="h-8 w-[1px] bg-gray-200 hidden md:block mx-1"></div>
+                    
+                    <!-- Panah Kiri -->
+                    <button onclick="scrollYears('left')" class="p-2 hover:bg-gray-100 rounded-lg transition-colors shrink-0">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                    </button>
+
+                    <div id="yearButtonsContainer" class="draggable-scroll no-scrollbar py-1"></div>
+
+                    <!-- Panah Kanan -->
+                    <button onclick="scrollYears('right')" class="p-2 hover:bg-gray-100 rounded-lg transition-colors shrink-0">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
                 </div>
                 <div class="flex items-center gap-3 w-full lg:w-auto">
                     <div class="relative w-full lg:w-72">
@@ -281,7 +294,7 @@
 
         function initDragToScroll() {
             document.addEventListener('mousedown', (e) => {
-                const slider = e.target.closest('.horizontal-scroll');
+                const slider = e.target.closest('.horizontal-scroll') || e.target.closest('.draggable-scroll');
                 if (!slider) return;
                 let isDown = true;
                 const startX = e.pageX - slider.offsetLeft;
@@ -303,6 +316,17 @@
                 document.addEventListener('mousemove', onMouseMove);
                 document.addEventListener('mouseup', onMouseUp);
             });
+        }
+
+        // Fungsi khusus untuk scroll tahun dengan panah
+        window.scrollYears = function(direction) {
+            const slider = document.getElementById('yearButtonsContainer');
+            const scrollAmount = 200;
+            if (direction === 'left') {
+                slider.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            } else {
+                slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            }
         }
 
         let autoScrollInterval;

@@ -34,7 +34,7 @@
             justify-content: flex-start; /* Memindahkan teks ke bagian atas */
             align-items: center;
             text-align: center;
-            padding: 50px 20px; /* Padding atas lebih luas untuk estetika */
+            padding: 50px 15px; /* Sedikit dikurangi padding samping untuk ruang teks */
             box-sizing: border-box;
             position: relative;
             cursor: pointer;
@@ -70,10 +70,12 @@
             z-index: 2;
             color: #ffffff;
             margin: 0;
+            width: 100%; /* Memastikan teks menggunakan lebar kartu */
         }
 
         .card h2 {
-            font-size: 1.4rem;
+            /* Menggunakan clamp agar adaptif terhadap lebar layar desktop */
+            font-size: clamp(1rem, 1.3vw, 1.6rem);
             text-transform: uppercase;
             letter-spacing: -0.5px;
             font-weight: 700;
@@ -84,16 +86,17 @@
         .card h2::first-letter {
             color: #FF8C00; 
             font-weight: 900;
-            font-size: 1.8rem;
+            font-size: clamp(1.4rem, 1.8vw, 2.2rem);
         }
 
         .card p {
             margin: 20px 0 0 0;
-            font-size: 0.85rem;
+            /* Menggunakan clamp untuk teks deskripsi */
+            font-size: clamp(0.7rem, 0.85vw, 0.95rem);
             font-weight: 400;
             color: rgba(255, 255, 255, 0.9);
             line-height: 1.6;
-            max-width: 260px;
+            max-width: 90%; /* Menggunakan persentase agar adaptif */
         }
 
         /* Mapping Gambar Background untuk tiap Card */
@@ -142,6 +145,7 @@
                 gap: 0;
                 overflow-y: scroll;
                 scroll-snap-type: y mandatory;
+                scroll-behavior: smooth; /* Memastikan transisi scroll halus */
                 -webkit-overflow-scrolling: touch;
             }
 
@@ -182,7 +186,7 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="mainContainer">
         <div class="card">
             <h2>Sustainable Excellence</h2>
             <p>Menghadirkan keunggulan operasional pertambangan yang berkelanjutan dengan mengedepankan praktik ramah lingkungan dan tanggung jawab sosial terhadap masyarakat sekitar.</p>
@@ -208,5 +212,53 @@
             <p>Menciptakan nilai tambah bagi seluruh pemangku kepentingan melalui kemitraan strategis dan komitmen terhadap pertumbuhan bisnis yang bertanggung jawab.</p>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('mainContainer');
+            let autoScrollTimer;
+
+            function startAutoScroll() {
+                // Bersihkan timer sebelumnya jika ada
+                if (autoScrollTimer) clearInterval(autoScrollTimer);
+
+                autoScrollTimer = setInterval(() => {
+                    // Hanya jalankan jika lebar layar <= 768px (mode mobile)
+                    if (window.innerWidth <= 768) {
+                        const cardHeight = container.clientHeight;
+                        const currentScroll = container.scrollTop;
+                        const totalHeight = container.scrollHeight;
+
+                        // Hitung posisi scroll berikutnya
+                        let nextScroll = currentScroll + cardHeight;
+
+                        // Jika sudah di kartu terakhir (atau hampir sampai), balik ke kartu pertama
+                        if (nextScroll >= totalHeight - 10) {
+                            nextScroll = 0;
+                        }
+
+                        // Lakukan scroll smooth
+                        container.scrollTo({
+                            top: nextScroll,
+                            behavior: 'smooth'
+                        });
+                    }
+                }, 4000); // 4 detik
+            }
+
+            // Jalankan fungsi auto scroll
+            startAutoScroll();
+
+            // Opsional: Hentikan sementara jika user melakukan scroll manual agar tidak bentrok
+            container.addEventListener('touchstart', () => {
+                clearInterval(autoScrollTimer);
+            }, { passive: true });
+
+            container.addEventListener('touchend', () => {
+                // Mulai kembali setelah user selesai menyentuh layar
+                setTimeout(startAutoScroll, 2000);
+            }, { passive: true });
+        });
+    </script>
 </body>
 </html>

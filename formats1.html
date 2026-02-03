@@ -17,7 +17,10 @@
             flex-direction: column;
         }
         
-        /* Animasi Slide In dari software.html */
+        /* Font adaptif menggunakan clamp */
+        html { font-size: 14px; }
+        @media (min-width: 768px) { html { font-size: 16px; } }
+
         .bubble-item {
             animation: slideIn 0.3s ease-out forwards;
             opacity: 0;
@@ -44,14 +47,12 @@
         .finder-col-content::-webkit-scrollbar-track { background: transparent; }
         .finder-col-content::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
         
-        /* Selection Style - Disamakan dengan hover (Light Blue Tint) */
         .selected-item { 
             background-color: #eff6ff !important; 
             color: #2563eb !important;
             border-color: #3b82f6 !important;
             box-shadow: 0 1px 2px rgba(37, 99, 235, 0.1);
         }
-        /* Icon and text stay visible on light background */
         .selected-item svg { color: inherit !important; }
         .selected-item span, .selected-item div { color: inherit !important; }
         
@@ -63,10 +64,11 @@
             margin: 4px 8px;
             border-radius: 10px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 0.85rem; /* Ukuran font lebih proporsional */
             background: white;
             border: 1px solid #f1f5f9;
             box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+            white-space: nowrap; /* Mencegah teks menjadi 2 baris */
         }
         .column-entry:hover:not(.selected-item) { 
             border-color: #bfdbfe;
@@ -78,16 +80,18 @@
         .column-entry:hover .menu-btn { opacity: 1; }
         .selected-item .menu-btn { opacity: 1; color: #2563eb; }
 
-        /* Header disamakan dengan software.html */
         .col-header {
             padding: 12px 16px;
-            font-size: 10px;
+            font-size: 0.65rem;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.15em;
             color: #64748b;
             background-color: #f1f5f9;
             border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .col-footer {
@@ -101,7 +105,7 @@
         .btn-add {
             background-color: #2563eb;
             color: white;
-            font-size: 11px;
+            font-size: 0.7rem;
             font-weight: 700;
             padding: 6px 16px;
             border-radius: 8px;
@@ -129,7 +133,7 @@
         }
         .menu-item {
             padding: 8px 12px;
-            font-size: 12px;
+            font-size: 0.75rem;
             color: #475569;
             cursor: pointer;
             display: flex;
@@ -147,7 +151,7 @@
             border: 2px solid #3b82f6;
             border-radius: 6px;
             padding: 4px 8px;
-            font-size: 12px;
+            font-size: 0.75rem;
             width: 100%;
             outline: none;
         }
@@ -185,14 +189,19 @@
             margin-bottom: 16px;
             display: flex;
             align-items: center;
-            font-size: 13px;
+            font-size: 0.8rem;
             color: #64748b;
             box-shadow: 0 1px 3px rgba(0,0,0,0.02);
         }
         .breadcrumb-separator { margin: 0 10px; color: #cbd5e1; font-weight: 300; }
+
+        /* Mobile specific column visibility */
+        @media (max-width: 767px) {
+            .mobile-hidden { display: none !important; }
+        }
     </style>
 </head>
-<body class="p-5" onclick="closeMenu()">
+<body class="p-3 md:p-5" onclick="closeMenu()">
 
     <!-- Context Menu -->
     <div id="contextMenu">
@@ -272,8 +281,8 @@
         </div>
     </div>
 
-    <!-- Breadcrumb -->
-    <div class="breadcrumb-container">
+    <!-- Breadcrumb (Hidden on Mobile) -->
+    <div class="breadcrumb-container hidden md:flex">
         <div class="breadcrumb-item"><span>Development</span></div>
         <span class="breadcrumb-separator">/</span>
         <div class="breadcrumb-item"><span>Formats</span></div>
@@ -281,9 +290,12 @@
     </div>
 
     <!-- Finder Columns -->
-    <div class="flex-1 flex gap-4 overflow-hidden">
-        <div class="flex-1 flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm animate-column delay-1">
-            <div class="col-header">Folders</div>
+    <div class="flex-1 flex flex-col md:flex-row gap-4 overflow-hidden">
+        <!-- Col 1: Folders -->
+        <div id="container-col1" class="flex-1 flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm animate-column delay-1">
+            <div class="col-header">
+                Folders
+            </div>
             <div id="col1" onclick="deselectItem(1)" class="finder-col-content overflow-y-auto py-3 flex-1"></div>
             <div class="col-footer" id="footerCol1">
                 <button onclick="addItem(1)" class="btn-add">
@@ -292,8 +304,15 @@
                 </button>
             </div>
         </div>
-        <div class="flex-1 flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm animate-column delay-2">
-            <div class="col-header">Sub Folders</div>
+
+        <!-- Col 2: Sub Folders -->
+        <div id="container-col2" class="flex-1 flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm animate-column delay-2 mobile-hidden">
+            <div class="col-header">
+                <button onclick="navigateMobile(1)" class="md:hidden p-1 -ml-1 hover:bg-gray-200 rounded-lg">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                Sub Folders
+            </div>
             <div id="col2" onclick="deselectItem(2)" class="finder-col-content overflow-y-auto py-3 flex-1 bg-gray-50/20"></div>
             <div class="col-footer" id="footerCol2">
                 <button id="btnAddCol2" onclick="addItem(2)" class="btn-add" disabled>
@@ -302,8 +321,15 @@
                 </button>
             </div>
         </div>
-        <div class="flex-1 flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm animate-column delay-3">
-            <div class="col-header">Files</div>
+
+        <!-- Col 3: Files -->
+        <div id="container-col3" class="flex-1 flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm animate-column delay-3 mobile-hidden">
+            <div class="col-header">
+                <button onclick="navigateMobile(2)" class="md:hidden p-1 -ml-1 hover:bg-gray-200 rounded-lg">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                Files
+            </div>
             <div id="col3" onclick="deselectItem(3)" class="finder-col-content overflow-y-auto py-3 flex-1"></div>
             <div class="col-footer" id="footerCol3">
                 <button id="btnAddCol3" onclick="addItem(3)" class="btn-add" disabled>
@@ -330,10 +356,13 @@
         let uploadAbortController = null;
         let isUploading = false;
         let lastDriveId = null;
+        let currentMobileCol = 1;
 
         window.onload = async () => {
             await checkAdminAccess();
             renderColumn(1, null);
+            updateMobileVisibility();
+            window.addEventListener('resize', updateMobileVisibility);
         };
 
         async function checkAdminAccess() {
@@ -349,6 +378,25 @@
                     }
                 }
             } catch (err) { console.error("Akses ditolak:", err); }
+        }
+
+        function updateMobileVisibility() {
+            if (window.innerWidth >= 768) {
+                document.getElementById('container-col1').classList.remove('mobile-hidden');
+                document.getElementById('container-col2').classList.remove('mobile-hidden');
+                document.getElementById('container-col3').classList.remove('mobile-hidden');
+            } else {
+                for (let i = 1; i <= 3; i++) {
+                    const el = document.getElementById(`container-col${i}`);
+                    if (i === currentMobileCol) el.classList.remove('mobile-hidden');
+                    else el.classList.add('mobile-hidden');
+                }
+            }
+        }
+
+        function navigateMobile(colNum) {
+            currentMobileCol = colNum;
+            updateMobileVisibility();
         }
 
         function parseSizeStringToBytes(sizeStr) {
@@ -475,17 +523,19 @@
                 renderColumn(2, id);
                 document.getElementById('col3').innerHTML = '';
                 document.getElementById('btnAddCol3').disabled = true;
+                if (window.innerWidth < 768) navigateMobile(2);
             } else if (col === 2) {
                 activeParentKeys[3] = id;
                 activeNames[3] = null;
                 if (isAdmin) document.getElementById('btnAddCol3').disabled = false;
                 renderColumn(3, id);
+                if (window.innerWidth < 768) navigateMobile(3);
             } else if (col === 3) {
                 const url = el.getAttribute('data-url');
                 const type = el.getAttribute('data-type');
                 if (type === 'file' && url) {
                     const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp', 'bmp'];
-                    const lowerExt = ext.toLowerCase();
+                    const lowerExt = (ext || '').toLowerCase();
                     const isPreviewable = lowerExt === 'pdf' || imageExts.includes(lowerExt);
                     if (isPreviewable) openPreviewModal(url, fullName);
                     else window.open(url, '_blank');
@@ -514,7 +564,7 @@
         async function addItem(colNum) {
             if (!isAdmin) return;
             if (colNum === 3) { openAddModal(); return; }
-            const parentId = colNum === 2 ? activeParentKeys[2] : null;
+            const parentId = colNum === 2 ? activeParentKeys[2] : (colNum === 3 ? activeParentKeys[3] : null);
             const name = colNum === 1 ? 'New Folder' : 'New Subfolder';
             const { data, error } = await _supabase.from('formats1').insert({ name: name, type: 'folder', parent_id: parentId }).select().single();
             if (!error && data) {
@@ -572,8 +622,6 @@
                         });
                         
                         if (!error) { 
-                            // PERBAIKAN: Set isUploading = false SEBELUM menutup modal 
-                            // agar fungsi cleanup di closeAddModal tidak jalan.
                             isUploading = false; 
                             closeAddModal(); 
                             renderColumn(3, activeParentKeys[3]); 
@@ -731,8 +779,6 @@
             document.getElementById('addModalOverlay').style.display = 'flex'; setTimeout(() => document.getElementById('addModalCard').classList.add('show'), 10); 
         }
         function closeAddModal() { 
-            // Fungsi ini hanya akan menghapus file dari Drive jika isUploading bernilai TRUE
-            // (yang berarti modal ditutup oleh user/batal, bukan karena sukses upload)
             if (isUploading) { 
                 if (uploadAbortController) uploadAbortController.abort(); 
                 isUploading = false; 
