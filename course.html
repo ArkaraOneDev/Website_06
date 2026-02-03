@@ -8,12 +8,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         html, body { 
-            height: 100%; 
+            min-height: 100%; 
             margin: 0; 
             padding: 0; 
-            overflow: hidden; 
         }
-        body { font-family: 'Inter', sans-serif; }
+        
+        /* Desktop: Mengunci layar agar memenuhi viewport tanpa scroll */
+        @media (min-width: 1024px) {
+            body { 
+                overflow: hidden; 
+                height: 100vh; 
+            }
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #F8FAFC;
+        }
         
         .course-card { 
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
@@ -22,7 +33,6 @@
             flex-direction: column;
             align-items: flex-start; 
             justify-content: flex-start;
-            height: 100%;
             position: relative;
             overflow: hidden;
             background-size: cover;
@@ -37,13 +47,14 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.8) 40%, rgba(255,255,255,0.1) 100%);
+            background: linear-gradient(135deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.85) 45%, rgba(255,255,255,0.2) 100%);
             z-index: 1;
         }
 
         .card-content {
             position: relative;
             z-index: 2;
+            width: 100%;
         }
 
         @keyframes runToLeft {
@@ -75,139 +86,142 @@
 </head>
 <body class="bg-[#F8FAFC]">
 
-    <div class="h-screen w-full p-4 flex items-center justify-center">
+    <!-- Container Utama: Menghapus max-width pada desktop agar memenuhi layar -->
+    <div class="min-h-screen lg:h-screen w-full p-4 flex items-center justify-center">
         
-        <div id="course-grid" class="grid grid-cols-2 lg:grid-cols-4 gap-3 w-full h-full max-h-[98vh]">
+        <!-- Grid: 2 Kolom Mobile, 4 Kolom Desktop. Memaksimalkan lebar dan tinggi pada desktop -->
+        <div id="course-grid" class="grid grid-cols-2 lg:grid-cols-4 gap-3 w-full h-full lg:max-h-[98vh]">
             
-            <div class="course-card bg-white p-4 rounded-xl shadow-sm border border-gray-100 cursor-pointer group" 
+            <!-- Card Item 01 -->
+            <div class="course-card bg-white p-3 md:p-5 rounded-xl shadow-sm border border-gray-100 cursor-pointer group aspect-[4/5] sm:aspect-square lg:aspect-auto lg:h-full" 
                  style="background-image: url('assets/img/course_01.png');" data-category="K3LH">
                 <div class="card-content">
-                    <div class="icon-container w-9 h-9 bg-green-100 rounded-lg flex items-center justify-center mb-3 transition-all">
-                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                    <div class="icon-container w-8 h-8 md:w-10 md:h-10 bg-green-100 rounded-lg flex items-center justify-center mb-2 md:mb-4 transition-all">
+                        <svg class="w-4 h-4 md:w-6 md:h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                     </div>
-                    <h3 class="text-xs font-bold text-gray-800 mb-1 text-left">K3LH</h3>
-                    <p class="text-[10px] text-gray-500 leading-snug text-left">Pelatihan Keselamatan, Kesehatan Kerja dan Lingkungan Hidup.</p>
+                    <h3 class="text-[11px] sm:text-xs md:text-sm font-bold text-gray-800 mb-1 text-left uppercase tracking-tight">K3LH</h3>
+                    <p class="text-[9px] sm:text-[10px] md:text-xs text-gray-500 leading-snug text-left opacity-90">Pelatihan Keselamatan, Kesehatan Kerja dan Lingkungan Hidup.</p>
                 </div>
             </div>
 
-            <div class="course-card bg-white p-4 rounded-xl shadow-sm border border-gray-100 cursor-pointer group"
+            <div class="course-card bg-white p-3 md:p-5 rounded-xl shadow-sm border border-gray-100 cursor-pointer group aspect-[4/5] sm:aspect-square lg:aspect-auto lg:h-full"
                  style="background-image: url('assets/img/course_02.png');" data-category="Kompetensi">
                 <div class="card-content">
-                    <div class="icon-container w-9 h-9 bg-blue-100 rounded-lg flex items-center justify-center mb-3 transition-all">
-                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <div class="icon-container w-8 h-8 md:w-10 md:h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-2 md:mb-4 transition-all">
+                        <svg class="w-4 h-4 md:w-6 md:h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
-                    <h3 class="text-xs font-bold text-gray-800 mb-1 text-left">Kompetensi</h3>
-                    <p class="text-[10px] text-gray-500 leading-snug text-left">Pelatihan standar kompetensi teknis dan sertifikasi profesi.</p>
+                    <h3 class="text-[11px] sm:text-xs md:text-sm font-bold text-gray-800 mb-1 text-left uppercase tracking-tight">Kompetensi</h3>
+                    <p class="text-[9px] sm:text-[10px] md:text-xs text-gray-500 leading-snug text-left opacity-90">Pelatihan standar kompetensi teknis dan sertifikasi profesi.</p>
                 </div>
             </div>
 
-            <div class="course-card bg-white p-4 rounded-xl shadow-sm border border-gray-100 cursor-pointer group"
+            <div class="course-card bg-white p-3 md:p-5 rounded-xl shadow-sm border border-gray-100 cursor-pointer group aspect-[4/5] sm:aspect-square lg:aspect-auto lg:h-full"
                  style="background-image: url('assets/img/course_03.png');" data-category="Geologi dan Pertambangan">
                 <div class="card-content">
-                    <div class="icon-container w-9 h-9 bg-yellow-100 rounded-lg flex items-center justify-center mb-3 transition-all">
-                        <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+                    <div class="icon-container w-8 h-8 md:w-10 md:h-10 bg-yellow-100 rounded-lg flex items-center justify-center mb-2 md:mb-4 transition-all">
+                        <svg class="w-4 h-4 md:w-6 md:h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
                     </div>
-                    <h3 class="text-xs font-bold text-gray-800 mb-1 text-left">Geologi dan Pertambangan</h3>
-                    <p class="text-[10px] text-gray-500 leading-snug text-left">Pelatihan Geologi dan Ilmu Pertambangan</p>
+                    <h3 class="text-[11px] sm:text-xs md:text-sm font-bold text-gray-800 mb-1 text-left uppercase tracking-tight">Geologi & Tambang</h3>
+                    <p class="text-[9px] sm:text-[10px] md:text-xs text-gray-500 leading-snug text-left opacity-90">Pelatihan Geologi dan Ilmu Pertambangan.</p>
                 </div>
             </div>
 
-            <div class="course-card bg-white p-4 rounded-xl shadow-sm border border-gray-100 cursor-pointer group"
+            <div class="course-card bg-white p-3 md:p-5 rounded-xl shadow-sm border border-gray-100 cursor-pointer group aspect-[4/5] sm:aspect-square lg:aspect-auto lg:h-full"
                  style="background-image: url('assets/img/course_04.png');" data-category="Survey dan Pemetaan">
                 <div class="card-content">
-                    <div class="icon-container w-9 h-9 bg-red-100 rounded-lg flex items-center justify-center mb-3 transition-all">
-                        <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                    <div class="icon-container w-8 h-8 md:w-10 md:h-10 bg-red-100 rounded-lg flex items-center justify-center mb-2 md:mb-4 transition-all">
+                        <svg class="w-4 h-4 md:w-6 md:h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
                     </div>
-                    <h3 class="text-xs font-bold text-gray-800 mb-1 text-left">Survey dan Pemetaan</h3>
-                    <p class="text-[10px] text-gray-500 leading-snug text-left">Pelatihan pemetaan wilayah dan analisis data spasial.</p>
+                    <h3 class="text-[11px] sm:text-xs md:text-sm font-bold text-gray-800 mb-1 text-left uppercase tracking-tight">Survey & Pemetaan</h3>
+                    <p class="text-[9px] sm:text-[10px] md:text-xs text-gray-500 leading-snug text-left opacity-90">Pelatihan pemetaan wilayah dan analisis data spasial.</p>
                 </div>
             </div>
 
-            <div class="course-card bg-white p-4 rounded-xl shadow-sm border border-gray-100 cursor-pointer group"
+            <div class="course-card bg-white p-3 md:p-5 rounded-xl shadow-sm border border-gray-100 cursor-pointer group aspect-[4/5] sm:aspect-square lg:aspect-auto lg:h-full"
                  style="background-image: url('assets/img/course_05.png');" data-category="3D Model">
                 <div class="card-content">
-                    <div class="icon-container w-9 h-9 bg-indigo-100 rounded-lg flex items-center justify-center mb-3 transition-all">
-                        <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                    <div class="icon-container w-8 h-8 md:w-10 md:h-10 bg-indigo-100 rounded-lg flex items-center justify-center mb-2 md:mb-4 transition-all">
+                        <svg class="w-4 h-4 md:w-6 md:h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
                     </div>
-                    <h3 class="text-xs font-bold text-gray-800 mb-1 text-left">3D Model</h3>
-                    <p class="text-[10px] text-gray-500 leading-snug text-left">Pelatihan pembuatan model 3 dimensi.</p>
+                    <h3 class="text-[11px] sm:text-xs md:text-sm font-bold text-gray-800 mb-1 text-left uppercase tracking-tight">3D Model</h3>
+                    <p class="text-[9px] sm:text-[10px] md:text-xs text-gray-500 leading-snug text-left opacity-90">Pelatihan pembuatan model 3 dimensi.</p>
                 </div>
             </div>
 
-            <div class="course-card bg-white p-4 rounded-xl shadow-sm border border-gray-100 cursor-pointer group"
+            <div class="course-card bg-white p-3 md:p-5 rounded-xl shadow-sm border border-gray-100 cursor-pointer group aspect-[4/5] sm:aspect-square lg:aspect-auto lg:h-full"
                  style="background-image: url('assets/img/course_06.png');" data-category="2D Design">
                 <div class="card-content">
-                    <div class="icon-container w-9 h-9 bg-purple-100 rounded-lg flex items-center justify-center mb-3 transition-all">
-                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14"></path></svg>
+                    <div class="icon-container w-8 h-8 md:w-10 md:h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-2 md:mb-4 transition-all">
+                        <svg class="w-4 h-4 md:w-6 md:h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14"></path></svg>
                     </div>
-                    <h3 class="text-xs font-bold text-gray-800 mb-1 text-left">2D Design</h3>
-                    <p class="text-[10px] text-gray-500 leading-snug text-left">Pelatihan desain grafis dan komunikasi visual.</p>
+                    <h3 class="text-[11px] sm:text-xs md:text-sm font-bold text-gray-800 mb-1 text-left uppercase tracking-tight">2D Design</h3>
+                    <p class="text-[9px] sm:text-[10px] md:text-xs text-gray-500 leading-snug text-left opacity-90">Pelatihan desain grafis dan komunikasi visual.</p>
                 </div>
             </div>
 
-            <div class="course-card bg-white p-4 rounded-xl shadow-sm border border-gray-100 cursor-pointer group"
+            <div class="course-card bg-white p-3 md:p-5 rounded-xl shadow-sm border border-gray-100 cursor-pointer group aspect-[4/5] sm:aspect-square lg:aspect-auto lg:h-full"
                  style="background-image: url('assets/img/course_07.png');" data-category="Video Editor">
                 <div class="card-content">
-                    <div class="icon-container w-9 h-9 bg-pink-100 rounded-lg flex items-center justify-center mb-3 transition-all">
-                        <svg class="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    <div class="icon-container w-8 h-8 md:w-10 md:h-10 bg-pink-100 rounded-lg flex items-center justify-center mb-2 md:mb-4 transition-all">
+                        <svg class="w-4 h-4 md:w-6 md:h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                     </div>
-                    <h3 class="text-xs font-bold text-gray-800 mb-1 text-left">Video Editor</h3>
-                    <p class="text-[10px] text-gray-500 leading-snug text-left">Pelatihan editing video.</p>
+                    <h3 class="text-[11px] sm:text-xs md:text-sm font-bold text-gray-800 mb-1 text-left uppercase tracking-tight">Video Editor</h3>
+                    <p class="text-[9px] sm:text-[10px] md:text-xs text-gray-500 leading-snug text-left opacity-90">Pelatihan teknik editing video profesional.</p>
                 </div>
             </div>
 
-            <div class="course-card bg-white p-4 rounded-xl shadow-sm border border-gray-100 cursor-pointer group"
+            <div class="course-card bg-white p-3 md:p-5 rounded-xl shadow-sm border border-gray-100 cursor-pointer group aspect-[4/5] sm:aspect-square lg:aspect-auto lg:h-full"
                  style="background-image: url('assets/img/course_08.png');" data-category="Analisa Data">
                 <div class="card-content">
-                    <div class="icon-container w-9 h-9 bg-teal-100 rounded-lg flex items-center justify-center mb-3 transition-all">
-                        <svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002 2h2a2 2 0 002-2z"></path></svg>
+                    <div class="icon-container w-8 h-8 md:w-10 md:h-10 bg-teal-100 rounded-lg flex items-center justify-center mb-2 md:mb-4 transition-all">
+                        <svg class="w-4 h-4 md:w-6 md:h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002 2h2a2 2 0 002-2z"></path></svg>
                     </div>
-                    <h3 class="text-xs font-bold text-gray-800 mb-1 text-left">Analisa Data</h3>
-                    <p class="text-[10px] text-gray-500 leading-snug text-left">Pelatihan pengolahan data, dashboard, dan pelaporan.</p>
+                    <h3 class="text-[11px] sm:text-xs md:text-sm font-bold text-gray-800 mb-1 text-left uppercase tracking-tight">Analisa Data</h3>
+                    <p class="text-[9px] sm:text-[10px] md:text-xs text-gray-500 leading-snug text-left opacity-90">Pelatihan pengolahan data dan dashboard pelaporan.</p>
                 </div>
             </div>
 
-            <div class="course-card bg-white p-4 rounded-xl shadow-sm border border-gray-100 cursor-pointer group"
+            <div class="course-card bg-white p-3 md:p-5 rounded-xl shadow-sm border border-gray-100 cursor-pointer group aspect-[4/5] sm:aspect-square lg:aspect-auto lg:h-full"
                  style="background-image: url('assets/img/course_09.png');" data-category="Programming">
                 <div class="card-content">
-                    <div class="icon-container w-9 h-9 bg-orange-100 rounded-lg flex items-center justify-center mb-3 transition-all">
-                        <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                    <div class="icon-container w-8 h-8 md:w-10 md:h-10 bg-orange-100 rounded-lg flex items-center justify-center mb-2 md:mb-4 transition-all">
+                        <svg class="w-4 h-4 md:w-6 md:h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
                     </div>
-                    <h3 class="text-xs font-bold text-gray-800 mb-1 text-left">Programming</h3>
-                    <p class="text-[10px] text-gray-500 leading-snug text-left">Pelatihan pembuatan program, aplikasi, dan sistem.</p>
+                    <h3 class="text-[11px] sm:text-xs md:text-sm font-bold text-gray-800 mb-1 text-left uppercase tracking-tight">Programming</h3>
+                    <p class="text-[9px] sm:text-[10px] md:text-xs text-gray-500 leading-snug text-left opacity-90">Pelatihan pembuatan program dan aplikasi sistem.</p>
                 </div>
             </div>
 
-            <div class="course-card bg-white p-4 rounded-xl shadow-sm border border-gray-100 cursor-pointer group"
+            <div class="course-card bg-white p-3 md:p-5 rounded-xl shadow-sm border border-gray-100 cursor-pointer group aspect-[4/5] sm:aspect-square lg:aspect-auto lg:h-full"
                  style="background-image: url('assets/img/course_10.png');" data-category="Kepemimpinan">
                 <div class="card-content">
-                    <div class="icon-container w-9 h-9 bg-cyan-100 rounded-lg flex items-center justify-center mb-3 transition-all">
-                        <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    <div class="icon-container w-8 h-8 md:w-10 md:h-10 bg-cyan-100 rounded-lg flex items-center justify-center mb-2 md:mb-4 transition-all">
+                        <svg class="w-4 h-4 md:w-6 md:h-6 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                     </div>
-                    <h3 class="text-xs font-bold text-gray-800 mb-1 text-left">Kepemimpinan</h3>
-                    <p class="text-[10px] text-gray-500 leading-snug text-left">pelatihan manajemen tim dan strategi proyek.</p>
+                    <h3 class="text-[11px] sm:text-xs md:text-sm font-bold text-gray-800 mb-1 text-left uppercase tracking-tight">Kepemimpinan</h3>
+                    <p class="text-[9px] sm:text-[10px] md:text-xs text-gray-500 leading-snug text-left opacity-90">Pelatihan manajemen tim dan strategi proyek.</p>
                 </div>
             </div>
 
-            <div class="course-card bg-white p-4 rounded-xl shadow-sm border border-gray-100 cursor-pointer group"
+            <div class="course-card bg-white p-3 md:p-5 rounded-xl shadow-sm border border-gray-100 cursor-pointer group aspect-[4/5] sm:aspect-square lg:aspect-auto lg:h-full"
                  style="background-image: url('assets/img/course_11.png');" data-category="Komunikasi">
                 <div class="card-content">
-                    <div class="icon-container w-9 h-9 bg-violet-100 rounded-lg flex items-center justify-center mb-3 transition-all">
-                        <svg class="w-5 h-5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                    <div class="icon-container w-8 h-8 md:w-10 md:h-10 bg-violet-100 rounded-lg flex items-center justify-center mb-2 md:mb-4 transition-all">
+                        <svg class="w-4 h-4 md:w-6 md:h-6 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
                     </div>
-                    <h3 class="text-xs font-bold text-gray-800 mb-1 text-left">Komunikasi</h3>
-                    <p class="text-[10px] text-gray-500 leading-snug text-left">Pelatihan teknik komunikasi dan negosiasi.</p>
+                    <h3 class="text-[11px] sm:text-xs md:text-sm font-bold text-gray-800 mb-1 text-left uppercase tracking-tight">Komunikasi</h3>
+                    <p class="text-[9px] sm:text-[10px] md:text-xs text-gray-500 leading-snug text-left opacity-90">Pelatihan teknik komunikasi dan negosiasi bisnis.</p>
                 </div>
             </div>
 
-            <div class="course-card bg-white p-4 rounded-xl shadow-sm border border-gray-100 cursor-pointer group"
+            <div class="course-card bg-white p-3 md:p-5 rounded-xl shadow-sm border border-gray-100 cursor-pointer group aspect-[4/5] sm:aspect-square lg:aspect-auto lg:h-full"
                  style="background-image: url('assets/img/course_12.png');" data-category="Lainnya">
                 <div class="card-content">
-                    <div class="icon-container w-9 h-9 bg-gray-100 rounded-lg flex items-center justify-center mb-3 transition-all">
-                        <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path></svg>
+                    <div class="icon-container w-8 h-8 md:w-10 md:h-10 bg-gray-100 rounded-lg flex items-center justify-center mb-2 md:mb-4 transition-all">
+                        <svg class="w-4 h-4 md:w-6 md:h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path></svg>
                     </div>
-                    <h3 class="text-xs font-bold text-gray-800 mb-1 text-left">Lainnya</h3>
-                    <p class="text-[10px] text-gray-500 leading-snug text-left">Pelatihan minor sebagai sarana pendukung.</p>
+                    <h3 class="text-[11px] sm:text-xs md:text-sm font-bold text-gray-800 mb-1 text-left uppercase tracking-tight">Lainnya</h3>
+                    <p class="text-[9px] sm:text-[10px] md:text-xs text-gray-500 leading-snug text-left opacity-90">Pelatihan minor sebagai sarana pendukung karir.</p>
                 </div>
             </div>
 
@@ -219,15 +233,14 @@
             const cards = document.querySelectorAll('.course-card');
             
             cards.forEach((card, index) => {
-                // Efek Animasi Masuk
-                const delay = index * 0.07;
+                // Efek Animasi Masuk dengan Delay Berjenjang
+                const delay = index * 0.05;
                 card.style.animationDelay = `${delay}s`;
                 card.classList.add('animate-in');
 
                 // Event Listener Klik
                 card.addEventListener('click', () => {
                     const category = card.getAttribute('data-category');
-                    // Navigasi ke course_data.html dengan parameter kategori
                     window.location.href = `course_table.html?category=${encodeURIComponent(category)}`;
                 });
             });

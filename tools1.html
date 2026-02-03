@@ -15,6 +15,10 @@
             display: flex;
             flex-direction: column;
         }
+
+        /* Font adaptif menggunakan clamp logic via media query */
+        html { font-size: 14px; }
+        @media (min-width: 768px) { html { font-size: 16px; } }
         
         .bubble-item {
             animation: slideIn 0.3s ease-out forwards;
@@ -81,7 +85,7 @@
         }
         
         .app-label {
-            font-size: 10px;
+            font-size: 0.65rem;
             font-weight: 500;
             color: #475569;
             text-align: center;
@@ -100,9 +104,10 @@
             margin: 4px 8px;
             border-radius: 10px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 0.85rem; /* Font adaptif */
             background: white;
             border: 1px solid #f1f5f9;
+            white-space: nowrap; /* Mencegah teks menjadi 2 baris */
         }
         .column-entry:hover:not(.selected-item-list) { 
             border-color: #bfdbfe;
@@ -116,7 +121,7 @@
 
         .col-header {
             padding: 12px 16px;
-            font-size: 10px;
+            font-size: 0.65rem;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.15em;
@@ -124,32 +129,43 @@
             background-color: #f1f5f9;
             border-bottom: 1px solid #e2e8f0;
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start;
             align-items: center;
+            gap: 8px;
+        }
+
+        /* Mobile specific column visibility */
+        @media (max-width: 767px) {
+            .mobile-hidden { display: none !important; }
         }
     </style>
 </head>
-<body class="p-5">
+<body class="p-3 md:p-5">
 
     <!-- Area Konten Utama -->
-    <div class="flex-1 flex gap-4 overflow-hidden">
+    <div class="flex-1 flex flex-col md:flex-row gap-4 overflow-hidden">
         <!-- Sidebar: Grid Aplikasi (Kolom 1) -->
-        <div class="w-1/3 flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm animate-column delay-1">
+        <div id="container-col1" class="w-full h-full md:w-1/3 flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm animate-column delay-1">
             <div class="col-header">Applications</div>
             <div id="col1" class="finder-col-content overflow-y-auto p-6 grid grid-cols-4 gap-y-6 gap-x-2 flex-1 items-start content-start">
                 <!-- Data dummy akan di-render di sini -->
             </div>
         </div>
 
-        <!-- Konten Gabungan: Subfolder & File -->
-        <div class="flex-1 flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm animate-column delay-2">
+        <!-- Konten Gabungan: Subfolder & File (Kolom 2) -->
+        <div id="container-col2" class="flex-1 h-full flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm animate-column delay-2 mobile-hidden">
             <div class="col-header">
-                <div class="flex items-center gap-2">
-                    <button id="btnBackContent" onclick="handleBack()" class="hidden p-1 hover:bg-black/5 rounded-full">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-                    </button>
-                    <span id="contentHeaderTitle">Contents</span>
-                </div>
+                <!-- Tombol Back ke Kolom 1 (Hanya Mobile) -->
+                <button id="btnBackToApps" onclick="navigateMobile(1)" class="md:hidden p-1 -ml-1 hover:bg-black/5 rounded-full">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                
+                <!-- Tombol Back ke Folder Sebelumnya (Logic Internal) -->
+                <button id="btnBackContent" onclick="handleBack()" class="hidden p-1 -ml-1 hover:bg-black/5 rounded-full">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                
+                <span id="contentHeaderTitle">Contents</span>
             </div>
             <div id="colMerged" class="finder-col-content overflow-y-auto py-3 flex-1 bg-gray-50/20">
                 <div class="mt-20 text-center opacity-20 text-[10px] font-bold uppercase tracking-widest text-gray-400">Pilih aplikasi untuk melihat isi</div>
@@ -171,10 +187,33 @@
         ];
 
         let activeNames = { 1: null, 2: null };
+        let currentMobileCol = 1;
 
         window.onload = () => {
             renderApps();
+            updateMobileVisibility();
+            window.addEventListener('resize', updateMobileVisibility);
         };
+
+        function updateMobileVisibility() {
+            if (window.innerWidth >= 768) {
+                document.getElementById('container-col1').classList.remove('mobile-hidden');
+                document.getElementById('container-col2').classList.remove('mobile-hidden');
+            } else {
+                if (currentMobileCol === 1) {
+                    document.getElementById('container-col1').classList.remove('mobile-hidden');
+                    document.getElementById('container-col2').classList.add('mobile-hidden');
+                } else {
+                    document.getElementById('container-col1').classList.add('mobile-hidden');
+                    document.getElementById('container-col2').classList.remove('mobile-hidden');
+                }
+            }
+        }
+
+        function navigateMobile(colNum) {
+            currentMobileCol = colNum;
+            updateMobileVisibility();
+        }
 
         function renderApps() {
             const container = document.getElementById('col1');
@@ -200,6 +239,8 @@
             
             renderContents(name);
             updateHeaderTitle(name, false);
+            
+            if (window.innerWidth < 768) navigateMobile(2);
         }
 
         function renderContents(appName) {
@@ -253,7 +294,14 @@
 
         function updateHeaderTitle(title, showBack) {
             document.getElementById('contentHeaderTitle').innerText = title;
+            // Tombol back folder internal
             document.getElementById('btnBackContent').classList.toggle('hidden', !showBack);
+            // Tombol back ke aplikasi (Hanya muncul di mobile jika tidak sedang di dalam subfolder)
+            if (window.innerWidth < 768) {
+                document.getElementById('btnBackToApps').classList.toggle('hidden', showBack);
+            } else {
+                document.getElementById('btnBackToApps').classList.add('hidden');
+            }
         }
     </script>
 </body>
