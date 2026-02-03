@@ -18,20 +18,19 @@
             height: 10px;
         }
         ::-webkit-scrollbar-track {
-            background: transparent; /* Track transparan agar terlihat melayang */
+            background: transparent;
         }
         ::-webkit-scrollbar-thumb {
-            background-color: rgba(227, 114, 46, 0.3); /* Warna orange arkara transparan */
+            background-color: rgba(227, 114, 46, 0.3);
             border-radius: 20px;
-            border: 3px solid transparent; /* Border transparan menciptakan efek padding */
-            background-clip: content-box; /* Memastikan warna hanya mengisi area di dalam border */
+            border: 3px solid transparent;
+            background-clip: content-box;
             transition: background-color 0.3s ease;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background-color: rgba(227, 114, 46, 0.7); /* Lebih pekat saat hover */
+            background-color: rgba(227, 114, 46, 0.7);
         }
 
-        /* Khusus untuk area navigasi sidebar yang gelap */
         #mainNav::-webkit-scrollbar-thumb {
             background-color: rgba(255, 255, 255, 0.1);
         }
@@ -132,7 +131,6 @@
             pointer-events: none;
         }
         
-        /* Scrollbar khusus chat agar lebih halus */
         .chat-scroll::-webkit-scrollbar {
             width: 8px;
         }
@@ -149,7 +147,6 @@
             background-color: rgba(0, 0, 0, 0.15);
         }
 
-        /* Cropper Styles */
         #cropperCanvas {
             width: 100%;
             height: 100%;
@@ -227,14 +224,12 @@
                     </div>
                     <span class="font-medium">Course</span>
                 </a>
-                <!-- Menu Dashboard Dev dengan background soft #efb23c -->
                 <a id="menuDashDev" href="dashboard1.html" class="nav-item flex items-center space-x-4 bg-[#efb23c]/20 text-white/90 hover:text-white hover:bg-white/5 rounded-xl transition-all">
                     <div class="min-w-[20px] flex justify-center">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                     </div>
                     <span class="font-medium">Dashboard</span>
                 </a>
-                <!-- Menu Documents Dev dengan background soft #efb23c -->
                 <a id="menuDocsDev" href="documents1.html" class="nav-item flex items-center space-x-4 bg-[#efb23c]/20 text-white/90 hover:text-white hover:bg-white/5 rounded-xl transition-all">
                     <div class="min-w-[20px] flex justify-center">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
@@ -263,14 +258,12 @@
                     </div>
                     <span class="font-medium">Tools</span>
                 </a>
-                <!-- Menu Dashboard Operation dengan background soft #efb23c -->
                 <a id="menuDashOperation" href="dashboard2.html" class="nav-item flex items-center space-x-4 bg-[#efb23c]/20 text-white/90 hover:text-white hover:bg-white/5 rounded-xl transition-all">
                     <div class="min-w-[20px] flex justify-center">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                     </div>
                     <span class="font-medium">Dashboard</span>
                 </a>
-                <!-- Menu Documents Operation dengan background soft #efb23c -->
                 <a id="menuDocsOperation" href="documents2.html" class="nav-item flex items-center space-x-4 bg-[#efb23c]/20 text-white/90 hover:text-white hover:bg-white/5 rounded-xl transition-all">
                     <div class="min-w-[20px] flex justify-center">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
@@ -279,7 +272,6 @@
                 </a>
             </div>
 
-            <!-- FITUR ENTERTAINMENT (Tampil untuk Admin & Level 1) -->
             <div id="groupEntertainment" class="hidden space-y-1">
                 <p class="px-3 text-[10px] font-bold text-white-500 tracking-widest mt-4 mb-1 uppercase">Others</p>
                 <a id="menuEntertainment" href="entertainment.html" class="nav-item flex items-center space-x-4 text-gray-400 hover:text-white hover:bg-white/5 rounded-xl transition-all">
@@ -307,20 +299,20 @@
     </aside>
 
     <main class="flex-1 flex flex-col min-w-0">
-        <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 lg:px-8 flex-shrink-0">
+        <header class="h-16 md:h-20 bg-white border-b border-gray-200 flex items-center justify-between px-4 lg:px-8 flex-shrink-0">
             <div class="flex items-center">
-                <button onclick="toggleSidebar()" class="lg:hidden mr-4 p-2 rounded-lg hover:bg-gray-100">
+                <button onclick="toggleSidebar()" class="lg:hidden mr-3 p-2 rounded-lg hover:bg-gray-100 transition-colors">
                     <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
                 <div>
-                    <h1 id="pageHeaderTitle" class="text-md md:text-lg font-bold text-gray-800 leading-tight">Overview Dashboard</h1>
+                    <h1 id="pageHeaderTitle" class="text-sm sm:text-md md:text-lg font-bold text-gray-800 leading-tight">Overview Dashboard</h1>
                     <p id="pageHeaderDesc" class="hidden sm:block text-[9px] md:text-[10px] text-gray-400 font-medium">Selamat datang kembali di panel Arkastone.</p>
                 </div>
             </div>
             
-            <div class="flex items-center space-x-4">
-                <div id="headerUserPanel" onclick="openProfileEditor()" class="flex items-center space-x-2 md:space-x-4 cursor-pointer hover:bg-gray-50 p-1.5 rounded-2xl transition-all group">
-                    <div class="text-right">
+            <div class="flex items-center space-x-3 md:space-x-4">
+                <div id="headerUserPanel" onclick="openProfileEditor()" class="flex items-center space-x-2 md:space-x-4 cursor-pointer hover:bg-gray-50 p-1 rounded-2xl transition-all group">
+                    <div class="hidden md:block text-right">
                         <div class="flex items-center justify-end space-x-2">
                             <span id="headerUnreadCount" class="hidden text-[10px] bg-arkara-orange text-white px-2 py-0.5 rounded-full font-bold animate-pulse">0 Chat Baru</span>
                             <p class="text-xs md:text-sm text-gray-700 font-semibold leading-tight" id="userDisplay">Memuat...</p>
@@ -330,14 +322,14 @@
                             <span id="statusText">Online</span>
                         </p>
                     </div>
-                    <!-- Foto Full Avatar -->
-                    <div id="userInitial" class="w-8 h-8 md:w-10 md:h-10 bg-arkara-orange rounded-xl flex items-center justify-center text-white font-bold shadow-lg border-2 border-white overflow-hidden group-hover:scale-105 transition-transform">
+                    <!-- Avatar: Larger and focused on top/face -->
+                    <div id="userInitial" class="w-11 h-11 md:w-12 md:h-12 bg-arkara-orange rounded-xl flex items-center justify-center text-white font-bold shadow-lg border-2 border-white overflow-hidden group-hover:scale-105 transition-transform">
                         ?
                     </div>
                 </div>
 
-                <!-- FITUR CHAT TOGGLE -->
-                <button id="chat-toggle" class="relative w-8 h-8 md:w-10 md:h-10 bg-arkara-orange rounded-xl flex items-center justify-center text-white shadow-lg border-2 border-white hover:bg-orange-600 transition-all overflow-hidden group">
+                <!-- Chat Toggle: Larger on desktop -->
+                <button id="chat-toggle" class="relative w-11 h-11 md:w-12 md:h-12 bg-arkara-orange rounded-xl flex items-center justify-center text-white shadow-lg border-2 border-white hover:bg-orange-600 transition-all overflow-hidden group">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                     </svg>
@@ -352,8 +344,7 @@
     </main>
 
     <!-- WINDOW CHAT -->
-    <div id="chat-window" class="fixed top-20 right-6 w-80 md:w-96 h-[500px] bg-white rounded-2xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden hidden-chat">
-        <!-- Header Chat -->
+    <div id="chat-window" class="fixed top-16 md:top-24 right-4 md:right-6 w-[calc(100%-2rem)] md:w-96 h-[calc(100%-10rem)] md:h-[500px] bg-white rounded-2xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden hidden-chat">
         <div class="bg-gray-900 p-4 flex items-center justify-between">
             <div id="chat-header-content" class="flex items-center">
                 <button id="chat-back" class="hidden mr-3 text-white hover:text-arkara-orange">
@@ -370,17 +361,10 @@
             </button>
         </div>
 
-        <!-- Daftar User -->
-        <div id="chat-user-list" class="flex-1 overflow-y-auto p-2 space-y-1 bg-gray-50 chat-scroll">
-            <!-- Render via JS -->
-        </div>
+        <div id="chat-user-list" class="flex-1 overflow-y-auto p-2 space-y-1 bg-gray-50 chat-scroll"></div>
 
-        <!-- Tampilan Percakapan -->
         <div id="chat-view" class="hidden flex-1 flex flex-col bg-white overflow-hidden">
-            <div id="messages-container" class="flex-1 p-4 overflow-y-auto space-y-4 chat-scroll">
-                <!-- Pesan akan dirender di sini -->
-            </div>
-            
+            <div id="messages-container" class="flex-1 p-4 overflow-y-auto space-y-4 chat-scroll"></div>
             <div class="p-4 border-t border-gray-100">
                 <div class="flex gap-2">
                     <input type="text" id="chat-input" placeholder="Tulis pesan..." class="flex-1 bg-gray-100 border-none rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-arkara-orange outline-none">
@@ -396,17 +380,20 @@
 
     <div id="toastContainer" class="fixed bottom-6 right-6 z-[110] flex flex-col gap-3 pointer-events-none"></div>
 
+    <!-- WELCOME POPUP: Fixed layout side-by-side even on mobile -->
     <div id="welcomePopUp" class="fixed inset-0 bg-black/60 z-[100] hidden flex items-center justify-center p-4 backdrop-blur-md">
-        <div class="bg-white rounded-3xl shadow-2xl w-[520px] h-[300px] overflow-hidden flex animate-welcome">
-            <div class="w-[200px] flex-shrink-0 overflow-hidden bg-gray-100">
+        <div class="bg-white rounded-3xl shadow-2xl w-[95%] sm:w-[520px] h-40 sm:h-[300px] overflow-hidden flex animate-welcome">
+            <!-- Avatar side -->
+            <div class="w-28 sm:w-[200px] flex-shrink-0 overflow-hidden bg-gray-100">
                 <img id="welcomeAvatar" src="" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/200x300?text=ARKARA'">
             </div>
-            <div class="flex-1 p-8 flex flex-col justify-center bg-white">
-                <h3 class="text-2xl font-bold text-gray-800 leading-tight">
+            <!-- Content side -->
+            <div class="flex-1 p-4 sm:p-8 flex flex-col justify-center bg-white overflow-hidden">
+                <h3 class="text-sm sm:text-2xl font-bold text-gray-800 leading-tight">
                     Selamat Datang di Arkastone, <br>
                     <span id="welcomeName" class="text-arkara-orange truncate block">User</span>
                 </h3>
-                <button onclick="closeWelcome()" class="mt-8 text-[10px] font-bold text-gray-400 hover:text-gray-600 uppercase tracking-widest flex items-center transition-all group">
+                <button onclick="closeWelcome()" class="mt-4 sm:mt-8 text-[9px] sm:text-[10px] font-bold text-gray-400 hover:text-gray-600 uppercase tracking-widest flex items-center transition-all group">
                     Mulai Eksplorasi 
                     <svg class="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                 </button>
@@ -414,56 +401,54 @@
         </div>
     </div>
 
-    <!-- PROFILE MODAL WITH CROPPER -->
-    <div id="profileModal" class="fixed inset-0 bg-black/80 z-[60] hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col md:flex-row-reverse animate-in fade-in zoom-in duration-300">
-            <!-- Bagian Foto -->
-            <div class="md:w-5/12 bg-gray-50 flex flex-col items-center justify-center p-8 border-t md:border-t-0 md:border-l border-gray-100">
-                <div class="flex items-center justify-between w-full mb-4 px-2">
-                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">Foto Resmi 4 x 6</p>
+    <!-- PROFILE MODAL: Responsive and scrollable -->
+    <div id="profileModal" class="fixed inset-0 bg-black/80 z-[60] hidden flex items-center justify-center p-2 sm:p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[95vh] overflow-y-auto flex flex-col md:flex-row-reverse animate-in fade-in zoom-in duration-300">
+            <!-- Part Photo -->
+            <div class="md:w-5/12 bg-gray-50 flex flex-col items-center justify-center p-6 md:p-8 border-b md:border-b-0 md:border-l border-gray-100">
+                <div class="flex items-center justify-end w-full mb-4 px-2">
                     <button onclick="document.getElementById('profileModal').classList.add('hidden')" class="text-gray-400 hover:text-red-500 transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
                 
-                <div id="photoPreview" class="photo-container bg-white rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden shadow-inner bg-gray-100 cursor-pointer hover:border-arkara-orange hover:bg-orange-50 transition-all group">
+                <div id="photoPreview" class="photo-container bg-white rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden shadow-inner bg-gray-100 cursor-pointer hover:border-arkara-orange transition-all group sm:max-h-none">
                     <canvas id="cropperCanvas" title="Klik untuk ganti foto"></canvas>
                     <div id="uploadPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-4 pointer-events-none group-hover:scale-110 transition-transform">
-                        <svg class="w-12 h-12 text-gray-300 mx-auto group-hover:text-arkara-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round"/></svg>
-                        <p class="text-[10px] text-gray-400 mt-2 font-bold uppercase group-hover:text-arkara-orange">Upload Foto</p>
+                        <svg class="w-10 h-10 sm:w-12 sm:h-12 text-gray-300 mx-auto group-hover:text-arkara-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round"/></svg>
+                        <p class="text-[9px] sm:text-[10px] text-gray-400 mt-2 font-bold uppercase">Upload Foto</p>
                     </div>
                 </div>
 
-                <div id="cropperControls" class="w-full mt-6 hidden">
-                    <label class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2 block text-center">Zoom & Atur Posisi (Geser Foto)</label>
+                <div id="cropperControls" class="w-full mt-4 sm:mt-6 hidden">
                     <input type="range" id="zoomSlider" min="0.1" max="3" step="0.01" value="1" class="w-full accent-arkara-orange">
                 </div>
 
                 <input type="file" id="photoInput" class="hidden" accept="image/*">
             </div>
 
-            <!-- Bagian Form -->
-            <div class="md:w-7/12 p-8 md:p-12 flex flex-col justify-center">
-                <h2 class="text-2xl font-bold text-gray-800 mb-1">Pengaturan Profil</h2>
-                <p class="text-xs text-gray-400 mb-6 italic">Informasi ini akan dilihat oleh rekan tim Anda.</p>
-                <div class="grid grid-cols-1 gap-5">
+            <!-- Part Form -->
+            <div class="md:w-7/12 p-6 md:p-12 flex flex-col justify-center">
+                <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-1">Pengaturan Profil</h2>
+                <p class="text-[10px] sm:text-xs text-gray-400 mb-6 italic">Informasi ini akan dilihat oleh rekan tim Anda.</p>
+                <div class="grid grid-cols-1 gap-4 sm:gap-5">
                     <div>
-                        <label class="text-[10px] font-bold text-gray-400 uppercase ml-1">Nama Lengkap</label>
-                        <input type="text" id="profNama" class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-arkara-orange outline-none transition-all" placeholder="Masukkan nama lengkap">
+                        <label class="text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase ml-1">Nama Lengkap</label>
+                        <input type="text" id="profNama" class="w-full p-3 sm:p-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-arkara-orange outline-none transition-all">
                     </div>
                     <div>
-                        <label class="text-[10px] font-bold text-gray-400 uppercase ml-1">Jabatan</label>
-                        <input type="text" id="profJabatan" class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-arkara-orange outline-none transition-all" placeholder="Contoh: Senior Geologist">
+                        <label class="text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase ml-1">Jabatan</label>
+                        <input type="text" id="profJabatan" class="w-full p-3 sm:p-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-arkara-orange outline-none transition-all">
                     </div>
                     <div>
-                        <label class="text-[10px] font-bold text-gray-400 uppercase ml-1">Email</label>
-                        <input type="email" id="profEmail" class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-arkara-orange outline-none transition-all" placeholder="email@arkastone.com">
+                        <label class="text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase ml-1">Email</label>
+                        <input type="email" id="profEmail" class="w-full p-3 sm:p-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-arkara-orange outline-none transition-all">
                     </div>
                     <div>
-                        <label class="text-[10px] font-bold text-gray-400 uppercase ml-1">WhatsApp / Phone</label>
-                        <input type="tel" id="profPhone" class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-arkara-orange outline-none transition-all" placeholder="0812...">
+                        <label class="text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase ml-1">WhatsApp / Phone</label>
+                        <input type="tel" id="profPhone" class="w-full p-3 sm:p-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-arkara-orange outline-none transition-all">
                     </div>
-                    <button id="btnSaveProfile" onclick="saveProfile()" class="w-full bg-arkara-orange text-white font-bold py-4 rounded-xl hover:bg-orange-600 transition-all shadow-lg shadow-orange-500/30 mt-4 text-sm uppercase tracking-widest">Simpan Perubahan</button>
+                    <button id="btnSaveProfile" onclick="saveProfile()" class="w-full bg-arkara-orange text-white font-bold py-3.5 sm:py-4 rounded-xl hover:bg-orange-600 transition-all shadow-lg shadow-orange-500/30 mt-2 text-xs sm:text-sm uppercase tracking-widest">Simpan Perubahan</button>
                 </div>
             </div>
         </div>
@@ -478,18 +463,14 @@
 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // --- GLOBAL STATE CHAT & AUTH ---
         let chatAllProfiles = [];
         let chatSelectedUser = null;
         let chatSubscription = null;
-        let globalChatSubscription = null;
         let authoritySubscription = null; 
         let unreadSessionCount = 0; 
         let chatUnreadCounts = {}; 
         let currentUserProfile = null;
-        const CHAT_RETENTION_DAYS = 7;
 
-        // --- CROPPER STATE ---
         let cropperImg = new Image();
         let cropperX = 0, cropperY = 0, cropperScale = 1;
         let isDragging = false, lastMouseX = 0, lastMouseY = 0;
@@ -508,7 +489,6 @@
             document.getElementById('pageHeaderDesc').textContent = `Kelola data ${title.toLowerCase()} Anda dengan mudah.`;
         }
 
-        // --- REALTIME AUTHORITY LOGIC ---
         function applyMenuPermissions(level) {
             const auth = level ? level.toLowerCase().trim() : "";
             const groupDev = document.getElementById('groupDev');
@@ -518,7 +498,6 @@
             const menuToolsDev = document.getElementById('menuToolsDev'); 
             const contentFrame = document.getElementById('contentFrame');
             
-            // Kontrol Menu Entertainment
             const groupEnt = document.getElementById('groupEntertainment');
             if (auth === "admin" || auth === "level 1") {
                 if(groupEnt) groupEnt.classList.remove('hidden');
@@ -577,17 +556,15 @@
             try { await _supabase.from('profiles').update({ status: status }).eq('username', user.username); } catch (err) { console.error(err); }
         }
 
-        // --- CROPPER LOGIC ---
         function initCropper() {
-            canvas.width = 400; // Aspect Ratio 4
-            canvas.height = 600; // Aspect Ratio 6
+            canvas.width = 400; 
+            canvas.height = 600; 
             drawCropper();
         }
 
         function drawCropper() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             if (!cropperImg.src) return;
-
             const w = cropperImg.width * cropperScale;
             const h = cropperImg.height * cropperScale;
             ctx.drawImage(cropperImg, cropperX, cropperY, w, h);
@@ -604,7 +581,6 @@
                         cropperScale = Math.max(scaleW, scaleH);
                         cropperX = (canvas.width - cropperImg.width * cropperScale) / 2;
                         cropperY = (canvas.height - cropperImg.height * cropperScale) / 2;
-                        
                         document.getElementById('uploadPlaceholder').classList.add('hidden');
                         document.getElementById('cropperControls').classList.remove('hidden');
                         document.getElementById('zoomSlider').value = cropperScale;
@@ -616,21 +592,17 @@
             }
         });
 
-        // Mouse Events
         canvas.addEventListener('mousedown', (e) => { isDragging = true; lastMouseX = e.clientX; lastMouseY = e.clientY; });
         window.addEventListener('mouseup', () => { isDragging = false; });
         window.addEventListener('mousemove', (e) => {
             if (!isDragging || !cropperImg.src) return;
-            const dx = e.clientX - lastMouseX;
-            const dy = e.clientY - lastMouseY;
-            cropperX += dx;
-            cropperY += dy;
+            cropperX += e.clientX - lastMouseX;
+            cropperY += e.clientY - lastMouseY;
             lastMouseX = e.clientX;
             lastMouseY = e.clientY;
             drawCropper();
         });
 
-        // Touch Events
         canvas.addEventListener('touchstart', (e) => { 
             isDragging = true; 
             lastMouseX = e.touches[0].clientX; 
@@ -639,10 +611,8 @@
         canvas.addEventListener('touchend', () => { isDragging = false; });
         canvas.addEventListener('touchmove', (e) => {
             if (!isDragging || !cropperImg.src) return;
-            const dx = e.touches[0].clientX - lastMouseX;
-            const dy = e.touches[0].clientY - lastMouseY;
-            cropperX += dx;
-            cropperY += dy;
+            cropperX += e.touches[0].clientX - lastMouseX;
+            cropperY += e.touches[0].clientY - lastMouseY;
             lastMouseX = e.touches[0].clientX;
             lastMouseY = e.touches[0].clientY;
             drawCropper();
@@ -656,27 +626,18 @@
             drawCropper();
         });
 
-        document.getElementById('photoPreview').addEventListener('click', (e) => {
-            document.getElementById('photoInput').click();
-        });
+        document.getElementById('photoPreview').addEventListener('click', () => document.getElementById('photoInput').click());
 
-        // --- OPEN PROFILE EDITOR ---
         async function openProfileEditor() {
             const sessionData = sessionStorage.getItem('sessionUser');
             if (!sessionData) return;
-            const user = JSON.parse(sessionData);
-
             document.getElementById('profileModal').classList.remove('hidden');
             initCropper();
-
-            // Populate Form if data exists
             if (currentUserProfile) {
                 document.getElementById('profNama').value = currentUserProfile.nama || '';
                 document.getElementById('profJabatan').value = currentUserProfile.jabatan || '';
                 document.getElementById('profEmail').value = currentUserProfile.email || '';
                 document.getElementById('profPhone').value = currentUserProfile.phone || '';
-                
-                // Load existing photo to cropper if user hasn't uploaded a new one yet
                 if (currentUserProfile.photo_url && !cropperImg.src.includes('data:image')) {
                     cropperImg.crossOrigin = "anonymous";
                     cropperImg.onload = () => {
@@ -685,7 +646,6 @@
                         cropperScale = Math.max(scaleW, scaleH);
                         cropperX = (canvas.width - cropperImg.width * cropperScale) / 2;
                         cropperY = (canvas.height - cropperImg.height * cropperScale) / 2;
-                        
                         document.getElementById('uploadPlaceholder').classList.add('hidden');
                         document.getElementById('cropperControls').classList.remove('hidden');
                         document.getElementById('zoomSlider').value = cropperScale;
@@ -699,117 +659,86 @@
         async function saveProfile() {
             const btn = document.getElementById('btnSaveProfile');
             const sessionData = sessionStorage.getItem('sessionUser');
-            if (!sessionData) return;
-            const user = JSON.parse(sessionData);
-
-            if (!cropperImg.src) {
-                showToast("Silakan pilih foto profil terlebih dahulu.", "error");
+            if (!sessionData || !cropperImg.src) {
+                showToast("Data tidak lengkap", "error");
                 return;
             }
-
+            const user = JSON.parse(sessionData);
             btn.disabled = true;
-            btn.textContent = "MENGONVERSI & UPLOAD...";
+            btn.textContent = "MEMPROSES...";
 
-            try {
-                // Convert Canvas to WebP Blob
-                canvas.toBlob(async (blob) => {
-                    const formData = new FormData();
-                    formData.append('image', blob, 'profile.webp');
-
-                    const imgbbRes = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { 
-                        method: 'POST', 
-                        body: formData 
-                    });
-                    const imgbbData = await imgbbRes.json();
-                    
-                    if (imgbbData.success) {
-                        const newPhotoUrl = imgbbData.data.url.replace('i.ibb.co', 'i.ibb.co.com');
+            canvas.toBlob(async (blob) => {
+                const formData = new FormData();
+                formData.append('image', blob, 'profile.webp');
+                try {
+                    const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+                    const data = await res.json();
+                    if (data.success) {
+                        const newUrl = data.data.url.replace('i.ibb.co', 'i.ibb.co.com');
                         await _supabase.from('profiles').upsert({ 
                             username: user.username,
                             nama: document.getElementById('profNama').value,
                             jabatan: document.getElementById('profJabatan').value,
                             email: document.getElementById('profEmail').value,
                             phone: document.getElementById('profPhone').value,
-                            photo_url: newPhotoUrl,
+                            photo_url: newUrl,
                             status: 'Online' 
                         });
-                        
-                        showToast("Profil berhasil diperbarui", "success");
-                        setTimeout(() => location.reload(), 1000);
-                    } else {
-                        throw new Error("Gagal mengunggah foto");
+                        showToast("Berhasil simpan", "success");
+                        setTimeout(() => location.reload(), 800);
                     }
-                }, 'image/webp', 0.85);
-
-            } catch (err) { 
-                showToast("Gagal simpan profil: " + err.message, "error"); 
-                btn.disabled = false;
-                btn.textContent = "SIMPAN PERUBAHAN";
-            }
+                } catch (err) { showToast(err.message, "error"); btn.disabled = false; btn.textContent = "SIMPAN PERUBAHAN"; }
+            }, 'image/webp', 0.85);
         }
 
-        // --- WELCOME POPUP ---
         function showWelcomePopUp(nama, photoUrl) {
-            const welcomePopUp = document.getElementById('welcomePopUp');
             document.getElementById('welcomeName').textContent = nama;
             if(photoUrl) document.getElementById('welcomeAvatar').src = photoUrl;
-            welcomePopUp.classList.remove('hidden');
-            setTimeout(() => { closeWelcome(); }, 4000);
+            document.getElementById('welcomePopUp').classList.remove('hidden');
+            setTimeout(closeWelcome, 4000);
         }
 
         function closeWelcome() {
-            const welcomePopUp = document.getElementById('welcomePopUp');
-            if(welcomePopUp && !welcomePopUp.classList.contains('hidden')) {
-                welcomePopUp.classList.add('opacity-0');
-                welcomePopUp.style.transition = 'opacity 0.5s ease-out';
-                setTimeout(() => {
-                    welcomePopUp.classList.add('hidden');
-                    welcomePopUp.classList.remove('opacity-0');
-                }, 500);
+            const pop = document.getElementById('welcomePopUp');
+            if(pop && !pop.classList.contains('hidden')) {
+                pop.classList.add('opacity-0');
+                pop.style.transition = 'opacity 0.5s';
+                setTimeout(() => { pop.classList.add('hidden'); pop.classList.remove('opacity-0'); }, 500);
             }
         }
 
         async function checkUserProfile(username) {
             try {
-                const { data, error } = await _supabase.from('profiles').select('*').eq('username', username).single();
-                if (error || !data || !data.nama) {
-                    document.getElementById('profileModal').classList.remove('hidden');
-                    initCropper();
+                const { data } = await _supabase.from('profiles').select('*').eq('username', username).single();
+                if (!data || !data.nama) {
+                    openProfileEditor();
                 } else {
                     currentUserProfile = data;
                     document.getElementById('userDisplay').textContent = data.nama;
-                    // Tampilkan Foto Full Avatar
-                    if(data.photo_url) document.getElementById('userInitial').innerHTML = `<img src="${data.photo_url}" class="w-full h-full object-cover">`;
+                    // Focus on top/face with object-top
+                    if(data.photo_url) document.getElementById('userInitial').innerHTML = `<img src="${data.photo_url}" class="w-full h-full object-cover object-top">`;
                     showWelcomePopUp(data.nama, data.photo_url);
                 }
             } catch (err) { console.error(err); }
         }
 
         function setActiveMenu(targetHref, linkText, menuId) {
-            const navLinks = document.querySelectorAll('.nav-item');
-            navLinks.forEach(link => {
-                const href = link.getAttribute('href');
-                const id = link.id;
-                const existingIndicator = link.querySelector('.menu-indicator');
-                const isMatch = menuId ? (id === menuId) : (href === targetHref);
-
+            document.querySelectorAll('.nav-item').forEach(link => {
+                const isMatch = menuId ? (link.id === menuId) : (link.getAttribute('href') === targetHref);
                 if (isMatch) {
                     link.classList.add('bg-arkara-orange', 'text-white', 'shadow-lg', 'relative');
                     link.classList.remove('text-gray-400', 'hover:bg-white/5');
-                    const span = link.querySelector('span');
-                    if(span) span.classList.replace('font-medium', 'font-semibold');
-                    if (!existingIndicator) {
-                        const indicator = document.createElement('div');
-                        indicator.className = 'menu-indicator absolute left-0 w-1 h-6 bg-white rounded-r-full';
-                        link.prepend(indicator);
+                    if (!link.querySelector('.menu-indicator')) {
+                        const ind = document.createElement('div');
+                        ind.className = 'menu-indicator absolute left-0 w-1 h-6 bg-white rounded-r-full';
+                        link.prepend(ind);
                     }
                     updateHeaderInfo(linkText);
                 } else {
                     link.classList.remove('bg-arkara-orange', 'text-white', 'shadow-lg', 'relative');
                     link.classList.add('text-gray-400', 'hover:bg-white/5');
-                    const span = link.querySelector('span');
-                    if(span) span.classList.replace('font-semibold', 'font-medium');
-                    if (existingIndicator) existingIndicator.remove();
+                    const ind = link.querySelector('.menu-indicator');
+                    if (ind) ind.remove();
                 }
             });
         }
@@ -819,24 +748,12 @@
             if(!container) return;
             const toast = document.createElement('div');
             const bgColor = type === 'success' ? 'bg-green-600' : (type === 'chat' ? 'bg-arkara-orange' : 'bg-red-600');
-            
-            let icon = '';
-            if(type === 'success') icon = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="2" stroke-linecap="round"/></svg>';
-            else if(type === 'error') icon = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round"/></svg>';
-            else if(type === 'chat') icon = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" stroke-width="2" stroke-linecap="round"/></svg>';
-
-            toast.className = `${bgColor} text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center space-x-3 animate-toast pointer-events-auto min-w-[240px] border border-white/10`;
-            
+            toast.className = `${bgColor} text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center space-x-3 animate-toast pointer-events-auto min-w-[220px] border border-white/10`;
             toast.innerHTML = sender 
-                ? `<div class="bg-white/20 p-1.5 rounded-full flex-shrink-0">${icon}</div><div class="flex-1 overflow-hidden"><p class="text-[10px] font-bold uppercase tracking-wider opacity-80">${sender}</p><p class="text-xs font-medium truncate">${message}</p></div>`
-                : `<div class="bg-white/20 p-1.5 rounded-full">${icon}</div><div class="flex-1"><p class="text-xs font-semibold">${message}</p></div>`;
-            
+                ? `<div class="flex-1"><p class="text-[9px] font-bold uppercase opacity-80">${sender}</p><p class="text-xs truncate">${message}</p></div>`
+                : `<div class="flex-1"><p class="text-xs font-semibold">${message}</p></div>`;
             container.appendChild(toast);
-            setTimeout(() => {
-                toast.classList.add('opacity-0', 'translate-x-full');
-                toast.style.transition = 'all 0.5s ease-in';
-                setTimeout(() => toast.remove(), 500);
-            }, 5000);
+            setTimeout(() => { toast.classList.add('opacity-0', 'translate-x-full'); setTimeout(() => toast.remove(), 500); }, 5000);
         }
 
         function updateOnlineStatus() {
@@ -845,45 +762,40 @@
             showToast(isOnline ? "Terhubung Kembali" : "Koneksi Terputus", isOnline ? "success" : "error");
         }
 
-        // --- CHAT LOGIC ---
         async function fetchChatProfiles() {
-            const sessionData = sessionStorage.getItem('sessionUser');
-            if (!sessionData) return;
-            const currentUser = JSON.parse(sessionData);
-
+            const session = sessionStorage.getItem('sessionUser');
+            if (!session) return;
+            const user = JSON.parse(session);
             try {
                 const { data: profiles } = await _supabase.from('profiles').select('*');
-                const { data: messages } = await _supabase.from('messages').select('*').or(`sender_username.eq.${currentUser.username},receiver_username.eq.${currentUser.username}`).order('created_at', { ascending: false });
-                
-                const lastChatMap = {};
+                const { data: messages } = await _supabase.from('messages').select('*').or(`sender_username.eq.${user.username},receiver_username.eq.${user.username}`).order('created_at', { ascending: false });
+                const lastMap = {};
                 messages?.forEach(m => {
-                    const other = m.sender_username === currentUser.username ? m.receiver_username : m.sender_username;
-                    if (!lastChatMap[other]) lastChatMap[other] = new Date(m.created_at).getTime();
+                    const other = m.sender_username === user.username ? m.receiver_username : m.sender_username;
+                    if (!lastMap[other]) lastMap[other] = new Date(m.created_at).getTime();
                 });
-
-                profiles?.sort((a, b) => (lastChatMap[b.username] || 0) - (lastChatMap[a.username] || 0));
+                profiles?.sort((a, b) => (lastMap[b.username] || 0) - (lastMap[a.username] || 0));
                 chatAllProfiles = profiles || [];
-                renderChatUserList(chatAllProfiles, currentUser);
+                renderChatUserList(chatAllProfiles, user);
             } catch (err) { console.error(err); }
         }
 
         function renderChatUserList(profiles, currentUser) {
             const container = document.getElementById('chat-user-list');
             const filtered = profiles.filter(p => p.username !== currentUser.username);
-            
             container.innerHTML = filtered.map(user => {
                 const unread = chatUnreadCounts[user.username] || 0;
                 return `
-                    <div onclick="openConversation('${user.username}')" class="flex items-center p-3 hover:bg-white rounded-xl cursor-pointer transition-all border border-transparent hover:border-gray-100 group">
+                    <div onclick="openConversation('${user.username}')" class="flex items-center p-3 hover:bg-white rounded-xl cursor-pointer transition-all border border-transparent hover:border-gray-100">
                         <div class="relative flex-shrink-0">
-                            <img src="${user.photo_url || 'https://via.placeholder.com/100'}" class="w-10 h-10 rounded-full object-cover border border-gray-200" onerror="this.src='https://via.placeholder.com/100'">
+                            <img src="${user.photo_url || 'https://via.placeholder.com/100'}" class="w-10 h-10 rounded-full object-cover object-top border border-gray-200" onerror="this.src='https://via.placeholder.com/100'">
                             <span class="absolute bottom-0 right-0 w-3 h-3 border-2 border-white rounded-full ${user.status === 'Online' ? 'bg-green-500' : 'bg-gray-400'}"></span>
                         </div>
-                        <div class="ml-3 flex-1 min-w-0">
+                        <div class="ml-3 flex-1 min-w-0 text-left">
                             <p class="text-sm font-bold text-gray-800 truncate">${user.nama || user.username}</p>
-                            <p class="text-[10px] text-gray-400 truncate uppercase tracking-tighter">${user.jabatan || 'Anggota Tim'}</p>
+                            <p class="text-[10px] text-gray-400 truncate uppercase">${user.jabatan || 'Tim'}</p>
                         </div>
-                        ${unread > 0 ? `<span class="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full ml-2 animate-bounce">${unread}</span>` : ''}
+                        ${unread > 0 ? `<span class="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full ml-2">${unread}</span>` : ''}
                     </div>
                 `;
             }).join('');
@@ -892,51 +804,39 @@
         async function openConversation(username) {
             chatSelectedUser = chatAllProfiles.find(u => u.username === username);
             if (!chatSelectedUser) return;
-
             if (chatUnreadCounts[username]) {
                 unreadSessionCount -= chatUnreadCounts[username];
                 chatUnreadCounts[username] = 0;
                 if (unreadSessionCount < 0) unreadSessionCount = 0;
                 updateUnreadDisplay();
             }
-
             document.getElementById('chat-user-list').classList.add('hidden');
             document.getElementById('chat-view').classList.remove('hidden');
             document.getElementById('chat-back').classList.remove('hidden');
             document.getElementById('chat-title').innerText = chatSelectedUser.nama;
-
             await fetchChatMessages();
             subscribeToChatMessages();
         }
 
         async function fetchChatMessages() {
-            const currentUser = JSON.parse(sessionStorage.getItem('sessionUser'));
-            const { data } = await _supabase.from('messages').select('*').or(`and(sender_username.eq.${currentUser.username},receiver_username.eq.${chatSelectedUser.username}),and(sender_username.eq.${chatSelectedUser.username},receiver_username.eq.${currentUser.username})`).order('created_at', { ascending: true });
-            if (data) renderChatMessages(data, currentUser);
-        }
-
-        function renderChatMessages(messages, currentUser) {
-            const container = document.getElementById('messages-container');
-            container.innerHTML = '';
-            let lastDate = null;
-            messages.forEach(msg => {
-                const dateObj = new Date(msg.created_at);
-                const dateStr = dateObj.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-                if (dateStr !== lastDate) {
-                    container.innerHTML += `<div class="flex items-center gap-2 my-4"><span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">${dateStr}</span><div class="flex-1 border-t border-gray-100"></div></div>`;
-                    lastDate = dateStr;
-                }
-                const isMe = msg.sender_username === currentUser.username;
-                container.innerHTML += `<div class="flex ${isMe ? 'justify-end' : 'justify-start'}"><div class="flex items-end gap-2 ${isMe ? 'flex-row-reverse' : 'flex-row'} max-w-[90%]"><div class="px-4 py-2 rounded-2xl text-sm shadow-sm ${isMe ? 'bg-arkara-orange text-white rounded-tr-none' : 'bg-gray-100 text-gray-800 rounded-tl-none'}">${msg.content}</div></div></div>`;
-            });
-            container.scrollTop = container.scrollHeight;
+            const user = JSON.parse(sessionStorage.getItem('sessionUser'));
+            const { data } = await _supabase.from('messages').select('*').or(`and(sender_username.eq.${user.username},receiver_username.eq.${chatSelectedUser.username}),and(sender_username.eq.${chatSelectedUser.username},receiver_username.eq.${user.username})`).order('created_at', { ascending: true });
+            if (data) {
+                const container = document.getElementById('messages-container');
+                container.innerHTML = '';
+                data.forEach(msg => {
+                    const isMe = msg.sender_username === user.username;
+                    container.innerHTML += `<div class="flex ${isMe ? 'justify-end' : 'justify-start'}"><div class="px-4 py-2 rounded-2xl text-sm shadow-sm ${isMe ? 'bg-arkara-orange text-white rounded-tr-none' : 'bg-gray-100 text-gray-800 rounded-tl-none'}">${msg.content}</div></div>`;
+                });
+                container.scrollTop = container.scrollHeight;
+            }
         }
 
         async function sendChatMessage() {
             const input = document.getElementById('chat-input');
-            const currentUser = JSON.parse(sessionStorage.getItem('sessionUser'));
+            const user = JSON.parse(sessionStorage.getItem('sessionUser'));
             if (!input.value.trim() || !chatSelectedUser) return;
-            await _supabase.from('messages').insert([{ sender_username: currentUser.username, receiver_username: chatSelectedUser.username, content: input.value.trim() }]);
+            await _supabase.from('messages').insert([{ sender_username: user.username, receiver_username: chatSelectedUser.username, content: input.value.trim() }]);
             input.value = '';
             fetchChatMessages();
             fetchChatProfiles();
@@ -944,20 +844,19 @@
 
         function subscribeToChatMessages() {
             if (chatSubscription) _supabase.removeChannel(chatSubscription);
-            const currentUser = JSON.parse(sessionStorage.getItem('sessionUser'));
-            chatSubscription = _supabase.channel('realtime-messages-active').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, () => fetchChatMessages()).subscribe();
+            chatSubscription = _supabase.channel('msg-active').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, fetchChatMessages).subscribe();
         }
 
         function updateUnreadDisplay() {
-            const headerDisplay = document.getElementById('headerUnreadCount');
-            const chatBadge = document.getElementById('chat-badge');
+            const head = document.getElementById('headerUnreadCount');
+            const badge = document.getElementById('chat-badge');
             if (unreadSessionCount > 0) {
-                headerDisplay.textContent = `${unreadSessionCount} Chat Baru`;
-                headerDisplay.classList.remove('hidden');
-                chatBadge.classList.remove('hidden');
+                head.textContent = `${unreadSessionCount} Chat Baru`;
+                head.classList.remove('hidden');
+                badge.classList.remove('hidden');
             } else {
-                headerDisplay.classList.add('hidden');
-                chatBadge.classList.add('hidden');
+                head.classList.add('hidden');
+                badge.classList.add('hidden');
             }
         }
 
@@ -968,10 +867,9 @@
                 checkUserProfile(user.username);
                 fetchUserAuthority(user.username);
                 initAuthorityListener(user.username);
-                setTimeout(() => syncLogStatus("Online"), 2000);
+                syncLogStatus("Online");
                 fetchChatProfiles();
 
-                // Realtime Sync untuk Profil (Status Online dan Toast)
                 _supabase.channel('realtime-profiles-sync')
                     .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, (payload) => {
                         if (payload.eventType === 'UPDATE' && payload.new.status === 'Online') {
@@ -983,24 +881,16 @@
                         fetchChatProfiles(); 
                     })
                     .subscribe();
-                
-                _supabase.channel('global-msg').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload) => {
-                    const newMsg = payload.new;
-                    if (newMsg.receiver_username === user.username) {
-                        const chatWindow = document.getElementById('chat-window');
-                        const isChatOpenWithSender = chatSelectedUser && chatSelectedUser.username === newMsg.sender_username && !chatWindow.classList.contains('hidden-chat');
 
-                        if (!isChatOpenWithSender) {
-                            chatUnreadCounts[newMsg.sender_username] = (chatUnreadCounts[newMsg.sender_username] || 0) + 1;
+                _supabase.channel('global-msg').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (p) => {
+                    if (p.new.receiver_username === user.username) {
+                        const isOpen = chatSelectedUser && chatSelectedUser.username === p.new.sender_username && !document.getElementById('chat-window').classList.contains('hidden-chat');
+                        if (!isOpen) {
+                            chatUnreadCounts[p.new.sender_username] = (chatUnreadCounts[p.new.sender_username] || 0) + 1;
                             unreadSessionCount++;
                             updateUnreadDisplay();
-
-                            // Cari nama pengirim dari daftar profil lokal
-                            const senderProfile = chatAllProfiles.find(p => p.username === newMsg.sender_username);
-                            const senderName = senderProfile ? (senderProfile.nama || senderProfile.username) : newMsg.sender_username;
-
-                            // Tampilkan Toast Chat Real-time
-                            showToast(newMsg.content, 'chat', senderName);
+                            const prof = chatAllProfiles.find(u => u.username === p.new.sender_username);
+                            showToast(p.new.content, 'chat', prof ? prof.nama : p.new.sender_username);
                         }
                         fetchChatProfiles();
                     }
@@ -1029,13 +919,14 @@
             };
             document.getElementById('send-btn').onclick = sendChatMessage;
             document.getElementById('chat-input').onkeypress = (e) => { if (e.key === 'Enter') sendChatMessage(); };
+            
             window.addEventListener('online', updateOnlineStatus);
             window.addEventListener('offline', updateOnlineStatus);
         });
 
         async function logout() {
             await syncLogStatus("Offline");
-            sessionStorage.removeItem('sessionUser');
+            sessionStorage.clear();
             window.location.href = 'index.html';
         }
     </script>
