@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Kursus | Arkastone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; height: 100vh; overflow: hidden; }
+        
+        .bubble-link-item { 
+            @apply block w-full text-left px-3 py-2 text-blue-700 rounded-md text-sm font-medium transition-colors duration-200 bg-transparent; 
+        }
+        
+        .item-row.active { @apply bg-blue-600 border-blue-600; }
+        .item-row.active .bubble-link-item { @apply text-white; }
+        
+        .scroll-custom::-webkit-scrollbar { width: 6px; height: 6px; }
+        .scroll-custom::-webkit-scrollbar-track { background: #F1F5F9; border-radius: 10px; }
+        .scroll-custom::-webkit-scrollbar-thumb { background-color: #CBD5E1; border-radius: 10px; border: 1px solid #F1F5F9; }
+        .scroll-custom::-webkit-scrollbar-thumb:hover { background-color: #94A3B8; }
+        
+        #list-handbook { max-height: 135px; overflow-y: auto; }
+        #list-video { max-height: 245px; overflow-y: auto; }
+
+        .flex-x-scroll { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 0.5rem; padding: 8px 4px; }
+        .video-main-container { position: relative; width: 100%; padding-top: 56.25%; background: #000; border-radius: 0.75rem; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .video-main-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        
+        @media (max-width: 1023px) { 
+            body { overflow: auto; height: auto; } 
+            #list-handbook, #list-video { max-height: none; }
+        }
+    </style>
+</head>
+<body class="p-3 flex flex-col h-screen overflow-hidden">
+
+    <div class="flex-none flex items-center justify-between mb-3 gap-3">
+        <div class="flex items-center">
+            <button onclick="window.history.back()" class="p-1.5 bg-white rounded-lg shadow-sm border border-gray-200 mr-3 hover:bg-gray-50 transition-all active:scale-95">
+                <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
+            <h1 id="course-title" class="text-lg font-bold text-gray-800 tracking-tight leading-tight">Memuat Kursus...</h1>
+        </div>
+    </div>
+
+    <div class="flex-1 min-h-0 overflow-y-auto lg:overflow-hidden scroll-custom">
+        <div class="flex flex-col gap-4 max-w-[1600px] mx-auto h-full">
+            
+            <div class="flex flex-col lg:flex-row gap-5 flex-1 min-h-0">
+                <div class="w-full lg:w-[72%]">
+                    <div class="video-main-container border border-gray-200">
+                        <iframe id="video-viewer" src="" frameborder="0" allowfullscreen allow="autoplay"></iframe>
+                    </div>
+                </div>
+
+                <div class="w-full lg:w-[28%] flex flex-col gap-3 min-h-0">
+                    <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col flex-none">
+                        <div class="p-2 border-b border-gray-100 bg-gray-50/50">
+                            <h3 class="text-[9px] text-gray-400 uppercase font-bold tracking-wider">Software</h3>
+                        </div>
+                        <div id="list-software" class="scroll-custom min-h-[45px]"></div>
+                    </div>
+
+                    <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col flex-none">
+                        <div class="p-2 border-b border-gray-100 bg-gray-50/50">
+                            <h3 class="text-[9px] text-gray-400 uppercase font-bold tracking-wider">Dataset</h3>
+                        </div>
+                        <div id="list-data" class="scroll-custom min-h-[45px]"></div>
+                    </div>
+
+                    <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col flex-none">
+                        <div class="p-2 border-b border-gray-100 bg-gray-50/50">
+                            <h3 class="text-[9px] text-gray-400 uppercase font-bold tracking-wider">Handbook</h3>
+                        </div>
+                        <div id="list-handbook" class="p-2 flex flex-col gap-1.5 scroll-custom"></div>
+                    </div>
+
+                    <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col flex-1 min-h-0">
+                        <div class="p-2 border-b border-gray-100 bg-gray-50/50 flex-shrink-0">
+                            <h3 class="text-[9px] text-gray-400 uppercase font-bold tracking-wider">Video Lessons</h3>
+                        </div>
+                        <div id="list-video" class="p-2 flex flex-col gap-1.5 scroll-custom flex-1"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col lg:flex-row gap-5 flex-none mb-4 items-stretch">
+                <div class="w-full lg:w-[72%] flex flex-col gap-3">
+                    <div class="bg-blue-600 rounded-lg px-4 py-2 shadow-sm flex items-center gap-3">
+                        <div class="bg-white/20 p-1.5 rounded-md">
+                            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2 6a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zm6.707 3.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4a1 1 0 00-1.414-1.414L10 10.586 8.707 9.293z"></path>
+                            </svg>
+                        </div>
+                        <span id="active-video-title" class="text-white text-xs font-bold truncate tracking-wide uppercase">Memilih video...</span>
+                    </div>
+
+                    <div class="bg-white border border-gray-200 rounded-xl shadow-sm flex flex-col overflow-hidden h-[120px]">
+                        <div class="p-2 border-b border-gray-100 bg-gray-50/50 flex-shrink-0">
+                            <h2 class="text-[9px] text-gray-400 uppercase font-bold tracking-wider">Deskripsi Pelatihan</h2>
+                        </div>
+                        <div class="p-4 overflow-y-auto scroll-custom flex-1">
+                            <p id="course-description" class="text-gray-600 text-[11px] leading-relaxed whitespace-pre-line">
+                                Memuat deskripsi materi...
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full lg:w-[28%] flex flex-col">
+                    <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col h-full">
+                        <div class="p-2 border-b border-gray-100 bg-gray-50/50 flex-shrink-0">
+                            <h3 class="text-[9px] text-gray-400 uppercase font-bold tracking-wider">Informasi Materi</h3>
+                        </div>
+                        <div class="p-3 bg-blue-50/30 flex-1 flex flex-col justify-center">
+                            <div class="space-y-2.5">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[10px] text-gray-500 font-medium">ID Materi</span>
+                                    <span id="detail-id" class="text-[10px] font-bold text-blue-600">-</span>
+                                </div>
+                                <div class="flex justify-between items-center border-t border-blue-50/50 pt-2">
+                                    <span class="text-[10px] text-gray-500 font-medium">Uploader</span>
+                                    <span id="detail-uploader" class="text-[10px] text-gray-700">-</span>
+                                </div>
+                                <div class="flex justify-between items-center border-t border-blue-50/50 pt-2">
+                                    <span class="text-[10px] text-gray-500 font-medium">Tanggal Rilis</span>
+                                    <span id="detail-date" class="text-[10px] text-gray-700">-</span>
+                                </div>
+                                <div class="flex justify-between items-center border-t border-blue-50/50 pt-2">
+                                    <span class="text-[10px] text-gray-500 font-medium">Aksi</span>
+                                    <button onclick="deleteCourse()" class="text-[10px] font-bold text-red-500 bg-red-50 hover:bg-red-500 hover:text-white border border-red-100 px-3 py-1 rounded-md transition-all duration-200 active:scale-95">
+                                        Hapus
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+    const SUPABASE_URL = 'https://dqfithvufqewtchicrgw.supabase.co'; 
+    const SUPABASE_KEY = 'sb_publishable_wp6piNTxSLOXT-ezmfnhaQ_cFKP13k7';
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    function formatVideoUrl(url) {
+        if (!url) return "";
+        if (url.includes('drive.google.com')) {
+            return url.replace(/\/view.*|\/open\?id=/, '/preview').replace(/\?usp=sharing/, '');
+        }
+        return url;
+    }
+
+    async function deleteCourse() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const courseId = urlParams.get('id');
+        // Menangkap parameter category agar bisa dikembalikan ke filter yang sama
+        const category = urlParams.get('category'); 
+
+        if (!courseId) return;
+
+        if (confirm("Apakah Anda yakin ingin menghapus materi ini secara permanen?")) {
+            try {
+                const { error } = await _supabase.from('courses').delete().eq('id', courseId);
+                if (error) throw error;
+                
+                alert("Materi berhasil dihapus.");
+
+                // Redirect kembali ke course_table.html dengan parameter category jika ada
+                if (category) {
+                    window.location.href = `course_table.html?category=${encodeURIComponent(category)}`;
+                } else {
+                    window.location.href = 'course_table.html';
+                }
+
+            } catch (e) { 
+                console.error(e); 
+                alert("Gagal menghapus materi."); 
+            }
+        }
+    }
+
+    async function loadCourseDetails() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const courseId = urlParams.get('id');
+        if (!courseId) return;
+
+        try {
+            const { data: course, error } = await _supabase.from('courses').select('*').eq('id', courseId).single();
+            if (error) throw error;
+            if (course) {
+                document.getElementById('course-title').innerText = course.title || 'Untitled Course';
+                document.getElementById('course-description').innerText = course.description || "Tidak ada deskripsi tersedia.";
+                document.getElementById('detail-uploader').innerText = course.uploader || '-';
+                document.getElementById('detail-date').innerText = course.date || '-';
+                document.getElementById('detail-id').innerText = course.id;
+
+                const createBubbles = (containerId, items) => {
+                    const container = document.getElementById(containerId);
+                    container.innerHTML = "";
+                    if (!items || (Array.isArray(items) && items.length === 0)) {
+                        container.innerHTML = `<p class="text-[10px] text-gray-400 italic px-3 py-2">Tidak tersedia</p>`;
+                        return;
+                    }
+                    let itemsArray = Array.isArray(items) ? items : [items];
+                    
+                    const isHorizontal = containerId === 'list-software' || containerId === 'list-data';
+                    if (isHorizontal) container.classList.add('flex-x-scroll');
+
+                    itemsArray.forEach((item, index) => {
+                        const name = item.name || (containerId === 'list-video' ? `Part ${index + 1}: Video` : item);
+                        const url = item.url || item;
+                        
+                        if (isHorizontal) {
+                            const bubble = document.createElement('button');
+                            bubble.className = "whitespace-nowrap px-4 py-1.5 bg-blue-50 text-blue-700 rounded-full text-[10px] font-bold border border-blue-100 hover:bg-blue-600 hover:text-white transition-all flex-shrink-0 shadow-sm active:scale-95";
+                            bubble.innerText = name;
+                            bubble.onclick = () => window.open(url, '_blank');
+                            container.appendChild(bubble);
+                        } else {
+                            const row = document.createElement('div');
+                            row.className = "item-row flex items-center justify-start p-0.5 bg-white border border-gray-100 rounded-lg shadow-sm hover:bg-blue-50 hover:border-blue-200 transition-all flex-shrink-0 mb-1 cursor-pointer";
+                            
+                            const btn = document.createElement('button');
+                            btn.className = "bubble-link-item flex-1 text-left truncate";
+                            btn.innerText = name;
+                            
+                            const updateActiveState = () => {
+                                if (containerId === 'list-video') {
+                                    document.querySelectorAll('#list-video .item-row').forEach(r => r.classList.remove('active'));
+                                    row.classList.add('active');
+                                    
+                                    document.getElementById('active-video-title').innerText = name;
+                                    document.getElementById('video-viewer').src = formatVideoUrl(url);
+                                } else { 
+                                    window.open(url, '_blank'); 
+                                }
+                            };
+
+                            row.onclick = updateActiveState;
+                            btn.onclick = (e) => {
+                                e.stopPropagation();
+                                updateActiveState();
+                            };
+
+                            if (containerId === 'list-video' && index === 0) {
+                                row.classList.add('active');
+                                document.getElementById('active-video-title').innerText = name;
+                                document.getElementById('video-viewer').src = formatVideoUrl(url);
+                            }
+                            
+                            row.appendChild(btn); 
+                            container.appendChild(row);
+                        }
+                    });
+                };
+                createBubbles('list-software', course.software);
+                createBubbles('list-data', course.data);
+                createBubbles('list-handbook', course.handbook);
+                createBubbles('list-video', course.video);
+            }
+        } catch (e) { console.error(e); }
+    }
+    document.addEventListener('DOMContentLoaded', loadCourseDetails);
+    </script>
+</body>
+</html>

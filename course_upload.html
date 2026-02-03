@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Kursus Baru | Arkastone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; }
+        .form-card { background: white; border-radius: 1rem; border: 1px solid #E2E8F0; padding: 1.5rem; }
+        input[readonly] { background-color: #F1F5F9; cursor: not-allowed; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; }
+        /* Style tambahan untuk textarea agar rapi */
+        textarea { min-height: 120px; resize: vertical; }
+    </style>
+</head>
+<body class="p-8">
+
+    <div class="w-full text-left">
+        <div class="flex items-center mb-6">
+            <button onclick="window.history.back()" class="mr-4 p-2 bg-white shadow-sm border border-gray-100 rounded-full hover:bg-gray-50 transition-colors">
+                <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+            <h1 class="text-2xl font-bold text-gray-800">Form Tambah Pelatihan (Supabase Mode)</h1>
+        </div>
+
+        <form id="uploadForm" class="space-y-6">
+            <div class="form-card shadow-sm grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-600 mb-2">ID Unik</label>
+                    <input type="text" id="unique-id" readonly class="w-full p-2 border border-gray-200 rounded-lg text-sm focus:outline-none font-bold text-blue-600">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-600 mb-2">Kategori Pelatihan</label>
+                    <input type="text" id="category-display" readonly class="w-full p-2 border border-gray-200 rounded-lg text-sm focus:outline-none font-bold text-blue-600">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-600 mb-2">Nama Pengunggah</label>
+                    <input type="text" id="user-name" readonly class="w-full p-2 border border-gray-200 rounded-lg text-sm focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-600 mb-2">Tanggal</label>
+                    <input type="text" id="current-date" readonly class="w-full p-2 border border-gray-200 rounded-lg text-sm focus:outline-none">
+                </div>
+            </div>
+
+            <div class="form-card shadow-sm space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-600 mb-2">Judul Pelatihan</label>
+                    <input type="text" id="course-title" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold text-gray-600 mb-2">Deskripsi Pelatihan</label>
+                    <textarea id="course-description" placeholder="Tuliskan deskripsi lengkap di sini (Tekan Enter untuk paragraf baru)..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm"></textarea>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <div class="form-card shadow-sm">
+                    <div class="mb-4 border-b pb-2"><h2 class="block text-sm font-semibold text-gray-600 mb-2">Software</h2></div>
+                    <table id="table-software">
+                        <thead>
+                            <tr class="text-xs text-gray-400 uppercase tracking-wider">
+                                <th class="pb-3 w-16">No</th>
+                                <th class="pb-3 w-1/3">Nama Software</th>
+                                <th class="pb-3">URL Google Drive</th>
+                                <th class="pb-3 w-16 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <tr>
+                                <td class="py-3 text-sm text-gray-500">1</td>
+                                <td class="py-3 pr-4"><input type="text" class="w-full p-2 border border-gray-200 rounded-md text-sm"></td>
+                                <td class="py-3"><input type="url" class="w-full p-2 border border-gray-200 rounded-md text-sm"></td>
+                                <td class="py-3 text-center">
+                                    <button type="button" onclick="removeRow(this, 'table-software')" class="text-red-500 hover:text-red-700">
+                                        <svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="flex justify-end mt-4">
+                        <button type="button" onclick="addRow('table-software')" class="text-xs bg-blue-600 text-white px-4 py-1.5 rounded-lg hover:bg-blue-700 font-semibold">+ Tambah Baris</button>
+                    </div>
+                </div>
+
+                <div class="form-card shadow-sm">
+                    <div class="mb-4 border-b pb-2"><h2 class="block text-sm font-semibold text-gray-600 mb-2">Data</h2></div>
+                    <table id="table-data">
+                        <thead><tr class="text-xs text-gray-400 uppercase tracking-wider"><th class="pb-3 w-16">No</th><th class="pb-3 w-1/3">Nama Data</th><th class="pb-3">URL Google Drive</th><th class="pb-3 w-16 text-center">Aksi</th></tr></thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <tr>
+                                <td class="py-3 text-sm text-gray-500">1</td>
+                                <td class="py-3 pr-4"><input type="text" class="w-full p-2 border border-gray-200 rounded-md text-sm"></td>
+                                <td class="py-3"><input type="url" class="w-full p-2 border border-gray-200 rounded-md text-sm"></td>
+                                <td class="py-3 text-center"><button type="button" onclick="removeRow(this, 'table-data')" class="text-red-500 hover:text-red-700"><svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="flex justify-end mt-4"><button type="button" onclick="addRow('table-data')" class="text-xs bg-blue-600 text-white px-4 py-1.5 rounded-lg hover:bg-blue-700 font-semibold">+ Tambah Baris</button></div>
+                </div>
+
+                <div class="form-card shadow-sm">
+                    <div class="mb-4 border-b pb-2"><h2 class="block text-sm font-semibold text-gray-600 mb-2">Handbook</h2></div>
+                    <table id="table-handbook">
+                        <thead><tr class="text-xs text-gray-400 uppercase tracking-wider"><th class="pb-3 w-16">No</th><th class="pb-3 w-1/3">Nama Handbook</th><th class="pb-3">URL Google Drive</th><th class="pb-3 w-16 text-center">Aksi</th></tr></thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <tr>
+                                <td class="py-3 text-sm text-gray-500">1</td>
+                                <td class="py-3 pr-4"><input type="text" class="w-full p-2 border border-gray-200 rounded-md text-sm"></td>
+                                <td class="py-3"><input type="url" class="w-full p-2 border border-gray-200 rounded-md text-sm"></td>
+                                <td class="py-3 text-center"><button type="button" onclick="removeRow(this, 'table-handbook')" class="text-red-500 hover:text-red-700"><svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="flex justify-end mt-4"><button type="button" onclick="addRow('table-handbook')" class="text-xs bg-blue-600 text-white px-4 py-1.5 rounded-lg hover:bg-blue-700 font-semibold">+ Tambah Baris</button></div>
+                </div>
+
+                <div class="form-card shadow-sm">
+                    <div class="mb-4 border-b pb-2"><h2 class="block text-sm font-semibold text-gray-600 mb-2">Video Tutorial</h2></div>
+                    <table id="table-video">
+                        <thead><tr class="text-xs text-gray-400 uppercase tracking-wider"><th class="pb-3 w-16">No</th><th class="pb-3 w-1/3">Nama Video</th><th class="pb-3">URL Google Drive</th><th class="pb-3 w-16 text-center">Aksi</th></tr></thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <tr>
+                                <td class="py-3 text-sm text-gray-500">1</td>
+                                <td class="py-3 pr-4"><input type="text" class="w-full p-2 border border-gray-200 rounded-md text-sm"></td>
+                                <td class="py-3"><input type="url" class="w-full p-2 border border-gray-200 rounded-md text-sm"></td>
+                                <td class="py-3 text-center"><button type="button" onclick="removeRow(this, 'table-video')" class="text-red-500 hover:text-red-700"><svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="flex justify-end mt-4"><button type="button" onclick="addRow('table-video')" class="text-xs bg-blue-600 text-white px-4 py-1.5 rounded-lg hover:bg-blue-700 font-semibold">+ Tambah Baris</button></div>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-4 pt-6">
+                <button type="button" onclick="window.history.back()" class="px-8 py-3 bg-white border border-gray-200 text-gray-600 rounded-xl font-semibold hover:bg-gray-50 transition-all">Batal</button>
+                <button type="submit" class="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all">Simpan ke Supabase</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // --- KONFIGURASI SUPABASE ---
+        const SUPABASE_URL = 'https://dqfithvufqewtchicrgw.supabase.co'; 
+        const SUPABASE_KEY = 'sb_publishable_wp6piNTxSLOXT-ezmfnhaQ_cFKP13k7';   
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const category = urlParams.get('category') || "Umum";
+            document.getElementById('category-display').value = category;
+
+            const alias = category.split(' ').map(word => word.charAt(0).toUpperCase()).join('').substring(0, 3);
+            const now = new Date();
+            const dateCode = `${now.getFullYear().toString().slice(-2)}${(now.getMonth() + 1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}`;
+            document.getElementById('unique-id').value = `${alias}${dateCode}${Math.floor(1000 + Math.random() * 9000)}`;
+            document.getElementById('user-name').value = 'Arkastone Admin';
+            document.getElementById('current-date').value = now.toLocaleDateString('id-ID', { year: 'numeric', month: '2-digit', day: '2-digit' });
+        });
+
+        function addRow(tableId) {
+            const tableBody = document.querySelector(`#${tableId} tbody`);
+            const rowCount = tableBody.rows.length;
+            const row = tableBody.insertRow(rowCount);
+            row.className = "divide-y divide-gray-100";
+            
+            row.innerHTML = `
+                <td class="py-3 text-sm text-gray-500">${rowCount + 1}</td>
+                <td class="py-3 pr-4"><input type="text" class="w-full p-2 border border-gray-200 rounded-md text-sm"></td>
+                <td class="py-3"><input type="url" class="w-full p-2 border border-gray-200 rounded-md text-sm"></td>
+                <td class="py-3 text-center">
+                    <button type="button" onclick="removeRow(this, '${tableId}')" class="text-red-500 hover:text-red-700">
+                        <svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                </td>
+            `;
+        }
+
+        function removeRow(btn, tableId) {
+            const tableBody = document.querySelector(`#${tableId} tbody`);
+            if (tableBody.rows.length > 1) {
+                btn.closest('tr').remove();
+                Array.from(tableBody.rows).forEach((row, index) => {
+                    row.cells[0].innerText = index + 1;
+                });
+            } else {
+                alert("Minimal harus ada satu baris data.");
+            }
+        }
+
+        function getTableData(tableId) {
+            const rows = document.querySelectorAll(`#${tableId} tbody tr`);
+            return Array.from(rows).map(row => {
+                const inputs = row.querySelectorAll('input');
+                return { name: inputs[0].value.trim(), url: inputs[1].value.trim() };
+            }).filter(item => item.name || item.url);
+        }
+
+        // --- HANDLER SUBMIT KE SUPABASE ---
+        document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const courseData = {
+                id: document.getElementById('unique-id').value,
+                category: document.getElementById('category-display').value,
+                uploader: document.getElementById('user-name').value,
+                date: document.getElementById('current-date').value,
+                title: document.getElementById('course-title').value,
+                description: document.getElementById('course-description').value, // DATA DESKRIPSI BARU
+                software: getTableData('table-software'),
+                data: getTableData('table-data'),
+                handbook: getTableData('table-handbook'),
+                video: getTableData('table-video')
+            };
+
+            try {
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                submitBtn.innerText = "Mengirim...";
+                submitBtn.disabled = true;
+
+                const { data, error } = await _supabase
+                    .from('courses')
+                    .insert([courseData]);
+
+                if (error) throw error;
+
+                alert('Sukses! Data Pelatihan Arkastone berhasil disimpan ke Supabase.');
+                window.location.href = 'course_table.html?category=' + encodeURIComponent(courseData.category);
+
+            } catch (error) {
+                console.error('Supabase Error:', error);
+                alert('Gagal menyimpan ke Supabase: ' + error.message);
+                
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                submitBtn.innerText = "Simpan ke Supabase";
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

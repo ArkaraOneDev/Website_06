@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Arkastone - Geologi & Mining</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        .viewport-wrapper { 
+            position: relative; 
+            height: 100vh; 
+            width: 100vw; 
+            background-color: #f8fafc;
+            /* Padding dikurangi untuk mobile */
+            padding: 0;
+        }
+
+        /* Padding container untuk desktop */
+        @media (min-width: 768px) {
+            .viewport-wrapper {
+                padding: 16px;
+            }
+        }
+        
+        model-viewer { 
+            width: 100%; 
+            height: 100%; 
+            background-image: url('assets/img/background_01.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            /* Radius dihilangkan di mobile agar full screen */
+            border-radius: 0;
+            --poster-color: transparent;
+        }
+
+        @media (min-width: 768px) {
+            model-viewer {
+                border-radius: 1rem;
+            }
+        }
+
+        /* Container utama controls */
+        .floating-controls {
+            position: absolute;
+            z-index: 40;
+            display: flex;
+            pointer-events: none; /* Biarkan klik tembus ke viewer kecuali kena tombol */
+            
+            /* Mobile Positioning */
+            top: 16px;
+            left: 16px;
+            right: 16px;
+            flex-direction: column;
+        }
+
+        /* Desktop Positioning */
+        @media (min-width: 768px) {
+            .floating-controls {
+                top: 32px;
+                left: 32px;
+                right: 32px;
+                flex-direction: row;
+                align-items: center;
+            }
+        }
+
+        /* Memastikan anak elemen bisa diklik */
+        .floating-controls > * {
+            pointer-events: auto;
+        }
+
+        /* Style khusus untuk Bottom Dock di Mobile */
+        .mobile-dock {
+            /* Default Mobile: Fixed di bawah tengah */
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: max-content;
+            max-width: 95vw;
+            
+            display: flex;
+            gap: 8px;
+            padding: 8px;
+            
+            background-color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        /* Reset style dock saat di Desktop agar kembali ke atas kanan */
+        @media (min-width: 768px) {
+            .mobile-dock {
+                position: static;
+                transform: none;
+                background-color: transparent;
+                backdrop-filter: none;
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                margin-left: auto; /* Push ke kanan */
+            }
+        }
+
+        .modal-overlay {
+            position: fixed;
+            z-index: 50;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+        }
+
+        body::-webkit-scrollbar { display: none; }
+        
+        .btn-active {
+            background-color: #dbeafe !important;
+            color: #1e40af !important;
+            border-color: #3b82f6 !important;
+        }
+
+        /* Custom scrollbar untuk tabel */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900 font-sans overflow-hidden">
+
+    <div class="viewport-wrapper">
+        <div class="floating-controls">
+            
+            <!-- GROUP 1: Select & Manage (Kiri Atas) -->
+            <div class="flex gap-2 w-full md:w-auto items-start">
+                <div class="relative min-w-[160px] max-w-[220px] md:min-w-[200px] w-auto shadow-lg rounded-xl">
+                    <select id="modelSelect" class="w-full bg-white/95 backdrop-blur border border-gray-300 text-gray-700 py-2 px-3 md:py-2.5 md:px-4 pr-8 rounded-xl appearance-none cursor-pointer text-xs md:text-sm focus:ring-2 focus:ring-blue-500 transition-all font-semibold truncate">
+                        <option value="" disabled selected>Pilih Model 3D...</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                        <svg class="fill-current h-3 w-3 md:h-4 md:w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                    </div>
+                </div>
+
+                <button id="btnKelola" class="hidden bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-3 md:py-2.5 md:px-6 rounded-xl text-xs md:text-sm transition-all shadow-xl active:scale-95 whitespace-nowrap">
+                    Kelola
+                </button>
+            </div>
+
+            <!-- GROUP 2: Tools (Zoom, Reset, Play) 
+                 Mobile: Dock Bawah Tengah
+                 Desktop: Kanan Atas
+            -->
+            <div class="mobile-dock z-50">
+                <!-- Zoom & Reset -->
+                <div class="flex gap-1 md:gap-2">
+                    <button id="btnZoomExtent" title="Zoom to Extent" class="bg-white hover:bg-gray-50 text-gray-700 p-2 md:p-2.5 rounded-lg md:rounded-xl shadow-sm md:shadow-xl transition-all active:scale-95 border border-gray-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" /></svg>
+                    </button>
+                    <button id="btnResetView" title="Reset View" class="bg-white hover:bg-gray-50 text-gray-700 p-2 md:p-2.5 rounded-lg md:rounded-xl shadow-sm md:shadow-xl transition-all active:scale-95 border border-gray-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg>
+                    </button>
+                </div>
+
+                <!-- Playback Controls -->
+                <div class="flex gap-0.5 md:gap-1 bg-white md:bg-white/90 p-0.5 md:p-1 rounded-lg md:rounded-xl shadow-sm md:shadow-xl border border-gray-200 ml-1 md:ml-2 items-center">
+                    <button id="btnPrev" title="Previous Model" class="hover:bg-gray-100 text-gray-700 p-1.5 md:p-2 rounded-md md:rounded-lg transition-all active:scale-95">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+                    </button>
+                    <button id="btnPlay" title="Play Auto-rotate" class="hover:bg-gray-100 text-gray-700 p-1.5 md:p-2 rounded-md md:rounded-lg transition-all active:scale-95 btn-active">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                    <button id="btnPause" title="Pause Auto-rotate" class="hover:bg-gray-100 text-gray-700 p-1.5 md:p-2 rounded-md md:rounded-lg transition-all active:scale-95">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                    </button>
+                    <button id="btnNext" title="Next Model" class="hover:bg-gray-100 text-gray-700 p-1.5 md:p-2 rounded-md md:rounded-lg transition-all active:scale-95">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full h-full md:rounded-2xl overflow-hidden md:shadow-2xl bg-transparent relative">
+            <model-viewer 
+                id="main-viewer" 
+                src="" 
+                alt="Visualisasi Tambang Arkastone" 
+                auto-rotate 
+                camera-controls 
+                shadow-intensity="1.5" 
+                exposure="1.2"
+                camera-orbit="60deg 50deg 50%"
+                min-camera-orbit="auto auto 10%" 
+                max-camera-orbit="auto auto auto"
+                interaction-prompt="none"
+                interpolation-decay="200">
+                
+                <div id="placeholder-msg" class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 bg-white/20 backdrop-blur-sm transition-opacity duration-500 rounded-2xl p-4 text-center">
+                    <div class="w-12 h-12 md:w-16 md:h-16 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin mb-4" id="loading-spinner" style="display:none;"></div>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 md:h-16 md:w-16 mb-3 opacity-40" fill="none" viewBox="0 0 24 24" stroke="white">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                    <p class="text-sm md:text-base font-bold text-white drop-shadow-md">Pilih Model Tambang atau Geologi</p>
+                    <p class="text-[10px] md:text-xs mt-1 text-white/80">Gunakan menu di pojok kiri atas</p>
+                </div>
+            </model-viewer>
+        </div>
+    </div>
+
+    <!-- Modal Kelola Data -->
+    <div id="modalKelola" class="modal-overlay hidden items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-4 md:p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                <div>
+                    <h3 class="text-lg md:text-xl font-bold text-gray-800">Model 3D</h3>
+                    <p class="text-[10px] md:text-xs text-gray-500">Upload model 3D dalam format (.glb)</p>
+                </div>
+                <button id="closeModal" class="text-gray-400 hover:text-gray-900 transition-colors text-2xl md:text-3xl">&times;</button>
+            </div>
+            
+            <div class="p-4 md:p-6 overflow-y-auto bg-white custom-scroll flex-1">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse min-w-[600px]">
+                        <thead>
+                            <tr class="text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-wider border-b">
+                                <th class="py-3 px-2 w-10 text-center">No</th>
+                                <th class="py-3 px-2">Nama Model</th>
+                                <th class="py-3 px-2">Status</th>
+                                <th class="py-3 px-2 w-10 text-center">Aksi</th>
+                                <th class="py-3 px-2 w-12 text-center">Set</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                </div>
+
+                <button id="addRow" class="mt-6 flex items-center text-xs md:text-sm text-blue-600 font-bold hover:text-blue-800 transition-colors">
+                    <svg class="w-5 h-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                    Tambah Model Baru
+                </button>
+            </div>
+
+            <div class="p-4 md:p-6 border-t border-gray-100 flex justify-end gap-3 bg-gray-50 shrink-0">
+                <button id="cancelModal" class="px-4 py-2 md:px-6 md:py-2.5 border border-gray-300 rounded-xl text-xs md:text-sm font-medium text-gray-600 hover:bg-white transition-all">Batal</button>
+                <button id="saveModels" class="px-4 py-2 md:px-6 md:py-2.5 bg-blue-600 text-white rounded-xl text-xs md:text-sm font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://dqfithvufqewtchicrgw.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_wp6piNTxSLOXT-ezmfnhaQ_cFKP13k7';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        const select = document.getElementById('modelSelect');
+        const viewer = document.getElementById('main-viewer');
+        const placeholder = document.getElementById('placeholder-msg');
+        const spinner = document.getElementById('loading-spinner');
+        const modal = document.getElementById('modalKelola');
+        const tableBody = document.getElementById('tableBody');
+        const saveModels = document.getElementById('saveModels');
+        const btnKelola = document.getElementById('btnKelola');
+        
+        const btnZoomExtent = document.getElementById('btnZoomExtent');
+        const btnResetView = document.getElementById('btnResetView');
+        const btnPlay = document.getElementById('btnPlay');
+        const btnPause = document.getElementById('btnPause');
+        const btnPrev = document.getElementById('btnPrev');
+        const btnNext = document.getElementById('btnNext');
+
+        // --- Fitur Baru: Cek Otoritas Admin ---
+        async function checkAdminAccess() {
+            try {
+                const sessionData = sessionStorage.getItem('sessionUser');
+                if (!sessionData) return;
+
+                const user = JSON.parse(sessionData);
+                const { data, error } = await _supabase
+                    .from('users')
+                    .select('authority')
+                    .eq('username', user.username)
+                    .single();
+
+                if (error) throw error;
+
+                // Jika otoritas adalah 'admin', tampilkan tombol kelola
+                if (data && data.authority.toLowerCase() === 'admin') {
+                    btnKelola.classList.remove('hidden');
+                }
+            } catch (err) {
+                console.error('Otoritas gagal dimuat:', err);
+            }
+        }
+
+        // Reset Kamera
+        btnResetView.onclick = () => {
+            viewer.cameraOrbit = "60deg 50deg 50%";
+            viewer.cameraTarget = "auto auto auto";
+            viewer.fieldOfView = "auto";
+        };
+
+        // Zoom Extent
+        btnZoomExtent.onclick = () => {
+            viewer.fieldOfView = "auto";
+            viewer.cameraOrbit = "auto auto auto";
+            viewer.cameraTarget = "auto auto auto";
+        };
+
+        // Kontrol Rotasi
+        btnPlay.onclick = () => {
+            viewer.autoRotate = true;
+            btnPlay.classList.add('btn-active');
+            btnPause.classList.remove('btn-active');
+        };
+
+        btnPause.onclick = () => {
+            viewer.autoRotate = false;
+            btnPause.classList.add('btn-active');
+            btnPlay.classList.remove('btn-active');
+        };
+
+        // Navigasi Model
+        const navigateModel = (direction) => {
+            const options = Array.from(select.options).filter(opt => !opt.disabled && opt.value !== "");
+            if (options.length === 0) return;
+            
+            let currentIndex = options.findIndex(opt => opt.value === select.value);
+            let nextIndex = currentIndex + direction;
+
+            if (nextIndex < 0) nextIndex = options.length - 1;
+            if (nextIndex >= options.length) nextIndex = 0;
+
+            select.value = options[nextIndex].value;
+            applyModel(options[nextIndex].value);
+        };
+
+        btnPrev.onclick = () => navigateModel(-1);
+        btnNext.onclick = () => navigateModel(1);
+
+        const openModal = () => {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        };
+
+        const closeModalFunc = () => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        };
+
+        // Memuat Model dari Supabase
+        async function loadModels() {
+            try {
+                const { data, error } = await _supabase.from('arkastone').select('*').order('created_at', { ascending: false });
+                if (error) throw error;
+                
+                select.innerHTML = '<option value="" disabled selected>Pilih Model Tambang...</option>';
+                
+                data?.forEach(item => {
+                    const opt = document.createElement('option');
+                    opt.value = item.model_url;
+                    opt.text = item.name;
+                    select.appendChild(opt);
+
+                    if (item.Set === true) {
+                        select.value = item.model_url;
+                        applyModel(item.model_url);
+                    }
+                });
+            } catch (err) { console.error('Gagal memuat model:', err); }
+        }
+
+        function applyModel(url) {
+            if (!url) return;
+            spinner.style.display = 'block';
+            viewer.src = url;
+            viewer.addEventListener('load', () => {
+                placeholder.classList.add('opacity-0');
+                setTimeout(() => placeholder.classList.add('hidden'), 500);
+                spinner.style.display = 'none';
+            }, { once: true });
+        }
+
+        btnKelola.onclick = async () => {
+            tableBody.innerHTML = '<tr><td colspan="5" class="py-8 text-center"><div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-600 border-t-transparent"></div></td></tr>';
+            openModal();
+            try {
+                const { data, error } = await _supabase.from('arkastone').select('*').order('created_at', { ascending: false });
+                if (error) throw error;
+                renderTable(data);
+            } catch (err) { tableBody.innerHTML = '<tr><td colspan="5" class="text-center text-red-500 py-4">Gagal sinkronisasi database.</td></tr>'; }
+        };
+
+        function renderTable(models) {
+            tableBody.innerHTML = '';
+            models.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.className = "border-b border-gray-50 bg-gray-50/30 hover:bg-gray-50 transition-colors";
+                row.innerHTML = `
+                    <td class="py-4 px-2 text-[10px] md:text-xs text-center text-gray-400 font-mono">${index + 1}</td>
+                    <td class="py-4 px-2"><span class="text-xs md:text-sm font-semibold text-gray-700">${item.name}</span></td>
+                    <td class="py-4 px-2"><span class="inline-flex items-center px-2 py-1 rounded text-[8px] md:text-[10px] font-bold bg-green-100 text-green-700">TERSIMPAN</span></td>
+                    <td class="py-4 px-2 text-center">
+                        <button onclick="deleteFromSupabase('${item.id}', this)" class="text-gray-300 hover:text-red-600 transition-colors">
+                            <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    </td>
+                    <td class="py-4 px-2 text-center">
+                        <input type="checkbox" name="defaultModel" ${item.Set ? 'checked' : ''} 
+                            onclick="updateDefaultInDB('${item.id}', this)" 
+                            class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 cursor-pointer">
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+            addNewRow();
+        }
+
+        window.updateDefaultInDB = async (id, checkbox) => {
+            try {
+                const { data: currentDefaults } = await _supabase.from('arkastone').select('id').eq('Set', true);
+                if (currentDefaults && currentDefaults.length > 0) {
+                    const idsToReset = currentDefaults.map(item => item.id);
+                    await _supabase.from('arkastone').update({ Set: false }).in('id', idsToReset);
+                }
+                if (checkbox.checked) {
+                    const { error } = await _supabase.from('arkastone').update({ Set: true }).eq('id', id);
+                    if (error) throw error;
+                }
+                const checkboxes = document.querySelectorAll('input[name="defaultModel"]');
+                checkboxes.forEach(cb => { if(cb !== checkbox) cb.checked = false; });
+                loadModels();
+            } catch (err) {
+                alert('Gagal sinkronisasi Set: ' + err.message);
+                checkbox.checked = !checkbox.checked;
+            }
+        };
+
+        function addNewRow() {
+            const count = tableBody.querySelectorAll('tr').length + 1;
+            const row = document.createElement('tr');
+            row.className = "border-b border-gray-50 hover:bg-blue-50/30 transition-colors";
+            row.innerHTML = `
+                <td class="py-4 px-2 text-[10px] md:text-xs text-center text-blue-400 font-mono">${count}</td>
+                <td class="py-4 px-2"><input type="text" placeholder="Nama..." class="w-full border-gray-200 border p-1.5 md:p-2 text-xs md:text-sm rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"></td>
+                <td class="py-4 px-2"><input type="file" accept=".glb" class="text-[8px] md:text-[10px] text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[8px] md:file:text-[10px] file:font-semibold file:bg-blue-50 file:text-blue-700"></td>
+                <td class="py-4 px-2 text-center"><button onclick="deleteRow(this)" class="text-gray-300 hover:text-red-500">✕</button></td>
+                <td class="py-4 px-2 text-center"><span class="text-gray-300">-</span></td>
+            `;
+            tableBody.appendChild(row);
+        }
+
+        document.getElementById('addRow').onclick = addNewRow;
+        window.deleteRow = (btn) => btn.closest('tr').remove();
+
+        window.deleteFromSupabase = async (id, btn) => {
+            if (!confirm('Hapus model ini?')) return;
+            try {
+                const { data } = await _supabase.from('arkastone').select('model_url').eq('id', id).single();
+                const fileName = data.model_url.split('/').pop();
+                await _supabase.storage.from('3D_Model').remove([fileName]);
+                await _supabase.from('arkastone').delete().eq('id', id);
+                btn.closest('tr').remove();
+                loadModels();
+            } catch (err) { alert('Terjadi kesalahan: ' + err.message); }
+        };
+
+        saveModels.onclick = async () => {
+            const rows = tableBody.querySelectorAll('tr');
+            let successCount = 0;
+            saveModels.disabled = true;
+            saveModels.innerText = 'Memproses...';
+            
+            for (const row of rows) {
+                const nameInput = row.querySelector('input[type="text"]');
+                const fileInput = row.querySelector('input[type="file"]');
+                if (nameInput && fileInput?.files[0]) {
+                    const name = nameInput.value || 'Model Baru';
+                    const file = fileInput.files[0];
+                    const fileName = `${Date.now()}_${name.replace(/\s+/g, '_').toLowerCase()}.glb`;
+                    try {
+                        await _supabase.storage.from('3D_Model').upload(fileName, file);
+                        const { data: pData } = _supabase.storage.from('3D_Model').getPublicUrl(fileName);
+                        await _supabase.from('arkastone').insert([{ name, model_url: pData.publicUrl, Set: false }]);
+                        successCount++;
+                    } catch (err) { console.error(err); }
+                }
+            }
+            
+            if(successCount > 0) alert(`Berhasil menambah ${successCount} model.`);
+            closeModalFunc();
+            loadModels();
+            saveModels.disabled = false;
+            saveModels.innerText = 'Simpan';
+        };
+
+        select.onchange = (e) => applyModel(e.target.value);
+        document.getElementById('closeModal').onclick = closeModalFunc;
+        document.getElementById('cancelModal').onclick = closeModalFunc;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            checkAdminAccess(); // Cek admin saat halaman dibuka
+            loadModels();
+        });
+    </script>
+</body>
+</html>

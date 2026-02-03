@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Landing Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-orange: #FF8C00;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f8fafc;
+            /* Menghilangkan scroll bar default jika di desktop */
+            overflow: hidden;
+            position: relative;
+        }
+
+        .container {
+            display: flex;
+            gap: 15px; 
+            height: 100vh;
+            width: 100vw;
+            padding: 15px; 
+            box-sizing: border-box;
+            background-color: #f8fafc;
+            transition: all 0.3s ease;
+        }
+
+        .card {
+            flex: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            text-align: center;
+            padding: 60px 25px;
+            box-sizing: border-box;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.17, 0.67, 0.83, 0.67), filter 0.3s;
+            opacity: 0;
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+            border-radius: 8px; /* Sedikit rounded untuk tampilan modern */
+        }
+
+        /* Gradient gelap di bagian atas agar teks putih mudah dibaca */
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80%;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0) 100%);
+            z-index: 1;
+            transition: opacity 0.3s;
+        }
+
+        .card:hover {
+            filter: brightness(1.1);
+            z-index: 10;
+            transform: scale(1.02);
+        }
+
+        .card h2, .card p {
+            position: relative;
+            z-index: 2;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .card h2 {
+            font-size: 1.4rem;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            font-weight: 700;
+            line-height: 1.2;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .card h2::first-letter {
+            color: var(--primary-orange); 
+            font-weight: 900;
+            font-size: 1.8rem;
+        }
+
+        .card p {
+            margin: 20px 0 0 0;
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.95);
+            line-height: 1.6;
+            max-width: 280px;
+        }
+
+        /* Mapping Gambar Background (Fallback ke warna jika file tidak ada) */
+        .card:nth-child(1) { background-color: #1a202c; background-image: url('assets/img/card_01.png'); }
+        .card:nth-child(2) { background-color: #2d3748; background-image: url('assets/img/card_02.png'); }
+        .card:nth-child(3) { background-color: #1a202c; background-image: url('assets/img/card_03.png'); }
+        .card:nth-child(4) { background-color: #2d3748; background-image: url('assets/img/card_04.png'); }
+        .card:nth-child(5) { background-color: #1a202c; background-image: url('assets/img/card_05.png'); }
+
+        /* --- Animasi Masuk --- */
+        @keyframes slideFromBottom {
+            0% { opacity: 0; transform: translateY(50px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideFromTop {
+            0% { opacity: 0; transform: translateY(-50px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .card:nth-child(1), .card:nth-child(3), .card:nth-child(5) {
+            animation: slideFromBottom 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        .card:nth-child(2), .card:nth-child(4) {
+            animation: slideFromTop 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+        .card:nth-child(5) { animation-delay: 0.5s; }
+
+        /* --- RESPONSIVE MOBILE (Single Page Scroll) --- */
+        @media (max-width: 768px) {
+            body {
+                overflow: auto; /* Mengizinkan scroll di body/container */
+            }
+
+            .container {
+                flex-direction: column;
+                height: 100vh;
+                width: 100vw;
+                padding: 0; /* Full screen tanpa padding container */
+                gap: 0;
+                overflow-y: scroll;
+                scroll-snap-type: y mandatory; /* Efek snap vertikal */
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .card {
+                flex: none;
+                width: 100%;
+                height: 100vh; /* Tiap card setinggi layar penuh */
+                scroll-snap-align: start; /* Snap ke awal card */
+                border-radius: 0; /* Kotak penuh di mobile */
+                padding: 80px 30px;
+                justify-content: center; /* Teks ke tengah layar di mobile */
+            }
+
+            .card h2 {
+                font-size: 1.8rem;
+            }
+
+            .card h2::first-letter {
+                font-size: 2.4rem;
+            }
+
+            .card p {
+                font-size: 1rem;
+                max-width: 90%;
+            }
+
+            /* Nonaktifkan animasi transform agar tidak mengganggu scroll snap di mobile */
+            .card:hover {
+                transform: none;
+            }
+
+            /* Ubah animasi agar hanya fade in sederhana di mobile */
+            .card:nth-child(n) {
+                animation: fadeIn 0.8s ease forwards;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h2>Sustainable Excellence</h2>
+            <p>Menghadirkan keunggulan operasional pertambangan yang berkelanjutan dengan mengedepankan praktik ramah lingkungan dan tanggung jawab sosial terhadap masyarakat sekitar.</p>
+        </div>
+
+        <div class="card">
+            <h2>Technology Innovation</h2>
+            <p>Mengintegrasikan teknologi terkini dan inovasi digital dalam setiap aspek operasional untuk meningkatkan efisiensi, keselamatan kerja, dan produktivitas jangka panjang.</p>
+        </div>
+
+        <div class="card">
+            <h2>Operational Integrity</h2>
+            <p>Membangun budaya kerja yang mengutamakan integritas operasional dan keselamatan sebagai prioritas utama dalam setiap keputusan dan tindakan perusahaan.</p>
+        </div>
+
+        <div class="card">
+            <h2>Next-Generation Development</h2>
+            <p>Mengoptimalkan pengembangan sumber daya mineral dengan pendekatan modern dan efisien untuk memastikan keberlanjutan produksi dan nilai ekonomi maksimal.</p>
+        </div>
+
+        <div class="card">
+            <h2>Empowering Stakeholders</h2>
+            <p>Menciptakan nilai tambah bagi seluruh pemangku kepentingan melalui kemitraan strategis dan komitmen terhadap pertumbuhan bisnis yang bertanggung jawab.</p>
+        </div>
+    </div>
+</body>
+</html>

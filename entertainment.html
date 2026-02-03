@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entertainment | Arkastone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .text-arkara-orange { color: #E3722E; }
+        .bg-arkara-orange { background-color: #E3722E; }
+        .border-arkara-orange { border-color: #E3722E; }
+
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #E3722E; border-radius: 10px; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .animate-fade-in { animation: fadeIn 0.2s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-[#F8FAFC] h-screen p-4 overflow-hidden">
+
+    <div class="flex h-full gap-4">
+        
+        <div class="w-1/4 h-full bg-white rounded-3xl border border-gray-100 shadow-sm flex flex-col overflow-hidden">
+            <div class="p-5 border-b border-gray-50">
+                <p class="text-[10px] font-bold text-arkara-orange uppercase tracking-[0.15em] leading-tight">
+                    Work hard, play hard.<br>Let's have fun!
+                </p>
+            </div>
+
+            <div id="gameListContainer" class="flex-1 overflow-y-auto p-4 space-y-3 custom-scroll">
+                <button onclick="loadGame('2048', 'https://2048.org/')" class="game-card w-full flex items-center p-3 bg-white hover:bg-orange-50 border border-gray-100 hover:border-arkara-orange rounded-2xl transition-all group text-left">
+                    <div class="w-10 h-10 bg-gray-900 rounded-xl flex items-center justify-center text-white font-bold text-lg group-hover:scale-110 transition-transform">2k</div>
+                    <div class="ml-3">
+                        <p class="text-xs font-bold text-gray-700">2048</p>
+                        <p class="text-[9px] text-gray-400 uppercase font-bold tracking-tighter">Puzzle</p>
+                    </div>
+                </button>
+            </div>
+
+            <div class="p-4 flex justify-end items-center bg-gray-50/50">
+                <button onclick="toggleModal(true)" title="Tambah Game Baru" class="flex items-center justify-center w-10 h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-lg shadow-blue-500/30 transition-all hover:scale-105 active:scale-95">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="flex-1 h-full bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden relative">
+            <div id="placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 bg-white z-10">
+                <div class="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mb-3">
+                    <svg class="w-8 h-8 text-arkara-orange animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path></svg>
+                </div>
+                <h3 class="text-sm font-bold text-gray-800">Zona Hiburan Arkastone</h3>
+                <p class="text-[9px] text-gray-400 mt-1 uppercase tracking-widest font-bold">Pilih permainan untuk memulai</p>
+            </div>
+            <iframe id="gameFrame" src="" class="w-full h-full border-none hidden" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <div id="addGameModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden animate-fade-in">
+            <div class="p-6 border-b border-gray-50 bg-gray-50/50">
+                <h3 class="text-lg font-bold text-gray-800">Tambah Game Baru</h3>
+                <p class="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Masukkan detail embed game</p>
+            </div>
+            
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="text-[10px] font-bold text-gray-400 uppercase ml-1">Nama Game</label>
+                    <input type="text" id="inputGameName" class="w-full mt-1 p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-arkara-orange outline-none transition-all" placeholder="Contoh: Sudoku Master">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-gray-400 uppercase ml-1">URL Embed Game</label>
+                    <input type="url" id="inputGameUrl" class="w-full mt-1 p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-arkara-orange outline-none transition-all" placeholder="https://game-url.com/embed">
+                </div>
+            </div>
+
+            <div class="p-6 bg-gray-50/50 flex gap-3">
+                <button onclick="toggleModal(false)" class="flex-1 px-4 py-3 bg-white border border-gray-200 text-gray-500 font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-gray-100 transition-all">
+                    Batal
+                </button>
+                <button onclick="saveNewGame()" class="flex-1 px-4 py-3 bg-blue-600 text-white font-bold text-xs uppercase tracking-widest rounded-xl shadow-lg shadow-blue-500/20 hover:bg-blue-700 transition-all">
+                    Simpan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function loadGame(name, url) {
+            const frame = document.getElementById('gameFrame');
+            const placeholder = document.getElementById('placeholder');
+            placeholder.classList.add('hidden');
+            frame.classList.remove('hidden');
+            if (frame.src !== url) frame.src = url;
+
+            document.querySelectorAll('.game-card').forEach(btn => {
+                btn.classList.remove('bg-orange-50', 'border-arkara-orange', 'ring-1', 'ring-arkara-orange');
+            });
+            // Gunakan event target untuk highlight
+            if(event) event.currentTarget.classList.add('bg-orange-50', 'border-arkara-orange', 'ring-1', 'ring-arkara-orange');
+        }
+
+        // Fungsi buka/tutup modal
+        function toggleModal(show) {
+            const modal = document.getElementById('addGameModal');
+            if (show) {
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+                document.getElementById('inputGameName').value = '';
+                document.getElementById('inputGameUrl').value = '';
+            }
+        }
+
+        // Fungsi simpan game ke list
+        function saveNewGame() {
+            const name = document.getElementById('inputGameName').value;
+            const url = document.getElementById('inputGameUrl').value;
+
+            if (!name || !url) {
+                alert("Mohon isi nama dan URL game!");
+                return;
+            }
+
+            const container = document.getElementById('gameListContainer');
+            const initial = name.substring(0, 2).toUpperCase();
+            
+            // Membuat elemen button baru secara dinamis
+            const newGameBtn = document.createElement('button');
+            newGameBtn.onclick = () => loadGame(name, url);
+            newGameBtn.className = "game-card w-full flex items-center p-3 bg-white hover:bg-orange-50 border border-gray-100 hover:border-arkara-orange rounded-2xl transition-all group text-left";
+            
+            newGameBtn.innerHTML = `
+                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-lg group-hover:scale-110 transition-transform">${initial}</div>
+                <div class="ml-3">
+                    <p class="text-xs font-bold text-gray-700">${name}</p>
+                    <p class="text-[9px] text-gray-400 uppercase font-bold tracking-tighter">Custom Game</p>
+                </div>
+            `;
+
+            container.appendChild(newGameBtn);
+            toggleModal(false); // Tutup modal
+        }
+    </script>
+</body>
+</html>

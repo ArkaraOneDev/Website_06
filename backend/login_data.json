@@ -1,0 +1,85 @@
+[
+  {
+    "email": "hasan@arkara-energi.com",
+    "login": "12/01/2026, 17:40:29",
+    "logout": "12/01/2026, 17:40:55",
+    "time": "0 mnt 25 dtk"
+  },
+  {
+    "email": "rizky.kurnia@arkara-energi.com",
+    "login": "12/01/2026, 17:41:19",
+    "logout": "12/01/2026, 17:41:27",
+    "time": "0 mnt 7 dtk"
+  },
+  {
+    "email": "hasan@arkara-energi.com",
+    "login": "12/01/2026, 17:42:11",
+    "logout": "12/01/2026, 17:44:07",
+    "time": "1 mnt 56 dtk"
+  },
+  {
+    "email": "rizky.kurnia@arkara-energi.com",
+    "login": "12/01/2026, 17:45:04",
+    "logout": "12/01/2026, 17:47:17",
+    "time": "2 mnt 13 dtk"
+  },
+  {
+    "email": "rizky.kurnia@arkara-energi.com",
+    "login": "12/01/2026, 17:47:44",
+    "logout": "12/01/2026, 17:52:03",
+    "time": "4 mnt 19 dtk"
+  },
+  {
+    "email": "rizky.kurnia@arkara-energi.com",
+    "login": "12/01/2026, 17:52:13",
+    "logout": "12/01/2026, 17:53:55",
+    "time": "1 mnt 42 dtk"
+  },
+  {
+    "email": "hasan@arkara-energi.com",
+    "login": "12/01/2026, 17:54:09",
+    "logout": "12/01/2026, 18:02:04",
+    "time": "7 mnt 55 dtk"
+  },
+  {
+    "email": "rizky.kurnia@arkara-energi.com",
+    "login": "12/01/2026, 18:02:47",
+    "logout": "",
+    "time": "",
+    "_rawLogin": "2026-01-12T11:02:47.467Z"
+  },
+  {
+    "email": "rizky.kurnia@arkara-energi.com",
+    "login": "12/01/2026, 18:05:00",
+    "logout": "14/01/2026, 17:31:26",
+    "time": "47 jam 26 mnt 26 dtk"
+  },
+  {
+    "email": "rizky.kurnia@arkara-energi.com",
+    "login": "12/01/2026, 18:09:45",
+    "logout": "12/01/2026, 18:13:39",
+    "time": "3 mnt 54 dtk"
+  },
+  {
+    "email": "hasan@arkara-energi.com",
+    "login": "12/01/2026, 18:15:53",
+    "logout": "12/01/2026, 18:16:15",
+    "time": "0 mnt 22 dtk"
+  },
+  {
+    "email": "rizky.kurnia@arkara-energi.com",
+    "login": "14/01/2026, 17:31:36",
+    "logout": "14/01/2026, 18:05:33",
+    "time": "33 mnt 57 dtk"
+  },
+  {
+    "login": "18/01/2026, 20:02:37",
+    "logout": "18/01/2026, 20:03:22",
+    "time": "0 mnt 44 dtk"
+  },
+  {
+    "login": "18/01/2026, 20:03:33",
+    "logout": "18/01/2026, 20:20:53",
+    "time": "17 mnt 20 dtk"
+  }
+]

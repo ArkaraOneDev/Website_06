@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Kursus | Arkastone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; height: 100vh; overflow: hidden; }
+        .bubble-item {
+            animation: slideIn 0.3s ease-out forwards;
+            opacity: 0;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(5px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .grid-rows-10 {
+            display: grid;
+            grid-template-rows: repeat(10, minmax(0, 1fr));
+        }
+    </style>
+</head>
+<body class="p-3 flex flex-col h-screen overflow-hidden">
+
+    <div class="flex-none flex items-center justify-end mb-3 gap-3">
+        <div class="relative">
+            <input 
+                type="text" 
+                id="search-input"
+                placeholder="Cari pelatihan..." 
+                class="pl-9 pr-4 py-1.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm w-60 shadow-sm"
+            >
+            <svg class="w-4 h-4 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+        </div>
+        <button id="btn-add-software" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-lg text-sm font-semibold shadow-md transition-all active:scale-95">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            Add
+        </button>
+    </div>
+
+    <div class="flex-none grid grid-cols-12 gap-4 px-5 py-2 font-bold text-gray-500 bg-gray-100 rounded-t-xl mb-1 text-[10px] uppercase tracking-widest border-b border-gray-200">
+        <div class="col-span-1">No</div>
+        <div class="col-span-4">Nama Software</div>
+        <div class="col-span-2">Pengunggah</div>
+        <div class="col-span-2 text-center">Tanggal</div>
+        <div class="col-span-3 text-center">Tag</div>
+    </div>
+
+    <div id="software-list" class="flex-1 grid grid-rows-10 gap-1 overflow-hidden">
+        <div class="flex items-center justify-center h-full text-gray-400 italic">Memuat data...</div>
+    </div>
+
+    <div class="flex-none flex items-center justify-center py-3 px-6 border-t border-gray-100 bg-gray-50/50 -mx-3 mt-1 relative">
+        <div class="flex items-center gap-2">
+            <button id="prev-btn" class="px-3 py-1 border border-gray-200 rounded-lg text-xs font-medium bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors">
+                Prev
+            </button>
+            <div id="page-numbers" class="flex items-center gap-1"></div>
+            <button id="next-btn" class="px-3 py-1 border border-gray-200 rounded-lg text-xs font-medium bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors">
+                Next
+            </button>
+        </div>
+
+        <div class="absolute right-6 text-[11px] text-gray-500">
+            <span id="page-range" class="font-semibold text-gray-700">0-0</span> dari <span id="total-items" class="font-semibold text-gray-700">0</span> item
+        </div>
+    </div>
+
+    <script>
+        // Inisialisasi State
+        const urlParams = new URLSearchParams(window.location.search);
+        const category = urlParams.get('category');
+        const listContainer = document.getElementById('software-list');
+        const searchInput = document.getElementById('search-input');
+        const btnAdd = document.getElementById('btn-add-software');
+        
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let allsoftwares = [];
+
+        // 1. Fungsi Navigasi ke Upload (Sesuai Permintaan)
+        function goToUpload() {
+            // Mempertahankan parameter category jika ada agar sinkron
+            const targetUrl = category 
+                ? `software_upload.html?category=${encodeURIComponent(category)}` 
+                : 'software_upload.html';
+            window.location.href = targetUrl;
+        }
+
+        // Event listener untuk tombol Add
+        btnAdd.addEventListener('click', goToUpload);
+
+        // 2. Data Dummy (Sama seperti sebelumnya)
+        function generateDummyData() {
+            return Array.from({ length: 80 }, (_, i) => {
+                const categories = ["Design", "Development", "Architecture", "Office", "Data Science", "Infrastructure"];
+                const uploaders = ["Admin", "DevTeam", "Engineering", "Finance", "UI/UX", "Data Analyst"];
+                const softwareNames = ["Adobe Photoshop", "Visual Studio Code", "AutoCAD", "MS Excel", "Blender", "Docker", "Figma", "Tableau", "Postman", "Unity"];
+                return {
+                    title: `${softwareNames[i % softwareNames.length]} v.${(i + 1)}.0`,
+                    uploader: uploaders[i % uploaders.length],
+                    date: `${(i % 28) + 1}/01/24`,
+                    tag: categories[i % categories.length],
+                    category: category || "General"
+                };
+            });
+        }
+
+        // 3. Fetch Data
+        async function fetchsoftwares() {
+            let baseData = generateDummyData();
+            try {
+                const response = await fetch('http://localhost:3000/get-softwares');
+                if (response.ok) {
+                    const serverData = await response.json();
+                    const filteredServerData = category ? serverData.filter(c => c.category === category) : serverData;
+                    allsoftwares = [...baseData, ...filteredServerData];
+                } else {
+                    allsoftwares = baseData;
+                }
+            } catch (error) { 
+                console.warn("Server offline, using dummy data.");
+                allsoftwares = baseData;
+            }
+            renderList();
+        }
+
+        // 4. Render Logic
+        function renderList() {
+            const filterText = searchInput.value.toLowerCase();
+            const filtered = allsoftwares.filter(item => 
+                item.title.toLowerCase().includes(filterText) ||
+                item.uploader.toLowerCase().includes(filterText) ||
+                (item.tag && item.tag.toLowerCase().includes(filterText))
+            );
+
+            const totalPages = Math.ceil(filtered.length / itemsPerPage);
+            if (currentPage > totalPages) currentPage = totalPages || 1;
+
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const paginatedItems = filtered.slice(start, end);
+
+            listContainer.innerHTML = "";
+            
+            if (filtered.length === 0) {
+                listContainer.innerHTML = `<div class="flex items-center justify-center h-full text-gray-400 italic">Tidak ada data...</div>`;
+            } else {
+                paginatedItems.forEach((item, index) => {
+                    const globalIndex = start + index + 1;
+                    const bubble = document.createElement('div');
+                    bubble.className = `bubble-item h-full flex items-center bg-white px-5 rounded-lg shadow-sm border border-gray-100 hover:border-blue-300 transition-all group cursor-default`;
+                    bubble.innerHTML = `
+                        <div class="grid grid-cols-12 gap-4 items-center w-full">
+                            <div class="col-span-1 text-xs text-gray-400 font-medium">${globalIndex}</div>
+                            <div class="col-span-4 text-xs font-semibold text-gray-700 group-hover:text-blue-600 truncate">${item.title}</div>
+                            <div class="col-span-2 text-[11px] text-gray-500 truncate">${item.uploader}</div>
+                            <div class="col-span-2 text-center text-[10px] text-gray-400">${item.date}</div>
+                            <div class="col-span-3 flex justify-center">
+                                <span class="px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full text-[9px] font-bold uppercase border border-blue-100">
+                                    ${item.tag || 'No Tag'}
+                                </span>
+                            </div>
+                        </div>`;
+                    listContainer.appendChild(bubble);
+                });
+            }
+
+            updatePaginationUI(filtered.length, totalPages, start, end);
+        }
+
+        // 5. Pagination Logic
+        function updatePaginationUI(totalItems, totalPages, start, end) {
+            document.getElementById('total-items').innerText = totalItems;
+            document.getElementById('page-range').innerText = totalItems ? `${start + 1}-${Math.min(end, totalItems)}` : "0";
+            document.getElementById('prev-btn').disabled = currentPage === 1;
+            document.getElementById('next-btn').disabled = currentPage === totalPages || totalPages === 0;
+            
+            const pageNumbersContainer = document.getElementById('page-numbers');
+            pageNumbersContainer.innerHTML = "";
+
+            const maxVisible = 5; 
+            let startPage, endPage;
+
+            if (totalPages <= maxVisible) {
+                startPage = 1; endPage = totalPages;
+            } else {
+                let offset = Math.floor(maxVisible / 2);
+                if (currentPage <= offset) {
+                    startPage = 1; endPage = maxVisible;
+                } else if (currentPage + offset >= totalPages) {
+                    startPage = totalPages - maxVisible + 1; endPage = totalPages;
+                } else {
+                    startPage = currentPage - offset; endPage = currentPage + offset;
+                }
+            }
+
+            if (startPage > 1) {
+                addPageBtn(1);
+                if (startPage > 2) pageNumbersContainer.appendChild(createEllipsis());
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                addPageBtn(i);
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) pageNumbersContainer.appendChild(createEllipsis());
+                addPageBtn(totalPages);
+            }
+        }
+
+        function addPageBtn(i) {
+            const btn = document.createElement('button');
+            btn.innerText = i;
+            btn.className = `w-7 h-7 rounded-md text-[11px] font-medium transition-all ${i === currentPage ? 'bg-blue-600 text-white shadow-md' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`;
+            btn.onclick = () => { currentPage = i; renderList(); };
+            document.getElementById('page-numbers').appendChild(btn);
+        }
+
+        function createEllipsis() {
+            const span = document.createElement('span');
+            span.innerText = "...";
+            span.className = "px-1 text-gray-400 text-xs";
+            return span;
+        }
+
+        // Event Listeners
+        document.getElementById('prev-btn').onclick = () => { if (currentPage > 1) { currentPage--; renderList(); } };
+        document.getElementById('next-btn').onclick = () => { 
+            const totalPages = Math.ceil(allsoftwares.length / itemsPerPage);
+            if (currentPage < totalPages) { currentPage++; renderList(); } 
+        };
+        searchInput.oninput = () => { currentPage = 1; renderList(); };
+
+        document.addEventListener('DOMContentLoaded', fetchsoftwares);
+    </script>
+</body>
+</html>
