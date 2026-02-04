@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formats Finder | Arkastone</title>
+    <title>Tools Finder | Arkastone</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -17,7 +17,6 @@
             flex-direction: column;
         }
         
-        /* Font adaptif menggunakan clamp */
         html { font-size: 14px; }
         @media (min-width: 768px) { html { font-size: 16px; } }
 
@@ -199,7 +198,6 @@
             .mobile-hidden { display: none !important; }
         }
 
-        /* Spreadsheet Styles */
         .ss-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
         .ss-table th { background: #f8fafc; color: #64748b; font-weight: 700; text-transform: uppercase; padding: 10px; border: 1px solid #e2e8f0; text-align: left; }
         .ss-table td { border: 1px solid #e2e8f0; padding: 0; }
@@ -248,12 +246,9 @@
             <div class="p-6">
                 <div class="flex justify-between items-center mb-5">
                     <h3 class="text-lg font-bold text-gray-900 uppercase tracking-tight">Upload Spreadsheet Links</h3>
-                    <button onclick="addRow()" class="text-blue-600 text-[10px] font-bold uppercase border-2 border-blue-600 px-3 py-1 rounded-full hover:bg-blue-600 hover:text-white transition-all">
-                        + Tambah Baris
-                    </button>
                 </div>
                 
-                <div class="max-h-[50vh] overflow-y-auto rounded-lg border border-gray-200">
+                <div class="max-h-[50vh] overflow-y-auto rounded-lg border border-gray-200 shadow-inner bg-gray-50/30">
                     <table class="ss-table">
                         <thead>
                             <tr>
@@ -264,13 +259,19 @@
                             </tr>
                         </thead>
                         <tbody id="spreadsheetBody">
-                            <!-- Rows injected by JS -->
                         </tbody>
                     </table>
                 </div>
 
+                <!-- Tombol Tambah Baris dipindahkan ke sini -->
+                <div class="flex justify-end mt-4">
+                    <button onclick="addRow()" class="text-blue-600 text-[10px] font-bold uppercase border-2 border-blue-600 px-4 py-1.5 rounded-full hover:bg-blue-600 hover:text-white transition-all shadow-sm active:scale-95">
+                        + Tambah Baris
+                    </button>
+                </div>
+
                 <div id="uploadProgressContainer" class="hidden mt-4">
-                    <div class="text-[10px] font-bold text-blue-600 mb-1 uppercase tracking-wider animate-pulse">Menyimpan data ke database...</div>
+                    <div id="progressMessage" class="text-[10px] font-bold text-blue-600 mb-1 uppercase tracking-wider animate-pulse">Menyimpan data...</div>
                     <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
                         <div class="bg-blue-500 h-full w-full"></div>
                     </div>
@@ -382,10 +383,6 @@
             renderColumn(1, null);
             updateMobileVisibility();
             window.addEventListener('resize', updateMobileVisibility);
-            
-            document.getElementById('previewFrame').onload = function() {
-                document.getElementById('previewLoader').classList.add('hidden');
-            };
         };
 
         async function checkAdminAccess() {
@@ -405,9 +402,7 @@
 
         function updateMobileVisibility() {
             if (window.innerWidth >= 768) {
-                document.getElementById('container-col1').classList.remove('mobile-hidden');
-                document.getElementById('container-col2').classList.remove('mobile-hidden');
-                document.getElementById('container-col3').classList.remove('mobile-hidden');
+                ['col1','col2','col3'].forEach(c => document.getElementById(`container-${c}`).classList.remove('mobile-hidden'));
             } else {
                 for (let i = 1; i <= 3; i++) {
                     const el = document.getElementById(`container-col${i}`);
@@ -447,13 +442,15 @@
                         if (subFolders && subFolders.length > 0) {
                             const subIds = subFolders.map(s => s.id);
                             const { data: files } = await _supabase.from('tools1').select('parent_id').in('parent_id', subIds);
+                            const subToFolderMap = {};
+                            subFolders.forEach(s => subToFolderMap[s.id] = s.parent_id);
                             data.forEach(item => itemStats[item.id] = { count: 0 });
                             if (files) {
-                                const subToFolderMap = {};
-                                subFolders.forEach(s => subToFolderMap[s.id] = s.parent_id);
                                 files.forEach(f => {
                                     const folderId = subToFolderMap[f.parent_id];
-                                    if (folderId && itemStats[folderId]) itemStats[folderId].count++;
+                                    if (folderId && itemStats[folderId]) {
+                                        itemStats[folderId].count++;
+                                    }
                                 });
                             }
                         }
@@ -479,10 +476,12 @@
                     let infoTagsHtml = '';
                     if (colNum < 3) {
                         const stats = itemStats[item.id] || { count: 0 };
-                        infoTagsHtml = `<span class="text-[9px] text-blue-500 font-bold mr-2 bg-blue-50 px-1.5 py-0.5 rounded">${stats.count}</span>`;
+                        infoTagsHtml = `
+                            <span class="text-[9px] text-blue-500 font-bold mr-2 whitespace-nowrap bg-blue-50 px-1.5 py-0.5 rounded">${stats.count}</span>
+                        `;
                     } else if (item.type === 'file') {
-                        const displayExt = item.extension ? item.extension : 'Link';
-                        infoTagsHtml = `<span class="text-[9px] text-indigo-500 font-bold opacity-80 uppercase px-1.5 py-0.5 bg-indigo-50 rounded">${displayExt}</span>`;
+                        const displayExt = item.extension ? item.extension : 'LINK';
+                        infoTagsHtml = `<span class="text-[9px] text-indigo-500 font-bold opacity-80 uppercase px-1.5 py-0.5 bg-indigo-50 rounded w-10 text-center">${displayExt}</span>`;
                     }
 
                     const kebabButton = isAdmin ? `<button onclick="openMenu(event, '${item.id}', ${colNum})" class="menu-btn p-1 hover:bg-black/5 rounded-md ml-2 flex-shrink-0"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg></button>` : '';
@@ -567,167 +566,139 @@
             }
         }
 
-        // Spreadsheet Logic
         function addRow(name = '', url = '') {
             const body = document.getElementById('spreadsheetBody');
             const rowCount = body.children.length + 1;
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td class="ss-no">${rowCount}</td>
-                <td><input type="text" placeholder="Contoh: Document.pdf" class="ss-input ss-name" value="${name}"></td>
-                <td><input type="text" placeholder="https://drive.google.com/..." class="ss-input ss-url" value="${url}"></td>
+                <td><input type="text" placeholder="Contoh: File.exe" class="ss-input ss-name" value="${name}"></td>
+                <td><input type="text" placeholder="https://..." class="ss-input ss-url" value="${url}"></td>
                 <td>
                     <button onclick="this.closest('tr').remove(); reindexRows();" class="btn-ss-del">
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                     </button>
                 </td>
             `;
-            
-            // Tambahkan listener paste ke input
             const inputs = tr.querySelectorAll('.ss-input');
-            inputs.forEach(input => {
-                input.addEventListener('paste', handlePaste);
-            });
-            
+            inputs.forEach(input => input.addEventListener('paste', handlePaste));
             body.appendChild(tr);
+
+            // Logika Scroll Otomatis ke baris baru
+            const scrollContainer = body.parentElement.parentElement;
+            if (scrollContainer) {
+                scrollContainer.scrollTo({
+                    top: scrollContainer.scrollHeight,
+                    behavior: 'smooth'
+                });
+            }
         }
 
         function handlePaste(e) {
             const clipboardData = e.clipboardData || window.clipboardData;
             const pastedText = clipboardData.getData('text');
-            
-            // Cek apakah ini data multi-baris atau multi-kolom (tab separated)
             if (!pastedText.includes('\t') && !pastedText.includes('\n')) return;
-            
             e.preventDefault();
-            
             const rows = pastedText.split(/\r?\n/);
             const startRowElement = e.target.closest('tr');
             const isStartAtName = e.target.classList.contains('ss-name');
             const body = document.getElementById('spreadsheetBody');
             const allTrs = Array.from(body.querySelectorAll('tr'));
             const startRowIndex = allTrs.indexOf(startRowElement);
-            
             rows.forEach((rowStr, rowIndexOffset) => {
                 if (rowStr.trim() === '') return;
-                
                 const columns = rowStr.split('\t');
                 const targetRowIndex = startRowIndex + rowIndexOffset;
-                
-                // Jika baris target belum ada, buat baru
-                if (targetRowIndex >= allTrs.length) {
-                    addRow();
-                }
-                
+                if (targetRowIndex >= allTrs.length) addRow();
                 const targetTr = body.querySelectorAll('tr')[targetRowIndex];
                 const nameInp = targetTr.querySelector('.ss-name');
                 const urlInp = targetTr.querySelector('.ss-url');
-                
                 if (isStartAtName) {
                     if (columns[0] !== undefined) nameInp.value = columns[0].trim();
                     if (columns[1] !== undefined) urlInp.value = columns[1].trim();
                 } else {
-                    // Jika paste dimulai di kolom URL, hanya isi kolom URL
                     if (columns[0] !== undefined) urlInp.value = columns[0].trim();
                 }
             });
-            
             reindexRows();
         }
 
-        function reindexRows() {
-            document.querySelectorAll('.ss-no').forEach((el, i) => el.innerText = i + 1);
+        function reindexRows() { document.querySelectorAll('.ss-no').forEach((el, i) => el.innerText = i + 1); }
+
+        async function saveDraft() {
+            const folderId = activeParentKeys[3];
+            if (!folderId) return;
+            const rows = document.querySelectorAll('#spreadsheetBody tr');
+            const data = Array.from(rows).map(row => ({
+                name: row.querySelector('.ss-name').value,
+                url: row.querySelector('.ss-url').value
+            })).filter(item => item.name || item.url);
+            if (data.length === 0) return;
+            try {
+                await _supabase.from('tools1_data').upsert({ folder_id: folderId, content: data, updated_at: new Date() }, { onConflict: 'folder_id' });
+            } catch (err) { console.error("Draft gagal disimpan:", err); }
         }
 
         async function handleSpreadsheetUpload() {
             if (!isAdmin) return;
+            const folderId = activeParentKeys[3];
             const rows = document.querySelectorAll('#spreadsheetBody tr');
             const payload = [];
-
             rows.forEach(row => {
                 const name = row.querySelector('.ss-name').value.trim();
                 const url = row.querySelector('.ss-url').value.trim();
-                
                 if (name && url) {
                     let driveId = null;
                     const idMatch = url.match(/[-\w]{25,}/);
                     if (idMatch) driveId = idMatch[0];
-
                     let ext = 'LINK';
-                    if (name.includes('.')) {
-                        ext = name.split('.').pop().toUpperCase();
-                    }
-
-                    payload.push({
-                        name: name,
-                        type: 'file',
-                        parent_id: activeParentKeys[3],
-                        file_url: url,
-                        drive_id: driveId,
-                        extension: ext
-                    });
+                    if (name.includes('.')) ext = name.split('.').pop().toUpperCase();
+                    payload.push({ name: name, type: 'file', parent_id: folderId, file_url: url, drive_id: driveId, extension: ext });
                 }
             });
-
             if (payload.length === 0) return;
-
             isUploading = true;
             document.getElementById('uploadProgressContainer').classList.remove('hidden');
             document.getElementById('btnExecuteUpload').disabled = true;
-
             try {
+                await _supabase.from('tools1').delete().eq('parent_id', folderId).eq('type', 'file');
                 const { error } = await _supabase.from('tools1').insert(payload);
                 if (error) throw error;
-
-                closeAddModal();
-                await renderColumn(3, activeParentKeys[3]);
+                await _supabase.from('tools1_data').delete().eq('folder_id', folderId);
+                closeAddModal(true);
+                await renderColumn(3, folderId);
                 await renderColumn(2, activeParentKeys[2]);
-            } catch (err) {
-                alert("Simpan Gagal: " + err.message);
-            } finally {
-                isUploading = false;
-                document.getElementById('btnExecuteUpload').disabled = false;
+            } catch (err) { alert("Gagal: " + err.message); }
+            finally { 
+                isUploading = false; 
+                document.getElementById('btnExecuteUpload').disabled = false; 
                 document.getElementById('uploadProgressContainer').classList.add('hidden');
             }
         }
 
         function openPreviewModal(url, name) {
             const frame = document.getElementById('previewFrame');
-            const img = document.getElementById('previewImage');
             const title = document.getElementById('previewTitle');
             const loader = document.getElementById('previewLoader');
             title.innerText = name;
-
             let driveId = '';
             const idMatch = url.match(/[-\w]{25,}/);
             if (idMatch) driveId = idMatch[0];
-
             loader.classList.remove('hidden');
-            
-            if (driveId) {
-                frame.src = `https://drive.google.com/file/d/${driveId}/preview`;
-                frame.classList.remove('hidden'); 
-                img.classList.add('hidden');
-            } else {
-                frame.src = url;
-                frame.classList.remove('hidden'); 
-                img.classList.add('hidden');
-            }
-
+            frame.src = driveId ? `https://drive.google.com/file/d/${driveId}/preview` : url;
+            frame.classList.remove('hidden');
             document.getElementById('previewModalOverlay').style.display = 'flex';
             setTimeout(() => { 
                 document.getElementById('previewModalCard').classList.add('show'); 
-                setTimeout(() => loader.classList.add('hidden'), 5000); 
+                setTimeout(() => loader.classList.add('hidden'), 4000); 
             }, 10);
         }
 
         function closePreviewModal() {
-            const frame = document.getElementById('previewFrame');
             document.getElementById('previewModalCard').classList.remove('show');
             setTimeout(() => { 
                 document.getElementById('previewModalOverlay').style.display = 'none'; 
-                frame.src = ''; 
-                frame.classList.add('hidden'); 
+                document.getElementById('previewFrame').src = ''; 
             }, 200);
         }
 
@@ -744,65 +715,46 @@
                 input.onblur = async () => {
                     const newName = input.value.trim();
                     if (newName && newName !== oldName) {
-                        let updateData = { name: newName };
-                        if (newName.includes('.')) {
-                            updateData.extension = newName.split('.').pop().toUpperCase();
-                        }
-                        
-                        await _supabase.from('tools1').update(updateData).eq('id', currentActiveItem);
+                        await _supabase.from('tools1').update({ name: newName }).eq('id', currentActiveItem);
                         textSpan.innerText = newName;
                         activeNames[currentActiveColumn] = newName;
                         updateBreadcrumb();
-                        renderColumn(currentActiveColumn, activeParentKeys[currentActiveColumn]);
                     }
                     input.remove(); textSpan.classList.remove('hidden');
                 };
                 input.onkeydown = (e) => { if(e.key==='Enter') input.blur(); };
             } else if (action === 'delete') openDeleteModal();
-            else if (action === 'download') { 
-                const url = currentActiveElement.getAttribute('data-url'); 
-                if (url) window.open(url, '_blank'); 
-            }
+            else if (action === 'download') window.open(currentActiveElement.getAttribute('data-url'), '_blank');
             closeMenu();
         }
 
         async function executeDeletion() {
             if (!isAdmin || !currentActiveItem) return;
             const col = currentActiveColumn;
-            const type = currentActiveElement.getAttribute('data-type');
-            
             try {
-                if (type === 'folder') {
+                if (currentActiveElement.getAttribute('data-type') === 'folder') {
                     if (col === 1) {
-                        const { data: subs } = await _supabase.from('tools1').select('id').eq('parent_id', currentActiveItem);
-                        if (subs && subs.length > 0) {
+                        const { data: subs = [] } = await _supabase.from('tools1').select('id').eq('parent_id', currentActiveItem);
+                        if (subs?.length > 0) {
                             const subIds = subs.map(s => s.id);
                             await _supabase.from('tools1').delete().in('parent_id', subIds); 
                             await _supabase.from('tools1').delete().in('id', subIds); 
                         }
-                    } else if (col === 2) {
-                        await _supabase.from('tools1').delete().eq('parent_id', currentActiveItem); 
-                    }
+                    } else if (col === 2) await _supabase.from('tools1').delete().eq('parent_id', currentActiveItem); 
                 }
-
-                const { error } = await _supabase.from('tools1').delete().eq('id', currentActiveItem);
-                if (error) throw error;
-
+                await _supabase.from('tools1').delete().eq('id', currentActiveItem);
                 closeDeleteModal();
                 renderColumn(col, activeParentKeys[col]);
                 if (col >= 2) renderColumn(1, null);
-                if (col === 3) renderColumn(2, activeParentKeys[2]);
-                
             } catch (err) { alert("Hapus gagal: " + err.message); }
         }
 
         function openMenu(e, itemId, colNum) {
             e.stopPropagation();
             currentActiveItem = itemId; currentActiveElement = e.currentTarget.closest('.column-entry'); currentActiveColumn = colNum;
-            const isFile = currentActiveElement.getAttribute('data-type') === 'file';
-            document.getElementById('menuDownload').classList.toggle('hidden', !isFile);
             const rect = e.currentTarget.getBoundingClientRect();
             const menu = document.getElementById('contextMenu');
+            document.getElementById('menuDownload').classList.toggle('hidden', currentActiveElement.getAttribute('data-type') !== 'file');
             menu.style.display = 'block'; menu.style.top = `${rect.bottom + 5}px`; menu.style.left = `${rect.left - 120}px`;
         }
 
@@ -810,22 +762,28 @@
         function openDeleteModal() { document.getElementById('deleteModalOverlay').style.display = 'flex'; setTimeout(() => document.getElementById('deleteModalCard').classList.add('show'), 10); }
         function closeDeleteModal() { document.getElementById('deleteModalCard').classList.remove('show'); setTimeout(() => document.getElementById('deleteModalOverlay').style.display = 'none', 200); }
         
-        function openAddModal() { 
+        async function openAddModal() { 
+            const folderId = activeParentKeys[3];
             document.getElementById('spreadsheetBody').innerHTML = '';
-            // Mulai dengan 5 baris kosong
-            for(let i=0; i<5; i++) addRow();
-            document.getElementById('uploadProgressContainer').classList.add('hidden');
+            document.getElementById('uploadProgressContainer').classList.remove('hidden');
             document.getElementById('addModalOverlay').style.display = 'flex'; 
-            setTimeout(() => document.getElementById('addModalCard').classList.add('show'), 10); 
+            setTimeout(() => document.getElementById('addModalCard').classList.add('show'), 10);
+            try {
+                const { data: draft } = await _supabase.from('tools1_data').select('content').eq('folder_id', folderId).single();
+                if (draft?.content?.length) draft.content.forEach(item => addRow(item.name, item.url));
+                else {
+                    const { data: committed = [] } = await _supabase.from('tools1').select('name, file_url').eq('parent_id', folderId).eq('type', 'file').order('name', { ascending: true });
+                    if (committed?.length) committed.forEach(item => addRow(item.name, item.file_url));
+                    else for(let i=0; i<5; i++) addRow();
+                }
+            } catch (err) { for(let i=0; i<5; i++) addRow(); }
+            finally { document.getElementById('uploadProgressContainer').classList.add('hidden'); }
         }
         
-        function closeAddModal() { 
-            isUploading = false; 
+        async function closeAddModal(isSuccess = false) { 
+            if (!isSuccess) await saveDraft();
             document.getElementById('addModalCard').classList.remove('show'); 
-            setTimeout(() => { 
-                document.getElementById('addModalOverlay').style.display = 'none'; 
-                document.getElementById('btnExecuteUpload').disabled = false; 
-            }, 200); 
+            setTimeout(() => document.getElementById('addModalOverlay').style.display = 'none', 200); 
         }
         
         function updateBreadcrumb() {
