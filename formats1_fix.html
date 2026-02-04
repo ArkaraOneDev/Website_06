@@ -17,6 +17,7 @@
             flex-direction: column;
         }
         
+        /* Font adaptif menggunakan clamp */
         html { font-size: 14px; }
         @media (min-width: 768px) { html { font-size: 16px; } }
 
@@ -63,11 +64,11 @@
             margin: 4px 8px;
             border-radius: 10px;
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.85rem; /* Ukuran font lebih proporsional */
             background: white;
             border: 1px solid #f1f5f9;
             box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-            white-space: nowrap;
+            white-space: nowrap; /* Mencegah teks menjadi 2 baris */
         }
         .column-entry:hover:not(.selected-item) { 
             border-color: #bfdbfe;
@@ -194,19 +195,10 @@
         }
         .breadcrumb-separator { margin: 0 10px; color: #cbd5e1; font-weight: 300; }
 
+        /* Mobile specific column visibility */
         @media (max-width: 767px) {
             .mobile-hidden { display: none !important; }
         }
-
-        /* Spreadsheet styles */
-        .ss-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
-        .ss-table th { background: #f8fafc; color: #64748b; font-weight: 700; text-transform: uppercase; padding: 10px; border: 1px solid #e2e8f0; text-align: left; }
-        .ss-table td { border: 1px solid #e2e8f0; padding: 0; }
-        .ss-input { width: 100%; border: none; padding: 10px; outline: none; background: transparent; }
-        .ss-input:focus { background: #f1f5f9; }
-        .ss-no { width: 40px; text-align: center; color: #94a3b8; font-weight: 600; background: #f8fafc; }
-        .btn-ss-del { color: #ef4444; padding: 8px; display: flex; align-items: center; justify-content: center; width: 40px; }
-        .btn-ss-del:hover { background: #fef2f2; }
     </style>
 </head>
 <body class="p-3 md:p-5" onclick="closeMenu()">
@@ -227,12 +219,12 @@
         </div>
     </div>
 
-    <!-- Delete Modal -->
+    <!-- Modals -->
     <div id="deleteModalOverlay" class="modal-overlay" onclick="closeDeleteModal()">
         <div class="modal-card" id="deleteModalCard" onclick="event.stopPropagation()">
             <div class="p-6">
                 <h3 class="text-lg font-bold text-gray-900 mb-2">Hapus Item?</h3>
-                <p class="text-sm text-gray-500">Aksi ini akan menghapus data di sistem secara permanen.</p>
+                <p class="text-sm text-gray-500">Aksi ini akan menghapus data di sistem dan file di Google Drive (Trash).</p>
             </div>
             <div class="bg-gray-50 px-6 py-4 flex flex-row-reverse gap-3">
                 <button id="btnConfirmDelete" onclick="executeDeletion()" class="bg-red-600 text-white text-sm font-semibold px-5 py-2.5 rounded-lg">Hapus</button>
@@ -241,116 +233,28 @@
         </div>
     </div>
 
-    <!-- Folder Manage Modal (Column 1) -->
-    <div id="folderModalOverlay" class="modal-overlay" onclick="closeFolderModal()">
-        <div class="modal-card !max-w-2xl" id="folderModalCard" onclick="event.stopPropagation()">
-            <div class="p-6">
-                <h3 class="text-lg font-bold text-gray-900 mb-5 tracking-tight">Manage Folders</h3>
-                <div class="max-h-[50vh] overflow-y-auto rounded-lg border border-gray-200 shadow-inner bg-gray-50/30">
-                    <table class="ss-table">
-                        <thead>
-                            <tr>
-                                <th class="w-10 text-center">No</th>
-                                <th>Nama Folder</th>
-                                <th class="w-10"></th>
-                            </tr>
-                        </thead>
-                        <tbody id="folderBody"></tbody>
-                    </table>
-                </div>
-                <div class="flex justify-end mt-4">
-                    <button onclick="addFolderRow()" class="text-blue-600 text-[10px] font-bold uppercase border-2 border-blue-600 px-4 py-1.5 rounded-full hover:bg-blue-600 hover:text-white transition-all shadow-sm active:scale-95">
-                        + Tambah Baris
-                    </button>
-                </div>
-                <div id="folderProgressContainer" class="hidden mt-4">
-                    <div class="text-[10px] font-bold text-blue-600 mb-1 uppercase tracking-wider animate-pulse">Memproses data...</div>
-                    <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-                        <div class="bg-blue-500 h-full w-full"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-gray-50 px-6 py-4 flex flex-row-reverse gap-3">
-                <button id="btnExecuteFolder" onclick="handleFolderBulkUpload()" class="bg-blue-600 text-white text-sm font-semibold px-8 py-2.5 rounded-xl shadow-lg shadow-blue-200 active:scale-95 transition-all">Simpan Perubahan</button>
-                <button onclick="closeFolderModal()" class="bg-white border border-gray-300 text-gray-700 text-sm font-semibold px-5 py-2.5 rounded-xl">Batal</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Subfolder Manage Modal (Column 2) -->
-    <div id="subfolderModalOverlay" class="modal-overlay" onclick="closeSubfolderModal()">
-        <div class="modal-card !max-w-2xl" id="subfolderModalCard" onclick="event.stopPropagation()">
-            <div class="p-6">
-                <h3 class="text-lg font-bold text-gray-900 mb-5 tracking-tight">Manage Subfolders</h3>
-                <div class="max-h-[50vh] overflow-y-auto rounded-lg border border-gray-200 shadow-inner bg-gray-50/30">
-                    <table class="ss-table">
-                        <thead>
-                            <tr>
-                                <th class="w-10 text-center">No</th>
-                                <th>Nama Subfolder</th>
-                                <th class="w-10"></th>
-                            </tr>
-                        </thead>
-                        <tbody id="subfolderBody"></tbody>
-                    </table>
-                </div>
-                <div class="flex justify-end mt-4">
-                    <button onclick="addSubfolderRow()" class="text-blue-600 text-[10px] font-bold uppercase border-2 border-blue-600 px-4 py-1.5 rounded-full hover:bg-blue-600 hover:text-white transition-all shadow-sm active:scale-95">
-                        + Tambah Baris
-                    </button>
-                </div>
-                <div id="subfolderProgressContainer" class="hidden mt-4">
-                    <div class="text-[10px] font-bold text-blue-600 mb-1 uppercase tracking-wider animate-pulse">Memproses data...</div>
-                    <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-                        <div class="bg-blue-500 h-full w-full"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-gray-50 px-6 py-4 flex flex-row-reverse gap-3">
-                <button id="btnExecuteSubfolder" onclick="handleSubfolderBulkUpload()" class="bg-blue-600 text-white text-sm font-semibold px-8 py-2.5 rounded-xl shadow-lg shadow-blue-200 active:scale-95 transition-all">Simpan Perubahan</button>
-                <button onclick="closeSubfolderModal()" class="bg-white border border-gray-300 text-gray-700 text-sm font-semibold px-5 py-2.5 rounded-xl">Batal</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Files Manage Modal (Column 3) -->
     <div id="addModalOverlay" class="modal-overlay" onclick="closeAddModal()">
-        <div class="modal-card !max-w-4xl" id="addModalCard" onclick="event.stopPropagation()">
+        <div class="modal-card" id="addModalCard" onclick="event.stopPropagation()">
             <div class="p-6">
-                <h3 class="text-lg font-bold text-gray-900 mb-5 tracking-tight">Manage Files</h3>
-                <div class="max-h-[50vh] overflow-y-auto rounded-lg border border-gray-200 shadow-inner bg-gray-50/30">
-                    <table class="ss-table">
-                        <thead>
-                            <tr>
-                                <th class="w-10 text-center">No</th>
-                                <th>Nama File</th>
-                                <th>URL Drive / Link</th>
-                                <th class="w-10"></th>
-                            </tr>
-                        </thead>
-                        <tbody id="spreadsheetBody"></tbody>
-                    </table>
-                </div>
-                <div class="flex justify-end mt-4">
-                    <button onclick="addRow()" class="text-blue-600 text-[10px] font-bold uppercase border-2 border-blue-600 px-4 py-1.5 rounded-full hover:bg-blue-600 hover:text-white transition-all shadow-sm active:scale-95">
-                        + Tambah Baris
-                    </button>
-                </div>
-                <div id="uploadProgressContainer" class="hidden mt-4">
-                    <div class="text-[10px] font-bold text-blue-600 mb-1 uppercase tracking-wider animate-pulse">Menyimpan data...</div>
-                    <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-                        <div class="bg-blue-500 h-full w-full"></div>
+                <h3 class="text-lg font-bold text-gray-900 mb-5">Upload File ke Drive</h3>
+                <div class="space-y-4">
+                    <input type="file" id="inputFileUpload" class="w-full text-sm text-gray-500 border border-gray-200 rounded-lg p-2">
+                    <input type="text" id="inputFileName" placeholder="Nama tampilan file..." class="w-full px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500">
+                    <div id="uploadProgressContainer" class="hidden">
+                        <div class="text-[10px] font-bold text-blue-600 mb-1 uppercase tracking-wider animate-pulse">Mengirim ke Drive...</div>
+                        <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                            <div class="bg-blue-500 h-full w-full"></div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="bg-gray-50 px-6 py-4 flex flex-row-reverse gap-3">
-                <button id="btnExecuteUpload" onclick="handleSpreadsheetUpload()" class="bg-blue-600 text-white text-sm font-semibold px-8 py-2.5 rounded-xl shadow-lg shadow-blue-200 active:scale-95 transition-all">Simpan Perubahan</button>
-                <button onclick="closeAddModal()" class="bg-white border border-gray-300 text-gray-700 text-sm font-semibold px-5 py-2.5 rounded-xl">Batal</button>
+                <button id="btnExecuteUpload" onclick="handleUpload()" class="bg-blue-600 text-white text-sm font-semibold px-6 py-2.5 rounded-lg">Upload</button>
+                <button onclick="closeAddModal()" class="bg-white border border-gray-300 text-gray-700 text-sm font-semibold px-5 py-2.5 rounded-lg">Batal</button>
             </div>
         </div>
     </div>
 
-    <!-- Preview Modal -->
     <div id="previewModalOverlay" class="modal-overlay" onclick="closePreviewModal()">
         <div class="modal-card !max-w-5xl w-11/12 h-[85vh] flex flex-col" id="previewModalCard" onclick="event.stopPropagation()">
             <div class="p-4 border-b flex justify-between items-center bg-white">
@@ -377,7 +281,7 @@
         </div>
     </div>
 
-    <!-- Breadcrumb -->
+    <!-- Breadcrumb (Hidden on Mobile) -->
     <div class="breadcrumb-container hidden md:flex">
         <div class="breadcrumb-item"><span>Development</span></div>
         <span class="breadcrumb-separator">/</span>
@@ -387,17 +291,21 @@
 
     <!-- Finder Columns -->
     <div class="flex-1 flex flex-col md:flex-row gap-4 overflow-hidden">
+        <!-- Col 1: Folders -->
         <div id="container-col1" class="flex-1 flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm animate-column delay-1">
-            <div class="col-header">Folders</div>
+            <div class="col-header">
+                Folders
+            </div>
             <div id="col1" onclick="deselectItem(1)" class="finder-col-content overflow-y-auto py-3 flex-1"></div>
             <div class="col-footer" id="footerCol1">
                 <button onclick="addItem(1)" class="btn-add">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    Manage Folders
+                    Add Folder
                 </button>
             </div>
         </div>
 
+        <!-- Col 2: Sub Folders -->
         <div id="container-col2" class="flex-1 flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm animate-column delay-2 mobile-hidden">
             <div class="col-header">
                 <button onclick="navigateMobile(1)" class="md:hidden p-1 -ml-1 hover:bg-gray-200 rounded-lg">
@@ -409,11 +317,12 @@
             <div class="col-footer" id="footerCol2">
                 <button id="btnAddCol2" onclick="addItem(2)" class="btn-add" disabled>
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    Manage Subfolders
+                    Add Sub
                 </button>
             </div>
         </div>
 
+        <!-- Col 3: Files -->
         <div id="container-col3" class="flex-1 flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm animate-column delay-3 mobile-hidden">
             <div class="col-header">
                 <button onclick="navigateMobile(2)" class="md:hidden p-1 -ml-1 hover:bg-gray-200 rounded-lg">
@@ -425,16 +334,18 @@
             <div class="col-footer" id="footerCol3">
                 <button id="btnAddCol3" onclick="addItem(3)" class="btn-add" disabled>
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    Manage Files
+                    Add File
                 </button>
             </div>
         </div>
     </div>
 
     <script>
+        // --- LOGIC BACKEND ---
         const SUPABASE_URL = 'https://dqfithvufqewtchicrgw.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_wp6piNTxSLOXT-ezmfnhaQ_cFKP13k7';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbx8Swt5whC1XspyA3_IcoHRS-abGjv1iANYDdp7JLyhk_QBkdNZdV9jjq1oYH0zt2z4PQ/exec';
 
         let activeParentKeys = { 1: null, 2: null, 3: null };
         let activeNames = { 1: null, 2: null, 3: null };
@@ -442,6 +353,9 @@
         let currentActiveElement = null;
         let currentActiveColumn = null; 
         let isAdmin = false;
+        let uploadAbortController = null;
+        let isUploading = false;
+        let lastDriveId = null;
         let currentMobileCol = 1;
 
         window.onload = async () => {
@@ -468,7 +382,9 @@
 
         function updateMobileVisibility() {
             if (window.innerWidth >= 768) {
-                ['col1','col2','col3'].forEach(c => document.getElementById(`container-${c}`).classList.remove('mobile-hidden'));
+                document.getElementById('container-col1').classList.remove('mobile-hidden');
+                document.getElementById('container-col2').classList.remove('mobile-hidden');
+                document.getElementById('container-col3').classList.remove('mobile-hidden');
             } else {
                 for (let i = 1; i <= 3; i++) {
                     const el = document.getElementById(`container-col${i}`);
@@ -561,9 +477,12 @@
                     let infoTagsHtml = '';
                     if (colNum < 3) {
                         const stats = itemStats[item.id] || { count: 0, totalSize: 0 };
-                        infoTagsHtml = `<span class="text-[9px] text-blue-500 font-bold mr-2 bg-blue-50 px-1.5 py-0.5 rounded">${stats.count}</span><span class="text-[9px] text-gray-400 font-medium uppercase w-12 text-right">${formatBytes(stats.totalSize)}</span>`;
+                        infoTagsHtml = `
+                            <span class="text-[9px] text-blue-500 font-bold mr-2 whitespace-nowrap bg-blue-50 px-1.5 py-0.5 rounded">${stats.count}</span>
+                            <span class="text-[9px] text-gray-400 font-medium uppercase w-12 text-right">${formatBytes(stats.totalSize)}</span>
+                        `;
                     } else if (item.type === 'file') {
-                        const ext = (item.extension || 'LINK').toUpperCase();
+                        const ext = (item.extension || 'FILE').toUpperCase();
                         infoTagsHtml = `<span class="text-[9px] text-indigo-500 font-bold opacity-80 w-10 text-left">${ext}</span>`;
                         if (item.size) infoTagsHtml += `<span class="text-[9px] text-gray-400 font-medium uppercase w-12 text-right">${item.size}</span>`;
                     }
@@ -613,7 +532,14 @@
                 if (window.innerWidth < 768) navigateMobile(3);
             } else if (col === 3) {
                 const url = el.getAttribute('data-url');
-                if (url) openPreviewModal(url, fullName);
+                const type = el.getAttribute('data-type');
+                if (type === 'file' && url) {
+                    const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp', 'bmp'];
+                    const lowerExt = (ext || '').toLowerCase();
+                    const isPreviewable = lowerExt === 'pdf' || imageExts.includes(lowerExt);
+                    if (isPreviewable) openPreviewModal(url, fullName);
+                    else window.open(url, '_blank');
+                }
             }
             updateBreadcrumb();
         }
@@ -635,237 +561,88 @@
             updateBreadcrumb();
         }
 
-        function addItem(colNum) {
+        async function addItem(colNum) {
             if (!isAdmin) return;
-            if (colNum === 1) openFolderModal();
-            else if (colNum === 2) openSubfolderModal();
-            else if (colNum === 3) openAddModal();
+            if (colNum === 3) { openAddModal(); return; }
+            const parentId = colNum === 2 ? activeParentKeys[2] : (colNum === 3 ? activeParentKeys[3] : null);
+            const name = colNum === 1 ? 'New Folder' : 'New Subfolder';
+            const { data, error } = await _supabase.from('formats1').insert({ name: name, type: 'folder', parent_id: parentId }).select().single();
+            if (!error && data) {
+                await renderColumn(colNum, parentId);
+                const container = document.getElementById('col' + colNum);
+                const newEl = container.querySelector(`[data-id="${data.id}"]`);
+                if (newEl) { currentActiveItem = data.id; currentActiveElement = newEl; currentActiveColumn = colNum; handleAction('rename'); }
+            }
         }
 
-        // --- MANAGE FOLDERS (COLUMN 1) ---
-        function addFolderRow(name = '') {
-            const body = document.getElementById('folderBody');
-            const rowCount = body.children.length + 1;
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td class="ss-no">${rowCount}</td>
-                <td><input type="text" placeholder="Nama Folder..." class="ss-input folder-name" value="${name}"></td>
-                <td><button onclick="this.closest('tr').remove(); reindexFolderRows();" class="btn-ss-del"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></button></td>
-            `;
-            const input = tr.querySelector('.folder-name');
-            input.addEventListener('paste', handleFolderPaste);
-            body.appendChild(tr);
-        }
-
-        function handleFolderPaste(e) {
-            const clipboardData = e.clipboardData || window.clipboardData;
-            const pastedText = clipboardData.getData('text');
-            if (!pastedText.includes('\n')) return;
-            e.preventDefault();
-            pastedText.split(/\r?\n/).filter(r => r.trim()).forEach(rowStr => addFolderRow(rowStr));
-            reindexFolderRows();
-        }
-
-        function reindexFolderRows() { document.querySelectorAll('#folderBody .ss-no').forEach((el, i) => el.innerText = i + 1); }
-
-        async function openFolderModal() {
-            document.getElementById('folderBody').innerHTML = '';
-            document.getElementById('folderProgressContainer').classList.remove('hidden');
-            document.getElementById('folderModalOverlay').style.display = 'flex';
-            setTimeout(() => document.getElementById('folderModalCard').classList.add('show'), 10);
-            try {
-                const { data } = await _supabase.from('formats1').select('name').is('parent_id', null).eq('type', 'folder').order('name', { ascending: true });
-                if (data && data.length > 0) data.forEach(item => addFolderRow(item.name));
-                else for(let i=0; i<5; i++) addFolderRow();
-            } catch (err) { for(let i=0; i<5; i++) addFolderRow(); }
-            finally { document.getElementById('folderProgressContainer').classList.add('hidden'); }
-        }
-
-        function closeFolderModal() { 
-            document.getElementById('folderModalCard').classList.remove('show');
-            setTimeout(() => document.getElementById('folderModalOverlay').style.display = 'none', 200);
-        }
-
-        async function handleFolderBulkUpload() {
+        async function handleUpload() {
             if (!isAdmin) return;
-            const rows = document.querySelectorAll('#folderBody tr');
-            const payload = [];
-            rows.forEach(row => {
-                const name = row.querySelector('.folder-name').value.trim();
-                if (name) payload.push({ name: name, type: 'folder', parent_id: null });
-            });
-            document.getElementById('folderProgressContainer').classList.remove('hidden');
-            document.getElementById('btnExecuteFolder').disabled = true;
-            try {
-                await _supabase.from('formats1').delete().is('parent_id', null).eq('type', 'folder');
-                if (payload.length > 0) await _supabase.from('formats1').insert(payload);
-                closeFolderModal();
-                renderColumn(1, null);
-            } catch (err) { alert("Gagal: " + err.message); }
-            finally { document.getElementById('btnExecuteFolder').disabled = false; document.getElementById('folderProgressContainer').classList.add('hidden'); }
-        }
-
-        // --- MANAGE SUBFOLDERS (COLUMN 2) ---
-        function addSubfolderRow(name = '') {
-            const body = document.getElementById('subfolderBody');
-            const rowCount = body.children.length + 1;
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td class="ss-no">${rowCount}</td>
-                <td><input type="text" placeholder="Nama Subfolder..." class="ss-input sub-name" value="${name}"></td>
-                <td><button onclick="this.closest('tr').remove(); reindexSubfolderRows();" class="btn-ss-del"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></button></td>
-            `;
-            const input = tr.querySelector('.sub-name');
-            input.addEventListener('paste', handleSubfolderPaste);
-            body.appendChild(tr);
-        }
-
-        function handleSubfolderPaste(e) {
-            const clipboardData = e.clipboardData || window.clipboardData;
-            const pastedText = clipboardData.getData('text');
-            if (!pastedText.includes('\n')) return;
-            e.preventDefault();
-            pastedText.split(/\r?\n/).filter(r => r.trim()).forEach(rowStr => addSubfolderRow(rowStr));
-            reindexSubfolderRows();
-        }
-
-        function reindexSubfolderRows() { document.querySelectorAll('#subfolderBody .ss-no').forEach((el, i) => el.innerText = i + 1); }
-
-        async function openSubfolderModal() {
-            const parentId = activeParentKeys[2];
-            if (!parentId) return;
-            document.getElementById('subfolderBody').innerHTML = '';
-            document.getElementById('subfolderProgressContainer').classList.remove('hidden');
-            document.getElementById('subfolderModalOverlay').style.display = 'flex';
-            setTimeout(() => document.getElementById('subfolderModalCard').classList.add('show'), 10);
-            try {
-                const { data } = await _supabase.from('formats1').select('name').eq('parent_id', parentId).eq('type', 'folder').order('name', { ascending: true });
-                if (data && data.length > 0) data.forEach(item => addSubfolderRow(item.name));
-                else for(let i=0; i<5; i++) addSubfolderRow();
-            } catch (err) { for(let i=0; i<5; i++) addSubfolderRow(); }
-            finally { document.getElementById('subfolderProgressContainer').classList.add('hidden'); }
-        }
-
-        function closeSubfolderModal() { 
-            document.getElementById('subfolderModalCard').classList.remove('show');
-            setTimeout(() => document.getElementById('subfolderModalOverlay').style.display = 'none', 200);
-        }
-
-        async function handleSubfolderBulkUpload() {
-            if (!isAdmin) return;
-            const parentId = activeParentKeys[2];
-            const rows = document.querySelectorAll('#subfolderBody tr');
-            const payload = [];
-            rows.forEach(row => {
-                const name = row.querySelector('.sub-name').value.trim();
-                if (name) payload.push({ name: name, type: 'folder', parent_id: parentId });
-            });
-            document.getElementById('subfolderProgressContainer').classList.remove('hidden');
-            document.getElementById('btnExecuteSubfolder').disabled = true;
-            try {
-                await _supabase.from('formats1').delete().eq('parent_id', parentId).eq('type', 'folder');
-                if (payload.length > 0) await _supabase.from('formats1').insert(payload);
-                closeSubfolderModal();
-                renderColumn(2, parentId);
-            } catch (err) { alert("Gagal: " + err.message); }
-            finally { document.getElementById('btnExecuteSubfolder').disabled = false; document.getElementById('subfolderProgressContainer').classList.add('hidden'); }
-        }
-
-        // --- MANAGE FILES (COLUMN 3) ---
-        function addRow(name = '', url = '') {
-            const body = document.getElementById('spreadsheetBody');
-            const rowCount = body.children.length + 1;
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td class="ss-no">${rowCount}</td>
-                <td><input type="text" placeholder="Nama File..." class="ss-input ss-name" value="${name}"></td>
-                <td><input type="text" placeholder="URL Drive..." class="ss-input ss-url" value="${url}"></td>
-                <td><button onclick="this.closest('tr').remove(); reindexRows();" class="btn-ss-del"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></button></td>
-            `;
-            tr.querySelectorAll('.ss-input').forEach(input => input.addEventListener('paste', handlePaste));
-            body.appendChild(tr);
-        }
-
-        function handlePaste(e) {
-            const clipboardData = e.clipboardData || window.clipboardData;
-            const pastedText = clipboardData.getData('text');
-            if (!pastedText.includes('\t') && !pastedText.includes('\n')) return;
-            e.preventDefault();
-            const rowsData = pastedText.split(/\r?\n/).filter(r => r.trim());
-            const startRowElement = e.target.closest('tr');
-            const body = document.getElementById('spreadsheetBody');
-            const startRowIndex = Array.from(body.querySelectorAll('tr')).indexOf(startRowElement);
-            const isStartAtName = e.target.classList.contains('ss-name');
-            rowsData.forEach((rowStr, indexOffset) => {
-                const columns = rowStr.split('\t');
-                const targetRowIndex = startRowIndex + indexOffset;
-                const allTrs = body.querySelectorAll('tr');
-                if (targetRowIndex >= allTrs.length) {
-                    if (isStartAtName) addRow(columns[0] || '', columns[1] || '');
-                    else addRow('', columns[0] || '');
-                } else {
-                    const targetTr = allTrs[targetRowIndex];
-                    if (isStartAtName) {
-                        if (columns[0] !== undefined) targetTr.querySelector('.ss-name').value = columns[0].trim();
-                        if (columns[1] !== undefined) targetTr.querySelector('.ss-url').value = columns[1].trim();
-                    } else {
-                        if (columns[0] !== undefined) targetTr.querySelector('.ss-url').value = columns[0].trim();
-                    }
-                }
-            });
-            reindexRows();
-        }
-
-        function reindexRows() { document.querySelectorAll('#spreadsheetBody .ss-no').forEach((el, i) => el.innerText = i + 1); }
-
-        async function openAddModal() {
-            const parentId = activeParentKeys[3];
-            if (!parentId) return;
-            document.getElementById('spreadsheetBody').innerHTML = '';
-            document.getElementById('uploadProgressContainer').classList.remove('hidden');
-            document.getElementById('addModalOverlay').style.display = 'flex';
-            setTimeout(() => document.getElementById('addModalCard').classList.add('show'), 10);
-            try {
-                const { data } = await _supabase.from('formats1').select('name, file_url').eq('parent_id', parentId).eq('type', 'file').order('name', { ascending: true });
-                if (data && data.length > 0) data.forEach(item => addRow(item.name, item.file_url));
-                else for(let i=0; i<5; i++) addRow();
-            } catch (err) { for(let i=0; i<5; i++) addRow(); }
-            finally { document.getElementById('uploadProgressContainer').classList.add('hidden'); }
-        }
-
-        function closeAddModal() { 
-            document.getElementById('addModalCard').classList.remove('show');
-            setTimeout(() => document.getElementById('addModalOverlay').style.display = 'none', 200);
-        }
-
-        async function handleSpreadsheetUpload() {
-            if (!isAdmin) return;
-            const parentId = activeParentKeys[3];
-            const rows = document.querySelectorAll('#spreadsheetBody tr');
-            const payload = [];
-            rows.forEach(row => {
-                const name = row.querySelector('.ss-name').value.trim();
-                const url = row.querySelector('.ss-url').value.trim();
-                if (name && url) {
-                    let driveId = null;
-                    const idMatch = url.match(/[-\w]{25,}/);
-                    if (idMatch) driveId = idMatch[0];
-                    let ext = name.includes('.') ? name.split('.').pop().toUpperCase() : 'LINK';
-                    payload.push({ name: name, type: 'file', parent_id: parentId, file_url: url, drive_id: driveId, extension: ext });
-                }
-            });
+            const displayName = document.getElementById('inputFileName').value.trim();
+            const fileInput = document.getElementById('inputFileUpload');
+            const file = fileInput.files[0];
+            if (!displayName || !file) return;
+            
+            const sizeInBytes = file.size;
+            const formattedSize = sizeInBytes < 1048576 ? (sizeInBytes / 1024).toFixed(1) + ' KB' : (sizeInBytes / 1048576).toFixed(1) + ' MB';
+            
+            isUploading = true; 
+            lastDriveId = null; 
+            uploadAbortController = new AbortController();
+            
             document.getElementById('uploadProgressContainer').classList.remove('hidden');
             document.getElementById('btnExecuteUpload').disabled = true;
-            try {
-                await _supabase.from('formats1').delete().eq('parent_id', parentId).eq('type', 'file');
-                if (payload.length > 0) await _supabase.from('formats1').insert(payload);
-                closeAddModal();
-                renderColumn(3, parentId);
-            } catch (err) { alert("Gagal: " + err.message); }
-            finally { document.getElementById('btnExecuteUpload').disabled = false; document.getElementById('uploadProgressContainer').classList.add('hidden'); }
+            
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                if (!isUploading) return;
+                const base64 = e.target.result.split(',')[1];
+                const originalExtension = file.name.split('.').pop();
+                const fullNameWithExt = displayName + '.' + originalExtension;
+                
+                try {
+                    const res = await fetch(GAS_WEB_APP_URL, { 
+                        method: 'POST', 
+                        signal: uploadAbortController.signal, 
+                        body: JSON.stringify({ action: 'upload', fileName: fullNameWithExt, mimeType: file.type, base64: base64 }) 
+                    });
+                    const result = await res.json();
+                    
+                    if (result.status === 'success') {
+                        lastDriveId = result.driveId;
+                        if (!isUploading) { cleanupCancelledUpload(lastDriveId); return; }
+                        
+                        const { error } = await _supabase.from('formats1').insert({ 
+                            name: displayName, 
+                            extension: originalExtension, 
+                            type: 'file', 
+                            size: formattedSize, 
+                            parent_id: activeParentKeys[3], 
+                            file_url: result.url, 
+                            drive_id: result.driveId 
+                        });
+                        
+                        if (!error) { 
+                            isUploading = false; 
+                            closeAddModal(); 
+                            renderColumn(3, activeParentKeys[3]); 
+                        } else throw error;
+                    } else throw new Error(result.message);
+                } catch (err) { 
+                    if (err.name !== 'AbortError') alert("Upload Gagal: " + err.message); 
+                } finally { 
+                    isUploading = false; 
+                    document.getElementById('btnExecuteUpload').disabled = false; 
+                    document.getElementById('uploadProgressContainer').classList.add('hidden'); 
+                }
+            };
+            reader.readAsDataURL(file);
         }
 
-        // --- PREVIEW & ACTION HANDLERS ---
+        function cleanupCancelledUpload(driveId) {
+            if (!driveId) return;
+            fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'delete', driveId: driveId }) }).catch(e => console.error(e));
+        }
+
         function openPreviewModal(url, name) {
             const frame = document.getElementById('previewFrame');
             const img = document.getElementById('previewImage');
@@ -886,16 +663,20 @@
                 else { frame.src = url; frame.classList.remove('hidden'); img.classList.add('hidden'); img.src = ''; }
             }
             document.getElementById('previewModalOverlay').style.display = 'flex';
-            setTimeout(() => { document.getElementById('previewModalCard').classList.add('show'); setTimeout(() => loader.classList.add('hidden'), 2000); }, 10);
+            setTimeout(() => { document.getElementById('previewModalCard').classList.add('show'); setTimeout(() => loader.classList.add('hidden'), 1000); }, 10);
         }
 
         function closePreviewModal() {
+            const frame = document.getElementById('previewFrame');
+            const img = document.getElementById('previewImage');
             document.getElementById('previewModalCard').classList.remove('show');
-            setTimeout(() => { document.getElementById('previewModalOverlay').style.display = 'none'; document.getElementById('previewFrame').src = ''; document.getElementById('previewImage').src = ''; }, 200);
+            setTimeout(() => { document.getElementById('previewModalOverlay').style.display = 'none'; frame.src = ''; img.src = ''; frame.classList.add('hidden'); img.classList.add('hidden'); }, 200);
         }
 
         async function handleAction(action) {
             if (!isAdmin) return;
+            const driveId = currentActiveElement.getAttribute('data-drive-id');
+            const currentExt = currentActiveElement.getAttribute('data-ext');
             if (action === 'rename') {
                 const textSpan = currentActiveElement.querySelector('span');
                 const oldName = textSpan.innerText;
@@ -908,8 +689,12 @@
                     const newName = input.value.trim();
                     if (newName && newName !== oldName) {
                         await _supabase.from('formats1').update({ name: newName }).eq('id', currentActiveItem);
+                        if (driveId && currentExt) {
+                            const fullNameDrive = newName + '.' + currentExt;
+                            fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'rename', driveId: driveId, newName: fullNameDrive }) }).catch(e => console.error(e));
+                        }
                         textSpan.innerText = newName;
-                        activeNames[currentActiveColumn] = newName;
+                        activeNames[currentActiveColumn] = (currentActiveColumn === 3 && currentExt) ? `${newName}.${currentExt}` : newName;
                         updateBreadcrumb();
                     }
                     input.remove(); textSpan.classList.remove('hidden');
@@ -923,36 +708,89 @@
         async function executeDeletion() {
             if (!isAdmin || !currentActiveItem) return;
             const col = currentActiveColumn;
+            const type = currentActiveElement.getAttribute('data-type');
+            
             try {
-                if (currentActiveElement.getAttribute('data-type') === 'folder') {
+                let idsToDeleteInDrive = [];
+                const selfDriveId = currentActiveElement.getAttribute('data-drive-id');
+                if (selfDriveId) idsToDeleteInDrive.push(selfDriveId);
+
+                if (type === 'folder') {
                     if (col === 1) {
                         const { data: subs } = await _supabase.from('formats1').select('id').eq('parent_id', currentActiveItem);
-                        if (subs?.length > 0) {
+                        if (subs && subs.length > 0) {
+                            const subIds = subs.map(s => s.id);
+                            const { data: files } = await _supabase.from('formats1').select('drive_id').in('parent_id', subIds).not('drive_id', 'is', null);
+                            if (files) files.forEach(f => idsToDeleteInDrive.push(f.drive_id));
+                        }
+                    } else if (col === 2) {
+                        const { data: files } = await _supabase.from('formats1').select('drive_id').eq('parent_id', currentActiveItem).not('drive_id', 'is', null);
+                        if (files) files.forEach(f => idsToDeleteInDrive.push(f.drive_id));
+                    }
+                }
+
+                idsToDeleteInDrive.forEach(dId => {
+                    fetch(GAS_WEB_APP_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({ action: 'delete', driveId: dId })
+                    }).catch(e => console.error("Gagal hapus Drive ID:", dId, e));
+                });
+
+                if (type === 'folder') {
+                    if (col === 1) {
+                        const { data: subs } = await _supabase.from('formats1').select('id').eq('parent_id', currentActiveItem);
+                        if (subs && subs.length > 0) {
                             const subIds = subs.map(s => s.id);
                             await _supabase.from('formats1').delete().in('parent_id', subIds); 
                             await _supabase.from('formats1').delete().in('id', subIds); 
                         }
-                    } else if (col === 2) await _supabase.from('formats1').delete().eq('parent_id', currentActiveItem); 
+                    } else if (col === 2) {
+                        await _supabase.from('formats1').delete().eq('parent_id', currentActiveItem); 
+                    }
                 }
-                await _supabase.from('formats1').delete().eq('id', currentActiveItem);
+
+                const { error } = await _supabase.from('formats1').delete().eq('id', currentActiveItem);
+                if (error) throw error;
+
                 closeDeleteModal();
                 renderColumn(col, activeParentKeys[col]);
                 if (col >= 2) renderColumn(1, null);
+                if (col === 3) renderColumn(2, activeParentKeys[2]);
+                
             } catch (err) { alert("Hapus gagal: " + err.message); }
         }
 
         function openMenu(e, itemId, colNum) {
             e.stopPropagation();
             currentActiveItem = itemId; currentActiveElement = e.currentTarget.closest('.column-entry'); currentActiveColumn = colNum;
+            const isFile = currentActiveElement.getAttribute('data-type') === 'file';
+            document.getElementById('menuDownload').classList.toggle('hidden', !isFile);
             const rect = e.currentTarget.getBoundingClientRect();
             const menu = document.getElementById('contextMenu');
-            document.getElementById('menuDownload').classList.toggle('hidden', currentActiveElement.getAttribute('data-type') !== 'file');
             menu.style.display = 'block'; menu.style.top = `${rect.bottom + 5}px`; menu.style.left = `${rect.left - 120}px`;
         }
 
         function closeMenu() { document.getElementById('contextMenu').style.display = 'none'; }
         function openDeleteModal() { document.getElementById('deleteModalOverlay').style.display = 'flex'; setTimeout(() => document.getElementById('deleteModalCard').classList.add('show'), 10); }
         function closeDeleteModal() { document.getElementById('deleteModalCard').classList.remove('show'); setTimeout(() => document.getElementById('deleteModalOverlay').style.display = 'none', 200); }
+        function openAddModal() { 
+            document.getElementById('inputFileName').value = ''; document.getElementById('inputFileUpload').value = '';
+            document.getElementById('uploadProgressContainer').classList.add('hidden');
+            document.getElementById('addModalOverlay').style.display = 'flex'; setTimeout(() => document.getElementById('addModalCard').classList.add('show'), 10); 
+        }
+        function closeAddModal() { 
+            if (isUploading) { 
+                if (uploadAbortController) uploadAbortController.abort(); 
+                isUploading = false; 
+                if (lastDriveId) cleanupCancelledUpload(lastDriveId); 
+            }
+            document.getElementById('addModalCard').classList.remove('show'); 
+            setTimeout(() => { 
+                document.getElementById('addModalOverlay').style.display = 'none'; 
+                document.getElementById('uploadProgressContainer').classList.add('hidden'); 
+                document.getElementById('btnExecuteUpload').disabled = false; 
+            }, 200); 
+        }
         function updateBreadcrumb() {
             const container = document.getElementById('dynamicPath');
             container.innerHTML = [1, 2, 3].filter(c => activeNames[c]).map(c => `<span class="breadcrumb-separator">/</span><span class="text-gray-900 font-bold">${activeNames[c]}</span>`).join('');

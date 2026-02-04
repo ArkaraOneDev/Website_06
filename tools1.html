@@ -240,21 +240,105 @@
         </div>
     </div>
 
-    <!-- Spreadsheet Add Modal -->
+    <!-- Folder Manage Modal (Column 1) -->
+    <div id="folderModalOverlay" class="modal-overlay" onclick="closeFolderModal()">
+        <div class="modal-card !max-w-2xl" id="folderModalCard" onclick="event.stopPropagation()">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-5">
+                    <h3 class="text-lg font-bold text-gray-900 tracking-tight">Manage Folders</h3>
+                </div>
+
+                <div class="max-h-[50vh] overflow-y-auto rounded-lg border border-gray-200 shadow-inner bg-gray-50/30">
+                    <table class="ss-table">
+                        <thead>
+                            <tr>
+                                <th class="w-10 text-center">No</th>
+                                <th>Nama Folder</th>
+                                <th class="w-10"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="folderBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="flex justify-end mt-4">
+                    <button onclick="addFolderRow()" class="text-blue-600 text-[10px] font-bold uppercase border-2 border-blue-600 px-4 py-1.5 rounded-full hover:bg-blue-600 hover:text-white transition-all shadow-sm active:scale-95">
+                        + Tambah Baris
+                    </button>
+                </div>
+
+                <div id="folderProgressContainer" class="hidden mt-4">
+                    <div class="text-[10px] font-bold text-blue-600 mb-1 uppercase tracking-wider animate-pulse">Memproses data...</div>
+                    <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                        <div class="bg-blue-500 h-full w-full"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 px-6 py-4 flex flex-row-reverse gap-3">
+                <button id="btnExecuteFolder" onclick="handleFolderBulkUpload()" class="bg-blue-600 text-white text-sm font-semibold px-8 py-2.5 rounded-xl shadow-lg shadow-blue-200 active:scale-95 transition-all">Simpan Perubahan</button>
+                <button onclick="closeFolderModal()" class="bg-white border border-gray-300 text-gray-700 text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-gray-100 transition-colors">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Subfolder Manage Modal (Column 2) -->
+    <div id="subfolderModalOverlay" class="modal-overlay" onclick="closeSubfolderModal()">
+        <div class="modal-card !max-w-2xl" id="subfolderModalCard" onclick="event.stopPropagation()">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-5">
+                    <h3 class="text-lg font-bold text-gray-900 tracking-tight">Manage Subfolders</h3>
+                </div>
+
+                <div class="max-h-[50vh] overflow-y-auto rounded-lg border border-gray-200 shadow-inner bg-gray-50/30">
+                    <table class="ss-table">
+                        <thead>
+                            <tr>
+                                <th class="w-10 text-center">No</th>
+                                <th>Nama Subfolder</th>
+                                <th class="w-10"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="subfolderBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="flex justify-end mt-4">
+                    <button onclick="addSubfolderRow()" class="text-blue-600 text-[10px] font-bold uppercase border-2 border-blue-600 px-4 py-1.5 rounded-full hover:bg-blue-600 hover:text-white transition-all shadow-sm active:scale-95">
+                        + Tambah Baris
+                    </button>
+                </div>
+
+                <div id="subfolderProgressContainer" class="hidden mt-4">
+                    <div class="text-[10px] font-bold text-blue-600 mb-1 uppercase tracking-wider animate-pulse">Memproses data...</div>
+                    <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                        <div class="bg-blue-500 h-full w-full"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 px-6 py-4 flex flex-row-reverse gap-3">
+                <button id="btnExecuteSubfolder" onclick="handleSubfolderBulkUpload()" class="bg-blue-600 text-white text-sm font-semibold px-8 py-2.5 rounded-xl shadow-lg shadow-blue-200 active:scale-95 transition-all">Simpan Perubahan</button>
+                <button onclick="closeSubfolderModal()" class="bg-white border border-gray-300 text-gray-700 text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-gray-100 transition-colors">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Link Manage Modal (Column 3) -->
     <div id="addModalOverlay" class="modal-overlay" onclick="closeAddModal()">
         <div class="modal-card !max-w-4xl" id="addModalCard" onclick="event.stopPropagation()">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-5">
-                    <h3 class="text-lg font-bold text-gray-900 uppercase tracking-tight">Upload Spreadsheet Links</h3>
+                    <h3 class="text-lg font-bold text-gray-900 tracking-tight">Manage Links</h3>
                 </div>
-                
+
                 <div class="max-h-[50vh] overflow-y-auto rounded-lg border border-gray-200 shadow-inner bg-gray-50/30">
                     <table class="ss-table">
                         <thead>
                             <tr>
                                 <th class="w-10 text-center">No</th>
                                 <th>Nama File</th>
-                                <th>URL Google Drive</th>
+                                <th>URL Google Drive / Link</th>
                                 <th class="w-10"></th>
                             </tr>
                         </thead>
@@ -263,7 +347,6 @@
                     </table>
                 </div>
 
-                <!-- Tombol Tambah Baris dipindahkan ke sini -->
                 <div class="flex justify-end mt-4">
                     <button onclick="addRow()" class="text-blue-600 text-[10px] font-bold uppercase border-2 border-blue-600 px-4 py-1.5 rounded-full hover:bg-blue-600 hover:text-white transition-all shadow-sm active:scale-95">
                         + Tambah Baris
@@ -278,12 +361,13 @@
                 </div>
             </div>
             <div class="bg-gray-50 px-6 py-4 flex flex-row-reverse gap-3">
-                <button id="btnExecuteUpload" onclick="handleSpreadsheetUpload()" class="bg-blue-600 text-white text-sm font-semibold px-8 py-2.5 rounded-xl shadow-lg shadow-blue-200 active:scale-95 transition-all">Simpan Semua</button>
+                <button id="btnExecuteUpload" onclick="handleSpreadsheetUpload()" class="bg-blue-600 text-white text-sm font-semibold px-8 py-2.5 rounded-xl shadow-lg shadow-blue-200 active:scale-95 transition-all">Simpan Perubahan</button>
                 <button onclick="closeAddModal()" class="bg-white border border-gray-300 text-gray-700 text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-gray-100 transition-colors">Batal</button>
             </div>
         </div>
     </div>
 
+    <!-- Preview Modal -->
     <div id="previewModalOverlay" class="modal-overlay" onclick="closePreviewModal()">
         <div class="modal-card !max-w-5xl w-11/12 h-[85vh] flex flex-col" id="previewModalCard" onclick="event.stopPropagation()">
             <div class="p-4 border-b flex justify-between items-center bg-white">
@@ -326,7 +410,7 @@
             <div class="col-footer" id="footerCol1">
                 <button onclick="addItem(1)" class="btn-add">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    Add Folder
+                    Manage Folder
                 </button>
             </div>
         </div>
@@ -342,7 +426,7 @@
             <div class="col-footer" id="footerCol2">
                 <button id="btnAddCol2" onclick="addItem(2)" class="btn-add" disabled>
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    Add Sub
+                    Manage Subfolders
                 </button>
             </div>
         </div>
@@ -352,13 +436,13 @@
                 <button onclick="navigateMobile(2)" class="md:hidden p-1 -ml-1 hover:bg-gray-200 rounded-lg">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                 </button>
-                Links/Files
+                Links
             </div>
             <div id="col3" onclick="deselectItem(3)" class="finder-col-content overflow-y-auto py-3 flex-1"></div>
             <div class="col-footer" id="footerCol3">
                 <button id="btnAddCol3" onclick="addItem(3)" class="btn-add" disabled>
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    Add URL
+                    Manage Links
                 </button>
             </div>
         </div>
@@ -375,7 +459,6 @@
         let currentActiveElement = null;
         let currentActiveColumn = null; 
         let isAdmin = false;
-        let isUploading = false;
         let currentMobileCol = 1;
 
         window.onload = async () => {
@@ -554,26 +637,165 @@
         async function addItem(colNum) {
             if (!isAdmin) return;
             if (colNum === 3) { openAddModal(); return; }
-            const parentId = colNum === 2 ? activeParentKeys[2] : null;
-            const name = colNum === 1 ? 'New Folder' : 'New Subfolder';
-            const { data, error } = await _supabase.from('tools1').insert({ name: name, type: 'folder', parent_id: parentId }).select().single();
-            if (!error && data) {
-                await renderColumn(colNum, parentId);
-                if (colNum === 2) await renderColumn(1, null);
-                const container = document.getElementById('col' + colNum);
-                const newEl = container.querySelector(`[data-id="${data.id}"]`);
-                if (newEl) { currentActiveItem = data.id; currentActiveElement = newEl; currentActiveColumn = colNum; handleAction('rename'); }
+            if (colNum === 2) { openSubfolderModal(); return; }
+            if (colNum === 1) { openFolderModal(); return; }
+        }
+
+        // --- FOLDER MANAGE LOGIC (COLUMN 1) ---
+        function addFolderRow(name = '') {
+            const body = document.getElementById('folderBody');
+            const rowCount = body.children.length + 1;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td class="ss-no">${rowCount}</td>
+                <td><input type="text" placeholder="Nama Folder..." class="ss-input folder-name" value="${name}"></td>
+                <td>
+                    <button onclick="this.closest('tr').remove(); reindexFolderRows();" class="btn-ss-del" title="Hapus Baris">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                </td>
+            `;
+            const input = tr.querySelector('.folder-name');
+            input.addEventListener('paste', handleFolderPaste);
+            body.appendChild(tr);
+        }
+
+        function handleFolderPaste(e) {
+            const clipboardData = e.clipboardData || window.clipboardData;
+            const pastedText = clipboardData.getData('text');
+            if (!pastedText.includes('\n')) return;
+            e.preventDefault();
+            const rowsData = pastedText.split(/\r?\n/).filter(r => r.trim());
+            rowsData.forEach(rowStr => addFolderRow(rowStr));
+            reindexFolderRows();
+        }
+
+        function reindexFolderRows() { document.querySelectorAll('#folderBody .ss-no').forEach((el, i) => el.innerText = i + 1); }
+
+        async function openFolderModal() {
+            document.getElementById('folderBody').innerHTML = '';
+            document.getElementById('folderProgressContainer').classList.remove('hidden'); 
+            document.getElementById('folderModalOverlay').style.display = 'flex'; 
+            setTimeout(() => document.getElementById('folderModalCard').classList.add('show'), 10);
+            try {
+                const { data } = await _supabase.from('tools1').select('name').is('parent_id', null).eq('type', 'folder').order('name', { ascending: true });
+                if (data && data.length > 0) data.forEach(item => addFolderRow(item.name));
+                else for(let i=0; i<5; i++) addFolderRow();
+            } catch (err) { for(let i=0; i<5; i++) addFolderRow(); }
+            finally { document.getElementById('folderProgressContainer').classList.add('hidden'); }
+        }
+
+        async function closeFolderModal() { 
+            document.getElementById('folderModalCard').classList.remove('show'); 
+            setTimeout(() => document.getElementById('folderModalOverlay').style.display = 'none', 200); 
+        }
+
+        async function handleFolderBulkUpload() {
+            if (!isAdmin) return;
+            const rows = document.querySelectorAll('#folderBody tr');
+            const payload = [];
+            rows.forEach(row => {
+                const name = row.querySelector('.folder-name').value.trim();
+                if (name) payload.push({ name: name, type: 'folder', parent_id: null });
+            });
+            document.getElementById('folderProgressContainer').classList.remove('hidden');
+            document.getElementById('btnExecuteFolder').disabled = true;
+            try {
+                await _supabase.from('tools1').delete().is('parent_id', null).eq('type', 'folder');
+                if (payload.length > 0) await _supabase.from('tools1').insert(payload);
+                closeFolderModal();
+                await renderColumn(1, null);
+            } catch (err) { alert("Gagal: " + err.message); }
+            finally { 
+                document.getElementById('btnExecuteFolder').disabled = false; 
+                document.getElementById('folderProgressContainer').classList.add('hidden');
             }
         }
 
+        // --- SUBFOLDER MANAGE LOGIC (COLUMN 2) ---
+        function addSubfolderRow(name = '') {
+            const body = document.getElementById('subfolderBody');
+            const rowCount = body.children.length + 1;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td class="ss-no">${rowCount}</td>
+                <td><input type="text" placeholder="Nama Subfolder..." class="ss-input sub-name" value="${name}"></td>
+                <td>
+                    <button onclick="this.closest('tr').remove(); reindexSubfolderRows();" class="btn-ss-del" title="Hapus Baris">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                </td>
+            `;
+            const input = tr.querySelector('.sub-name');
+            input.addEventListener('paste', handleSubfolderPaste);
+            body.appendChild(tr);
+        }
+
+        function handleSubfolderPaste(e) {
+            const clipboardData = e.clipboardData || window.clipboardData;
+            const pastedText = clipboardData.getData('text');
+            if (!pastedText.includes('\n')) return;
+            e.preventDefault();
+            const rowsData = pastedText.split(/\r?\n/).filter(r => r.trim());
+            rowsData.forEach(rowStr => addSubfolderRow(rowStr));
+            reindexSubfolderRows();
+        }
+
+        function reindexSubfolderRows() { document.querySelectorAll('#subfolderBody .ss-no').forEach((el, i) => el.innerText = i + 1); }
+
+        async function openSubfolderModal() {
+            const folderId = activeParentKeys[2];
+            if (!folderId) return;
+            document.getElementById('subfolderBody').innerHTML = '';
+            document.getElementById('subfolderProgressContainer').classList.remove('hidden'); 
+            document.getElementById('subfolderModalOverlay').style.display = 'flex'; 
+            setTimeout(() => document.getElementById('subfolderModalCard').classList.add('show'), 10);
+            try {
+                const { data } = await _supabase.from('tools1').select('name').eq('parent_id', folderId).eq('type', 'folder').order('name', { ascending: true });
+                if (data && data.length > 0) data.forEach(item => addSubfolderRow(item.name));
+                else for(let i=0; i<5; i++) addSubfolderRow();
+            } catch (err) { for(let i=0; i<5; i++) addSubfolderRow(); }
+            finally { document.getElementById('subfolderProgressContainer').classList.add('hidden'); }
+        }
+
+        async function closeSubfolderModal() { 
+            document.getElementById('subfolderModalCard').classList.remove('show'); 
+            setTimeout(() => document.getElementById('subfolderModalOverlay').style.display = 'none', 200); 
+        }
+
+        async function handleSubfolderBulkUpload() {
+            if (!isAdmin) return;
+            const parentId = activeParentKeys[2];
+            const rows = document.querySelectorAll('#subfolderBody tr');
+            const payload = [];
+            rows.forEach(row => {
+                const name = row.querySelector('.sub-name').value.trim();
+                if (name) payload.push({ name: name, type: 'folder', parent_id: parentId });
+            });
+            document.getElementById('subfolderProgressContainer').classList.remove('hidden');
+            document.getElementById('btnExecuteSubfolder').disabled = true;
+            try {
+                await _supabase.from('tools1').delete().eq('parent_id', parentId).eq('type', 'folder');
+                if (payload.length > 0) await _supabase.from('tools1').insert(payload);
+                closeSubfolderModal();
+                await renderColumn(2, parentId);
+                await renderColumn(1, null); 
+            } catch (err) { alert("Gagal: " + err.message); }
+            finally { 
+                document.getElementById('btnExecuteSubfolder').disabled = false; 
+                document.getElementById('subfolderProgressContainer').classList.add('hidden');
+            }
+        }
+
+        // --- SPREADSHEET MANAGE LOGIC (COLUMN 3) ---
         function addRow(name = '', url = '') {
             const body = document.getElementById('spreadsheetBody');
             const rowCount = body.children.length + 1;
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td class="ss-no">${rowCount}</td>
-                <td><input type="text" placeholder="Contoh: File.exe" class="ss-input ss-name" value="${name}"></td>
-                <td><input type="text" placeholder="https://..." class="ss-input ss-url" value="${url}"></td>
+                <td><input type="text" placeholder="Nama File..." class="ss-input ss-name" value="${name}"></td>
+                <td><input type="text" placeholder="URL Google Drive..." class="ss-input ss-url" value="${url}"></td>
                 <td>
                     <button onclick="this.closest('tr').remove(); reindexRows();" class="btn-ss-del">
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
@@ -583,15 +805,6 @@
             const inputs = tr.querySelectorAll('.ss-input');
             inputs.forEach(input => input.addEventListener('paste', handlePaste));
             body.appendChild(tr);
-
-            // Logika Scroll Otomatis ke baris baru
-            const scrollContainer = body.parentElement.parentElement;
-            if (scrollContainer) {
-                scrollContainer.scrollTo({
-                    top: scrollContainer.scrollHeight,
-                    behavior: 'smooth'
-                });
-            }
         }
 
         function handlePaste(e) {
@@ -599,44 +812,50 @@
             const pastedText = clipboardData.getData('text');
             if (!pastedText.includes('\t') && !pastedText.includes('\n')) return;
             e.preventDefault();
-            const rows = pastedText.split(/\r?\n/);
+            const rowsData = pastedText.split(/\r?\n/).filter(r => r.trim());
             const startRowElement = e.target.closest('tr');
-            const isStartAtName = e.target.classList.contains('ss-name');
             const body = document.getElementById('spreadsheetBody');
             const allTrs = Array.from(body.querySelectorAll('tr'));
             const startRowIndex = allTrs.indexOf(startRowElement);
-            rows.forEach((rowStr, rowIndexOffset) => {
-                if (rowStr.trim() === '') return;
+            const isStartAtName = e.target.classList.contains('ss-name');
+            rowsData.forEach((rowStr, indexOffset) => {
                 const columns = rowStr.split('\t');
-                const targetRowIndex = startRowIndex + rowIndexOffset;
-                if (targetRowIndex >= allTrs.length) addRow();
-                const targetTr = body.querySelectorAll('tr')[targetRowIndex];
-                const nameInp = targetTr.querySelector('.ss-name');
-                const urlInp = targetTr.querySelector('.ss-url');
-                if (isStartAtName) {
-                    if (columns[0] !== undefined) nameInp.value = columns[0].trim();
-                    if (columns[1] !== undefined) urlInp.value = columns[1].trim();
+                const targetRowIndex = startRowIndex + indexOffset;
+                if (targetRowIndex >= allTrs.length) {
+                    if (isStartAtName) addRow(columns[0] || '', columns[1] || '');
+                    else addRow('', columns[0] || '');
                 } else {
-                    if (columns[0] !== undefined) urlInp.value = columns[0].trim();
+                    const targetTr = body.querySelectorAll('tr')[targetRowIndex];
+                    if (isStartAtName) {
+                        if (columns[0] !== undefined) targetTr.querySelector('.ss-name').value = columns[0].trim();
+                        if (columns[1] !== undefined) targetTr.querySelector('.ss-url').value = columns[1].trim();
+                    } else {
+                        if (columns[0] !== undefined) targetTr.querySelector('.ss-url').value = columns[0].trim();
+                    }
                 }
             });
             reindexRows();
         }
 
-        function reindexRows() { document.querySelectorAll('.ss-no').forEach((el, i) => el.innerText = i + 1); }
+        function reindexRows() { document.querySelectorAll('#spreadsheetBody .ss-no').forEach((el, i) => el.innerText = i + 1); }
 
-        async function saveDraft() {
+        async function openAddModal() { 
             const folderId = activeParentKeys[3];
-            if (!folderId) return;
-            const rows = document.querySelectorAll('#spreadsheetBody tr');
-            const data = Array.from(rows).map(row => ({
-                name: row.querySelector('.ss-name').value,
-                url: row.querySelector('.ss-url').value
-            })).filter(item => item.name || item.url);
-            if (data.length === 0) return;
+            document.getElementById('spreadsheetBody').innerHTML = '';
+            document.getElementById('uploadProgressContainer').classList.remove('hidden');
+            document.getElementById('addModalOverlay').style.display = 'flex'; 
+            setTimeout(() => document.getElementById('addModalCard').classList.add('show'), 10);
             try {
-                await _supabase.from('tools1_data').upsert({ folder_id: folderId, content: data, updated_at: new Date() }, { onConflict: 'folder_id' });
-            } catch (err) { console.error("Draft gagal disimpan:", err); }
+                const { data } = await _supabase.from('tools1').select('name, file_url').eq('parent_id', folderId).eq('type', 'file').order('name', { ascending: true });
+                if (data && data.length > 0) data.forEach(item => addRow(item.name, item.file_url));
+                else for(let i=0; i<5; i++) addRow();
+            } catch (err) { for(let i=0; i<5; i++) addRow(); }
+            finally { document.getElementById('uploadProgressContainer').classList.add('hidden'); }
+        }
+        
+        async function closeAddModal() { 
+            document.getElementById('addModalCard').classList.remove('show'); 
+            setTimeout(() => document.getElementById('addModalOverlay').style.display = 'none', 200); 
         }
 
         async function handleSpreadsheetUpload() {
@@ -651,31 +870,26 @@
                     let driveId = null;
                     const idMatch = url.match(/[-\w]{25,}/);
                     if (idMatch) driveId = idMatch[0];
-                    let ext = 'LINK';
-                    if (name.includes('.')) ext = name.split('.').pop().toUpperCase();
+                    let ext = name.includes('.') ? name.split('.').pop().toUpperCase() : 'LINK';
                     payload.push({ name: name, type: 'file', parent_id: folderId, file_url: url, drive_id: driveId, extension: ext });
                 }
             });
-            if (payload.length === 0) return;
-            isUploading = true;
             document.getElementById('uploadProgressContainer').classList.remove('hidden');
             document.getElementById('btnExecuteUpload').disabled = true;
             try {
                 await _supabase.from('tools1').delete().eq('parent_id', folderId).eq('type', 'file');
-                const { error } = await _supabase.from('tools1').insert(payload);
-                if (error) throw error;
-                await _supabase.from('tools1_data').delete().eq('folder_id', folderId);
-                closeAddModal(true);
+                if (payload.length > 0) await _supabase.from('tools1').insert(payload);
+                closeAddModal();
                 await renderColumn(3, folderId);
                 await renderColumn(2, activeParentKeys[2]);
             } catch (err) { alert("Gagal: " + err.message); }
             finally { 
-                isUploading = false; 
                 document.getElementById('btnExecuteUpload').disabled = false; 
                 document.getElementById('uploadProgressContainer').classList.add('hidden');
             }
         }
 
+        // --- PREVIEW & OTHERS ---
         function openPreviewModal(url, name) {
             const frame = document.getElementById('previewFrame');
             const title = document.getElementById('previewTitle');
@@ -690,7 +904,7 @@
             document.getElementById('previewModalOverlay').style.display = 'flex';
             setTimeout(() => { 
                 document.getElementById('previewModalCard').classList.add('show'); 
-                setTimeout(() => loader.classList.add('hidden'), 4000); 
+                setTimeout(() => loader.classList.add('hidden'), 3000); 
             }, 10);
         }
 
@@ -734,7 +948,7 @@
             try {
                 if (currentActiveElement.getAttribute('data-type') === 'folder') {
                     if (col === 1) {
-                        const { data: subs = [] } = await _supabase.from('tools1').select('id').eq('parent_id', currentActiveItem);
+                        const { data: subs } = await _supabase.from('tools1').select('id').eq('parent_id', currentActiveItem);
                         if (subs?.length > 0) {
                             const subIds = subs.map(s => s.id);
                             await _supabase.from('tools1').delete().in('parent_id', subIds); 
@@ -746,7 +960,7 @@
                 closeDeleteModal();
                 renderColumn(col, activeParentKeys[col]);
                 if (col >= 2) renderColumn(1, null);
-            } catch (err) { alert("Hapus gagal: " + err.message); }
+            } catch (err) { alert("Gagal: " + err.message); }
         }
 
         function openMenu(e, itemId, colNum) {
@@ -761,30 +975,6 @@
         function closeMenu() { document.getElementById('contextMenu').style.display = 'none'; }
         function openDeleteModal() { document.getElementById('deleteModalOverlay').style.display = 'flex'; setTimeout(() => document.getElementById('deleteModalCard').classList.add('show'), 10); }
         function closeDeleteModal() { document.getElementById('deleteModalCard').classList.remove('show'); setTimeout(() => document.getElementById('deleteModalOverlay').style.display = 'none', 200); }
-        
-        async function openAddModal() { 
-            const folderId = activeParentKeys[3];
-            document.getElementById('spreadsheetBody').innerHTML = '';
-            document.getElementById('uploadProgressContainer').classList.remove('hidden');
-            document.getElementById('addModalOverlay').style.display = 'flex'; 
-            setTimeout(() => document.getElementById('addModalCard').classList.add('show'), 10);
-            try {
-                const { data: draft } = await _supabase.from('tools1_data').select('content').eq('folder_id', folderId).single();
-                if (draft?.content?.length) draft.content.forEach(item => addRow(item.name, item.url));
-                else {
-                    const { data: committed = [] } = await _supabase.from('tools1').select('name, file_url').eq('parent_id', folderId).eq('type', 'file').order('name', { ascending: true });
-                    if (committed?.length) committed.forEach(item => addRow(item.name, item.file_url));
-                    else for(let i=0; i<5; i++) addRow();
-                }
-            } catch (err) { for(let i=0; i<5; i++) addRow(); }
-            finally { document.getElementById('uploadProgressContainer').classList.add('hidden'); }
-        }
-        
-        async function closeAddModal(isSuccess = false) { 
-            if (!isSuccess) await saveDraft();
-            document.getElementById('addModalCard').classList.remove('show'); 
-            setTimeout(() => document.getElementById('addModalOverlay').style.display = 'none', 200); 
-        }
         
         function updateBreadcrumb() {
             const container = document.getElementById('dynamicPath');
