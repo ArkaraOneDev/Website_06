@@ -561,11 +561,10 @@
                     let infoTagsHtml = '';
                     if (colNum < 3) {
                         const stats = itemStats[item.id] || { count: 0, totalSize: 0 };
-                        infoTagsHtml = `<span class="text-[9px] text-blue-500 font-bold mr-2 bg-blue-50 px-1.5 py-0.5 rounded">${stats.count}</span><span class="text-[9px] text-gray-400 font-medium uppercase w-12 text-right">${formatBytes(stats.totalSize)}</span>`;
+                        infoTagsHtml = `<span class="text-[9px] text-blue-500 font-bold mr-2 bg-blue-50 px-1.5 py-0.5 rounded">${stats.count}</span>`;
                     } else if (item.type === 'file') {
                         const ext = (item.extension || 'LINK').toUpperCase();
                         infoTagsHtml = `<span class="text-[9px] text-indigo-500 font-bold opacity-80 w-10 text-left">${ext}</span>`;
-                        if (item.size) infoTagsHtml += `<span class="text-[9px] text-gray-400 font-medium uppercase w-12 text-right">${item.size}</span>`;
                     }
 
                     const kebabButton = isAdmin ? `<button onclick="openMenu(event, '${item.id}', ${colNum})" class="menu-btn p-1 hover:bg-black/5 rounded-md ml-2 flex-shrink-0"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg></button>` : '';
@@ -573,7 +572,7 @@
                     return `
                         <div onclick="event.stopPropagation(); selectItem(${colNum}, this, '${item.id}', '${item.name}')" 
                              data-id="${item.id}" data-type="${item.type}" data-url="${item.file_url || ''}" 
-                             data-drive-id="${item.drive_id || ''}" data-ext="${item.extension || ''}"
+                             data-id-drive="${item.drive_id || ''}" data-ext="${item.extension || ''}"
                              class="column-entry bubble-item group ${isSelected}" style="animation-delay: ${index * 0.05}s">
                             ${icon}
                             <span class="flex-1 truncate font-semibold text-gray-700 mr-2">${item.name}</span>
@@ -660,9 +659,23 @@
         function handleFolderPaste(e) {
             const clipboardData = e.clipboardData || window.clipboardData;
             const pastedText = clipboardData.getData('text');
-            if (!pastedText.includes('\n')) return;
+            if (!pastedText.includes('\n') && !pastedText.includes('\t')) return;
             e.preventDefault();
-            pastedText.split(/\r?\n/).filter(r => r.trim()).forEach(rowStr => addFolderRow(rowStr));
+            const rowsData = pastedText.split(/\r?\n/).filter(r => r.trim());
+            const startRowElement = e.target.closest('tr');
+            const body = document.getElementById('folderBody');
+            const allTrs = Array.from(body.querySelectorAll('tr'));
+            const startRowIndex = allTrs.indexOf(startRowElement);
+
+            rowsData.forEach((rowStr, indexOffset) => {
+                const targetRowIndex = startRowIndex + indexOffset;
+                const value = rowStr.split('\t')[0].trim();
+                if (targetRowIndex >= allTrs.length) {
+                    addFolderRow(value);
+                } else {
+                    body.querySelectorAll('tr')[targetRowIndex].querySelector('.folder-name').value = value;
+                }
+            });
             reindexFolderRows();
         }
 
@@ -723,9 +736,23 @@
         function handleSubfolderPaste(e) {
             const clipboardData = e.clipboardData || window.clipboardData;
             const pastedText = clipboardData.getData('text');
-            if (!pastedText.includes('\n')) return;
+            if (!pastedText.includes('\n') && !pastedText.includes('\t')) return;
             e.preventDefault();
-            pastedText.split(/\r?\n/).filter(r => r.trim()).forEach(rowStr => addSubfolderRow(rowStr));
+            const rowsData = pastedText.split(/\r?\n/).filter(r => r.trim());
+            const startRowElement = e.target.closest('tr');
+            const body = document.getElementById('subfolderBody');
+            const allTrs = Array.from(body.querySelectorAll('tr'));
+            const startRowIndex = allTrs.indexOf(startRowElement);
+
+            rowsData.forEach((rowStr, indexOffset) => {
+                const targetRowIndex = startRowIndex + indexOffset;
+                const value = rowStr.split('\t')[0].trim();
+                if (targetRowIndex >= allTrs.length) {
+                    addSubfolderRow(value);
+                } else {
+                    body.querySelectorAll('tr')[targetRowIndex].querySelector('.sub-name').value = value;
+                }
+            });
             reindexSubfolderRows();
         }
 
@@ -791,20 +818,32 @@
             const pastedText = clipboardData.getData('text');
             if (!pastedText.includes('\t') && !pastedText.includes('\n')) return;
             e.preventDefault();
+            
             const rowsData = pastedText.split(/\r?\n/).filter(r => r.trim());
             const startRowElement = e.target.closest('tr');
             const body = document.getElementById('spreadsheetBody');
-            const startRowIndex = Array.from(body.querySelectorAll('tr')).indexOf(startRowElement);
+            const allTrs = Array.from(body.querySelectorAll('tr'));
+            const startRowIndex = allTrs.indexOf(startRowElement);
+            
             const isStartAtName = e.target.classList.contains('ss-name');
-            rowsData.forEach((rowStr, indexOffset) => {
+
+            rowsData.forEach((rowStr, rowOffset) => {
                 const columns = rowStr.split('\t');
-                const targetRowIndex = startRowIndex + indexOffset;
-                const allTrs = body.querySelectorAll('tr');
+                const targetRowIndex = startRowIndex + rowOffset;
+                
+                let targetTr;
                 if (targetRowIndex >= allTrs.length) {
-                    if (isStartAtName) addRow(columns[0] || '', columns[1] || '');
-                    else addRow('', columns[0] || '');
+                    if (isStartAtName) {
+                        addRow(columns[0] || '', columns[1] || '');
+                    } else {
+                        addRow('', columns[0] || '');
+                    }
+                    targetTr = body.querySelectorAll('tr')[targetRowIndex];
                 } else {
-                    const targetTr = allTrs[targetRowIndex];
+                    targetTr = allTrs[targetRowIndex];
+                }
+
+                if (targetTr) {
                     if (isStartAtName) {
                         if (columns[0] !== undefined) targetTr.querySelector('.ss-name').value = columns[0].trim();
                         if (columns[1] !== undefined) targetTr.querySelector('.ss-url').value = columns[1].trim();
