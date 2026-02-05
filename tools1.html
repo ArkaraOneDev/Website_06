@@ -2,7 +2,7 @@
 <html lang="id" class="h-full">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tools Finder | Arkastone</title>
     
     <!-- External Libraries -->
@@ -19,33 +19,12 @@
             overflow: hidden; 
             display: flex;
             flex-direction: column;
+            /* Mencegah double tap zoom pada body */
+            touch-action: manipulation;
         }
         
         html { font-size: 14px; }
         @media (min-width: 768px) { html { font-size: 16px; } }
-
-        /* --- Animations --- */
-        .bubble-item {
-            animation: slideIn 0.3s ease-out forwards;
-            opacity: 0;
-        }
-        @keyframes slideIn {
-            from { transform: translateY(5px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .animate-column {
-            opacity: 0;
-            animation: columnFadeIn 0.5s ease-out forwards;
-        }
-        @keyframes columnFadeIn {
-            from { opacity: 0; transform: scale(0.98); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
-        .delay-3 { animation-delay: 0.3s; }
 
         /* --- Scrollbar --- */
         .finder-col-content::-webkit-scrollbar { width: 4px; }
@@ -54,7 +33,8 @@
         
         /* --- Item Styling --- */
         .column-entry {
-            transition: all 0.2s ease;
+            /* Transisi hover tetap ada sedikit agar halus, tapi animasi masuk dihapus */
+            transition: all 0.1s ease; 
             display: flex;
             align-items: center;
             padding: 10px 14px;
@@ -66,11 +46,26 @@
             border: 1px solid #f1f5f9;
             box-shadow: 0 1px 2px rgba(0,0,0,0.03);
             white-space: nowrap;
+            /* Optimasi Mobile */
+            touch-action: manipulation; 
+            -webkit-tap-highlight-color: transparent;
         }
-        .column-entry:hover:not(.selected-item) { 
-            border-color: #bfdbfe;
-            background-color: #f8fafc;
-            transform: translateY(-1px);
+
+        /* FIX: Hover hanya aktif di device yang punya mouse (PC/Laptop) */
+        @media (hover: hover) {
+            .column-entry:hover:not(.selected-item) { 
+                border-color: #bfdbfe;
+                background-color: #f8fafc;
+                transform: translateY(-1px);
+            }
+            .column-entry:hover .menu-btn { opacity: 1; }
+        }
+
+        /* FIX: State Active untuk Mobile */
+        .column-entry:active {
+            background-color: #eff6ff;
+            transform: scale(0.98);
+            border-color: #93c5fd;
         }
 
         /* --- Selected State --- */
@@ -85,7 +80,6 @@
 
         /* --- UI Components --- */
         .menu-btn { opacity: 0; transition: opacity 0.2s; }
-        .column-entry:hover .menu-btn { opacity: 1; }
         .selected-item .menu-btn { opacity: 1; color: #2563eb; }
 
         .col-header {
@@ -417,19 +411,19 @@
     <!-- Finder Columns -->
     <div class="flex-1 flex flex-col md:flex-row gap-4 overflow-hidden">
         <!-- Column 1: Folders -->
-        <div id="container-col1" class="flex-1 flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm animate-column delay-1">
+        <div id="container-col1" class="flex-1 flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
             <div class="col-header">Folders</div>
             <div id="col1" onclick="deselectItem(1)" class="finder-col-content overflow-y-auto py-3 flex-1"></div>
             <div class="col-footer" id="footerCol1">
                 <button onclick="addItem(1)" class="btn-add">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    Manage Folder
+                    Manage Folders
                 </button>
             </div>
         </div>
 
         <!-- Column 2: Subfolders -->
-        <div id="container-col2" class="flex-1 flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm animate-column delay-2 mobile-hidden">
+        <div id="container-col2" class="flex-1 flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm mobile-hidden">
             <div class="col-header">
                 <button onclick="navigateMobile(1)" class="md:hidden p-1 -ml-1 hover:bg-gray-200 rounded-lg">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
@@ -446,7 +440,7 @@
         </div>
 
         <!-- Column 3: Links/Files -->
-        <div id="container-col3" class="flex-1 flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm animate-column delay-3 mobile-hidden">
+        <div id="container-col3" class="flex-1 flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm mobile-hidden">
             <div class="col-header">
                 <button onclick="navigateMobile(2)" class="md:hidden p-1 -ml-1 hover:bg-gray-200 rounded-lg">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
@@ -606,7 +600,9 @@
                     let infoTagsHtml = '';
                     if (colNum < 3) {
                         const stats = itemStats[item.id] || { count: 0 };
-                        infoTagsHtml = `<span class="text-[9px] text-blue-500 font-bold mr-2 whitespace-nowrap bg-blue-50 px-1.5 py-0.5 rounded">${stats.count}</span>`;
+                        // Perubahan Warna Badge: Merah Lembut jika 0, Biru jika > 0
+                        const badgeColorClass = stats.count === 0 ? 'text-red-500 bg-red-50' : 'text-blue-500 bg-blue-50';
+                        infoTagsHtml = `<span class="text-[9px] ${badgeColorClass} font-bold mr-2 whitespace-nowrap px-1.5 py-0.5 rounded">${stats.count}</span>`;
                     } else if (item.type === 'file') {
                         const displayExt = item.extension ? item.extension : 'LINK';
                         infoTagsHtml = `<span class="text-[9px] text-indigo-500 font-bold opacity-80 uppercase px-1.5 py-0.5 bg-indigo-50 rounded w-10 text-center">${displayExt}</span>`;
@@ -622,7 +618,7 @@
                         <div onclick="event.stopPropagation(); selectItem(${colNum}, this, '${item.id}', '${item.name}')" 
                              data-id="${item.id}" data-type="${item.type}" data-url="${item.file_url || ''}" 
                              data-drive-id="${item.drive_id || ''}"
-                             class="column-entry bubble-item group ${isSelected}" style="animation-delay: ${index * 0.05}s">
+                             class="column-entry group ${isSelected}">
                             ${icon}
                             <span class="flex-1 truncate font-semibold text-gray-700 mr-2">${item.name}</span>
                             <div class="flex items-center">

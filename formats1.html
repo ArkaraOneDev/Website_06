@@ -3,11 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formats Finder | Arkastone</title>
+    <title>Tools Finder | Arkastone</title>
+    
+    <!-- External Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <style>
+        /* --- Base Layout & Typography --- */
         body { 
             font-family: 'Inter', sans-serif; 
             background-color: #E2E8F0; 
@@ -20,6 +24,7 @@
         html { font-size: 14px; }
         @media (min-width: 768px) { html { font-size: 16px; } }
 
+        /* --- Animations --- */
         .bubble-item {
             animation: slideIn 0.3s ease-out forwards;
             opacity: 0;
@@ -42,19 +47,12 @@
         .delay-2 { animation-delay: 0.2s; }
         .delay-3 { animation-delay: 0.3s; }
 
+        /* --- Scrollbar --- */
         .finder-col-content::-webkit-scrollbar { width: 4px; }
         .finder-col-content::-webkit-scrollbar-track { background: transparent; }
         .finder-col-content::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
         
-        .selected-item { 
-            background-color: #eff6ff !important; 
-            color: #2563eb !important;
-            border-color: #3b82f6 !important;
-            box-shadow: 0 1px 2px rgba(37, 99, 235, 0.1);
-        }
-        .selected-item svg { color: inherit !important; }
-        .selected-item span, .selected-item div { color: inherit !important; }
-        
+        /* --- Item Styling --- */
         .column-entry {
             transition: all 0.2s ease;
             display: flex;
@@ -75,6 +73,17 @@
             transform: translateY(-1px);
         }
 
+        /* --- Selected State --- */
+        .selected-item { 
+            background-color: #eff6ff !important; 
+            color: #2563eb !important;
+            border-color: #3b82f6 !important;
+            box-shadow: 0 1px 2px rgba(37, 99, 235, 0.1);
+        }
+        .selected-item svg { color: inherit !important; }
+        .selected-item span, .selected-item div { color: inherit !important; }
+
+        /* --- UI Components --- */
         .menu-btn { opacity: 0; transition: opacity 0.2s; }
         .column-entry:hover .menu-btn { opacity: 1; }
         .selected-item .menu-btn { opacity: 1; color: #2563eb; }
@@ -118,6 +127,7 @@
         .btn-add:active { transform: scale(0.95); }
         .btn-add:disabled { background-color: #e2e8f0; color: #94a3b8; cursor: not-allowed; box-shadow: none; }
 
+        /* --- Context Menu --- */
         #contextMenu {
             display: none;
             position: fixed;
@@ -155,6 +165,7 @@
             outline: none;
         }
 
+        /* --- Modals --- */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -180,6 +191,7 @@
 
         .modal-card.show { transform: scale(1); opacity: 1; }
 
+        /* --- Breadcrumb --- */
         .breadcrumb-container {
             background: white;
             border: 1px solid #e2e8f0;
@@ -194,11 +206,12 @@
         }
         .breadcrumb-separator { margin: 0 10px; color: #cbd5e1; font-weight: 300; }
 
+        /* --- Mobile Logic --- */
         @media (max-width: 767px) {
             .mobile-hidden { display: none !important; }
         }
 
-        /* Spreadsheet styles */
+        /* --- Spreadsheet Table Styles --- */
         .ss-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
         .ss-table th { background: #f8fafc; color: #64748b; font-weight: 700; text-transform: uppercase; padding: 10px; border: 1px solid #e2e8f0; text-align: left; }
         .ss-table td { border: 1px solid #e2e8f0; padding: 0; }
@@ -219,7 +232,7 @@
         </div>
         <div id="menuDownload" class="menu-item hidden" onclick="handleAction('download')">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-            Download
+            Buka Link
         </div>
         <div class="menu-item delete" onclick="handleAction('delete')">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
@@ -227,15 +240,16 @@
         </div>
     </div>
 
-    <!-- Delete Modal -->
+    <!-- Modals -->
+    <!-- Delete Confirmation -->
     <div id="deleteModalOverlay" class="modal-overlay" onclick="closeDeleteModal()">
         <div class="modal-card" id="deleteModalCard" onclick="event.stopPropagation()">
             <div class="p-6">
                 <h3 class="text-lg font-bold text-gray-900 mb-2">Hapus Item?</h3>
-                <p class="text-sm text-gray-500">Aksi ini akan menghapus data di sistem secara permanen.</p>
+                <p class="text-sm text-gray-500">Aksi ini akan menghapus data dari sistem secara permanen.</p>
             </div>
             <div class="bg-gray-50 px-6 py-4 flex flex-row-reverse gap-3">
-                <button id="btnConfirmDelete" onclick="executeDeletion()" class="bg-red-600 text-white text-sm font-semibold px-5 py-2.5 rounded-lg">Hapus</button>
+                <button id="btnConfirmDelete" onclick="executeDeletion()" class="bg-red-600 text-white text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-red-700 transition-colors">Hapus</button>
                 <button onclick="closeDeleteModal()" class="bg-white border border-gray-300 text-gray-700 text-sm font-semibold px-5 py-2.5 rounded-lg">Batal</button>
             </div>
         </div>
@@ -245,7 +259,10 @@
     <div id="folderModalOverlay" class="modal-overlay" onclick="closeFolderModal()">
         <div class="modal-card !max-w-2xl" id="folderModalCard" onclick="event.stopPropagation()">
             <div class="p-6">
-                <h3 class="text-lg font-bold text-gray-900 mb-5 tracking-tight">Manage Folders</h3>
+                <div class="flex justify-between items-center mb-5">
+                    <h3 class="text-lg font-bold text-gray-900 tracking-tight">Manage Folders</h3>
+                </div>
+
                 <div class="max-h-[50vh] overflow-y-auto rounded-lg border border-gray-200 shadow-inner bg-gray-50/30">
                     <table class="ss-table">
                         <thead>
@@ -258,11 +275,13 @@
                         <tbody id="folderBody"></tbody>
                     </table>
                 </div>
+
                 <div class="flex justify-end mt-4">
                     <button onclick="addFolderRow()" class="text-blue-600 text-[10px] font-bold uppercase border-2 border-blue-600 px-4 py-1.5 rounded-full hover:bg-blue-600 hover:text-white transition-all shadow-sm active:scale-95">
                         + Tambah Baris
                     </button>
                 </div>
+
                 <div id="folderProgressContainer" class="hidden mt-4">
                     <div class="text-[10px] font-bold text-blue-600 mb-1 uppercase tracking-wider animate-pulse">Memproses data...</div>
                     <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
@@ -272,7 +291,7 @@
             </div>
             <div class="bg-gray-50 px-6 py-4 flex flex-row-reverse gap-3">
                 <button id="btnExecuteFolder" onclick="handleFolderBulkUpload()" class="bg-blue-600 text-white text-sm font-semibold px-8 py-2.5 rounded-xl shadow-lg shadow-blue-200 active:scale-95 transition-all">Simpan Perubahan</button>
-                <button onclick="closeFolderModal()" class="bg-white border border-gray-300 text-gray-700 text-sm font-semibold px-5 py-2.5 rounded-xl">Batal</button>
+                <button onclick="closeFolderModal()" class="bg-white border border-gray-300 text-gray-700 text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-gray-100 transition-colors">Batal</button>
             </div>
         </div>
     </div>
@@ -281,7 +300,10 @@
     <div id="subfolderModalOverlay" class="modal-overlay" onclick="closeSubfolderModal()">
         <div class="modal-card !max-w-2xl" id="subfolderModalCard" onclick="event.stopPropagation()">
             <div class="p-6">
-                <h3 class="text-lg font-bold text-gray-900 mb-5 tracking-tight">Manage Subfolders</h3>
+                <div class="flex justify-between items-center mb-5">
+                    <h3 class="text-lg font-bold text-gray-900 tracking-tight">Manage Subfolders</h3>
+                </div>
+
                 <div class="max-h-[50vh] overflow-y-auto rounded-lg border border-gray-200 shadow-inner bg-gray-50/30">
                     <table class="ss-table">
                         <thead>
@@ -294,11 +316,13 @@
                         <tbody id="subfolderBody"></tbody>
                     </table>
                 </div>
+
                 <div class="flex justify-end mt-4">
                     <button onclick="addSubfolderRow()" class="text-blue-600 text-[10px] font-bold uppercase border-2 border-blue-600 px-4 py-1.5 rounded-full hover:bg-blue-600 hover:text-white transition-all shadow-sm active:scale-95">
                         + Tambah Baris
                     </button>
                 </div>
+
                 <div id="subfolderProgressContainer" class="hidden mt-4">
                     <div class="text-[10px] font-bold text-blue-600 mb-1 uppercase tracking-wider animate-pulse">Memproses data...</div>
                     <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
@@ -308,36 +332,41 @@
             </div>
             <div class="bg-gray-50 px-6 py-4 flex flex-row-reverse gap-3">
                 <button id="btnExecuteSubfolder" onclick="handleSubfolderBulkUpload()" class="bg-blue-600 text-white text-sm font-semibold px-8 py-2.5 rounded-xl shadow-lg shadow-blue-200 active:scale-95 transition-all">Simpan Perubahan</button>
-                <button onclick="closeSubfolderModal()" class="bg-white border border-gray-300 text-gray-700 text-sm font-semibold px-5 py-2.5 rounded-xl">Batal</button>
+                <button onclick="closeSubfolderModal()" class="bg-white border border-gray-300 text-gray-700 text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-gray-100 transition-colors">Batal</button>
             </div>
         </div>
     </div>
 
-    <!-- Files Manage Modal (Column 3) -->
+    <!-- Link Manage Modal (Column 3) -->
     <div id="addModalOverlay" class="modal-overlay" onclick="closeAddModal()">
         <div class="modal-card !max-w-4xl" id="addModalCard" onclick="event.stopPropagation()">
             <div class="p-6">
-                <h3 class="text-lg font-bold text-gray-900 mb-5 tracking-tight">Manage Files</h3>
+                <div class="flex justify-between items-center mb-5">
+                    <h3 class="text-lg font-bold text-gray-900 tracking-tight">Manage Links</h3>
+                </div>
+
                 <div class="max-h-[50vh] overflow-y-auto rounded-lg border border-gray-200 shadow-inner bg-gray-50/30">
                     <table class="ss-table">
                         <thead>
                             <tr>
                                 <th class="w-10 text-center">No</th>
                                 <th>Nama File</th>
-                                <th>URL Drive / Link</th>
+                                <th>URL Google Drive / Link</th>
                                 <th class="w-10"></th>
                             </tr>
                         </thead>
                         <tbody id="spreadsheetBody"></tbody>
                     </table>
                 </div>
+
                 <div class="flex justify-end mt-4">
                     <button onclick="addRow()" class="text-blue-600 text-[10px] font-bold uppercase border-2 border-blue-600 px-4 py-1.5 rounded-full hover:bg-blue-600 hover:text-white transition-all shadow-sm active:scale-95">
                         + Tambah Baris
                     </button>
                 </div>
+
                 <div id="uploadProgressContainer" class="hidden mt-4">
-                    <div class="text-[10px] font-bold text-blue-600 mb-1 uppercase tracking-wider animate-pulse">Menyimpan data...</div>
+                    <div id="progressMessage" class="text-[10px] font-bold text-blue-600 mb-1 uppercase tracking-wider animate-pulse">Menyimpan data...</div>
                     <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
                         <div class="bg-blue-500 h-full w-full"></div>
                     </div>
@@ -345,7 +374,7 @@
             </div>
             <div class="bg-gray-50 px-6 py-4 flex flex-row-reverse gap-3">
                 <button id="btnExecuteUpload" onclick="handleSpreadsheetUpload()" class="bg-blue-600 text-white text-sm font-semibold px-8 py-2.5 rounded-xl shadow-lg shadow-blue-200 active:scale-95 transition-all">Simpan Perubahan</button>
-                <button onclick="closeAddModal()" class="bg-white border border-gray-300 text-gray-700 text-sm font-semibold px-5 py-2.5 rounded-xl">Batal</button>
+                <button onclick="closeAddModal()" class="bg-white border border-gray-300 text-gray-700 text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-gray-100 transition-colors">Batal</button>
             </div>
         </div>
     </div>
@@ -356,8 +385,8 @@
             <div class="p-4 border-b flex justify-between items-center bg-white">
                 <h3 id="previewTitle" class="text-sm font-bold text-gray-900 truncate uppercase tracking-tight">Preview File</h3>
                 <div class="flex items-center gap-2">
-                    <button id="btnDownloadPreview" onclick="handleAction('download')" class="p-1 hover:bg-gray-100 rounded-full text-gray-500" title="Download">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    <button id="btnDownloadPreview" onclick="handleAction('download')" class="p-1 hover:bg-gray-100 rounded-full text-gray-500" title="Buka di Tab Baru">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                     </button>
                     <button onclick="closePreviewModal()" class="p-1 hover:bg-gray-100 rounded-full transition-colors">
                         <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -387,17 +416,19 @@
 
     <!-- Finder Columns -->
     <div class="flex-1 flex flex-col md:flex-row gap-4 overflow-hidden">
+        <!-- Column 1: Folders -->
         <div id="container-col1" class="flex-1 flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm animate-column delay-1">
             <div class="col-header">Folders</div>
             <div id="col1" onclick="deselectItem(1)" class="finder-col-content overflow-y-auto py-3 flex-1"></div>
             <div class="col-footer" id="footerCol1">
                 <button onclick="addItem(1)" class="btn-add">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    Manage Folders
+                    Manage Folder
                 </button>
             </div>
         </div>
 
+        <!-- Column 2: Subfolders -->
         <div id="container-col2" class="flex-1 flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm animate-column delay-2 mobile-hidden">
             <div class="col-header">
                 <button onclick="navigateMobile(1)" class="md:hidden p-1 -ml-1 hover:bg-gray-200 rounded-lg">
@@ -414,28 +445,31 @@
             </div>
         </div>
 
+        <!-- Column 3: Links/Files -->
         <div id="container-col3" class="flex-1 flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm animate-column delay-3 mobile-hidden">
             <div class="col-header">
                 <button onclick="navigateMobile(2)" class="md:hidden p-1 -ml-1 hover:bg-gray-200 rounded-lg">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                 </button>
-                Files
+                Links
             </div>
             <div id="col3" onclick="deselectItem(3)" class="finder-col-content overflow-y-auto py-3 flex-1"></div>
             <div class="col-footer" id="footerCol3">
                 <button id="btnAddCol3" onclick="addItem(3)" class="btn-add" disabled>
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    Manage Files
+                    Manage Links
                 </button>
             </div>
         </div>
     </div>
 
     <script>
+        // --- 1. CONFIG & INIT ---
         const SUPABASE_URL = 'https://dqfithvufqewtchicrgw.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_wp6piNTxSLOXT-ezmfnhaQ_cFKP13k7';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+        // Global State
         let activeParentKeys = { 1: null, 2: null, 3: null };
         let activeNames = { 1: null, 2: null, 3: null };
         let currentActiveItem = null;
@@ -444,6 +478,7 @@
         let isAdmin = false;
         let currentMobileCol = 1;
 
+        // Init
         window.onload = async () => {
             await checkAdminAccess();
             renderColumn(1, null);
@@ -451,21 +486,38 @@
             window.addEventListener('resize', updateMobileVisibility);
         };
 
+        // --- 2. AUTH & PERMISSIONS ---
         async function checkAdminAccess() {
-            const sessionData = sessionStorage.getItem('sessionUser');
-            if (!sessionData) return;
-            const user = JSON.parse(sessionData);
             try {
-                const { data } = await _supabase.from('users').select('authority').eq('username', user.username).single();
-                if (data) {
-                    isAdmin = data.authority === 'Admin';
-                    if (!isAdmin) {
-                        document.querySelectorAll('.col-footer').forEach(f => f.style.display = 'none');
+                const sessionData = sessionStorage.getItem('sessionUser');
+                if (!sessionData) return;
+                
+                // Parsing aman
+                let user;
+                try {
+                    user = JSON.parse(sessionData);
+                } catch (e) {
+                    console.warn("Data sesi rusak, reset session.");
+                    return;
+                }
+
+                if(user && user.username) {
+                    const { data, error } = await _supabase.from('users').select('authority').eq('username', user.username).single();
+                    if (data && !error) {
+                        isAdmin = data.authority === 'Admin';
                     }
                 }
-            } catch (err) { console.error("Akses ditolak:", err); }
+            } catch (err) { 
+                console.error("Akses Check Failed (Non-fatal)"); 
+                isAdmin = false; 
+            } finally {
+                if (!isAdmin) {
+                    document.querySelectorAll('.col-footer').forEach(f => f.style.display = 'none');
+                }
+            }
         }
 
+        // --- 3. UI RENDER LOGIC ---
         function updateMobileVisibility() {
             if (window.innerWidth >= 768) {
                 ['col1','col2','col3'].forEach(c => document.getElementById(`container-${c}`).classList.remove('mobile-hidden'));
@@ -483,28 +535,12 @@
             updateMobileVisibility();
         }
 
-        function parseSizeStringToBytes(sizeStr) {
-            if (!sizeStr) return 0;
-            const parts = sizeStr.split(' ');
-            if (parts.length < 2) return 0;
-            const value = parseFloat(parts[0]);
-            const unit = parts[1].toUpperCase();
-            if (unit === 'KB') return value * 1024;
-            if (unit === 'MB') return value * 1024 * 1024;
-            return value;
-        }
-
-        function formatBytes(bytes) {
-            if (bytes === 0) return '0 KB';
-            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-        }
-
         async function renderColumn(colNum, parentId) {
             const container = document.getElementById('col' + colNum);
             container.innerHTML = `<div class="p-8 text-center text-[10px] text-gray-400 font-bold animate-pulse tracking-widest uppercase">Memuat...</div>`;
             
             try {
+                // Build Query
                 const query = _supabase.from('formats1').select('*');
                 if (parentId === null) query.is('parent_id', null);
                 else query.eq('parent_id', parentId);
@@ -517,91 +553,115 @@
                     return;
                 }
 
+                // Kalkulasi Badge Angka (Item Count)
                 let itemStats = {};
                 if (colNum === 1 || colNum === 2) {
-                    const ids = data.map(item => item.id);
+                    const currentIds = data.map(item => item.id);
+                    
                     if (colNum === 1) {
-                        const { data: subFolders } = await _supabase.from('formats1').select('id, parent_id').in('parent_id', ids);
+                        // Untuk kolom 1, kita hitung item di dalam subfolder
+                        const { data: subFolders } = await _supabase.from('formats1').select('id, parent_id').in('parent_id', currentIds);
+                        
                         if (subFolders && subFolders.length > 0) {
                             const subIds = subFolders.map(s => s.id);
-                            const { data: files } = await _supabase.from('formats1').select('parent_id, size').in('parent_id', subIds);
+                            const { data: files } = await _supabase.from('formats1').select('parent_id').in('parent_id', subIds);
+                            
+                            // Map subfolder ke parent utama
                             const subToFolderMap = {};
                             subFolders.forEach(s => subToFolderMap[s.id] = s.parent_id);
-                            data.forEach(item => itemStats[item.id] = { count: 0, totalSize: 0 });
+                            
+                            // Init stats
+                            data.forEach(item => itemStats[item.id] = { count: 0 });
+                            
                             if (files) {
                                 files.forEach(f => {
-                                    const folderId = subToFolderMap[f.parent_id];
-                                    if (folderId && itemStats[folderId]) {
-                                        itemStats[folderId].count++;
-                                        itemStats[folderId].totalSize += parseSizeStringToBytes(f.size);
+                                    const mainFolderId = subToFolderMap[f.parent_id];
+                                    if (mainFolderId && itemStats[mainFolderId]) {
+                                        itemStats[mainFolderId].count++;
                                     }
                                 });
                             }
                         }
                     } else {
-                        const { data: children } = await _supabase.from('formats1').select('id, parent_id, size').in('parent_id', ids);
+                        // Untuk kolom 2, kita hitung langsung anak-anaknya (file)
+                        const { data: children } = await _supabase.from('formats1').select('id, parent_id').in('parent_id', currentIds);
                         if (children) {
                             children.forEach(child => {
-                                if (!itemStats[child.parent_id]) itemStats[child.parent_id] = { count: 0, totalSize: 0 };
+                                if (!itemStats[child.parent_id]) itemStats[child.parent_id] = { count: 0 };
                                 itemStats[child.parent_id].count++;
-                                itemStats[child.parent_id].totalSize += parseSizeStringToBytes(child.size);
                             });
                         }
                     }
                 }
 
+                // Render HTML
                 container.innerHTML = data.map((item, index) => {
                     const isFolder = item.type === 'folder';
                     const icon = isFolder 
                         ? `<svg class="w-4 h-4 mr-3 text-yellow-500 fill-current" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"></path></svg>`
-                        : `<svg class="w-4 h-4 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>`;
+                        : `<svg class="w-4 h-4 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>`;
                     
                     const isSelected = activeParentKeys[colNum + 1] === item.id || (colNum === 3 && currentActiveItem === item.id) ? 'selected-item' : '';
                     
                     let infoTagsHtml = '';
                     if (colNum < 3) {
-                        const stats = itemStats[item.id] || { count: 0, totalSize: 0 };
-                        infoTagsHtml = `<span class="text-[9px] text-blue-500 font-bold mr-2 bg-blue-50 px-1.5 py-0.5 rounded">${stats.count}</span>`;
+                        const stats = itemStats[item.id] || { count: 0 };
+                        // Perubahan Warna Badge: Merah Lembut jika 0, Biru jika > 0
+                        const badgeColorClass = stats.count === 0 ? 'text-red-500 bg-red-50' : 'text-blue-500 bg-blue-50';
+                        infoTagsHtml = `<span class="text-[9px] ${badgeColorClass} font-bold mr-2 whitespace-nowrap px-1.5 py-0.5 rounded">${stats.count}</span>`;
                     } else if (item.type === 'file') {
-                        const ext = (item.extension || 'LINK').toUpperCase();
-                        infoTagsHtml = `<span class="text-[9px] text-indigo-500 font-bold opacity-80 w-10 text-left">${ext}</span>`;
+                        const displayExt = item.extension ? item.extension : 'LINK';
+                        infoTagsHtml = `<span class="text-[9px] text-indigo-500 font-bold opacity-80 uppercase px-1.5 py-0.5 bg-indigo-50 rounded w-10 text-center">${displayExt}</span>`;
                     }
 
                     const kebabButton = isAdmin ? `<button onclick="openMenu(event, '${item.id}', ${colNum})" class="menu-btn p-1 hover:bg-black/5 rounded-md ml-2 flex-shrink-0"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg></button>` : '';
+                    
+                    const downloadButton = (colNum === 3 && item.type === 'file') 
+                        ? `<button onclick="event.stopPropagation(); window.open('${item.file_url}', '_blank')" class="menu-btn p-1 hover:bg-blue-50 rounded-md ml-1 text-blue-600 flex-shrink-0" title="Buka / Download Link"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg></button>` 
+                        : '';
 
                     return `
                         <div onclick="event.stopPropagation(); selectItem(${colNum}, this, '${item.id}', '${item.name}')" 
                              data-id="${item.id}" data-type="${item.type}" data-url="${item.file_url || ''}" 
-                             data-id-drive="${item.drive_id || ''}" data-ext="${item.extension || ''}"
+                             data-drive-id="${item.drive_id || ''}"
                              class="column-entry bubble-item group ${isSelected}" style="animation-delay: ${index * 0.05}s">
                             ${icon}
                             <span class="flex-1 truncate font-semibold text-gray-700 mr-2">${item.name}</span>
                             <div class="flex items-center">
                                 ${infoTagsHtml}
+                                ${downloadButton}
                                 ${kebabButton}
                             </div>
                         </div>
                     `;
                 }).join('');
-            } catch (err) { container.innerHTML = `<div class="p-4 text-xs text-red-500">Error: ${err.message}</div>`; }
+            } catch (err) { 
+                container.innerHTML = `<div class="p-4 text-xs text-red-500">Error: ${err.message}</div>`; 
+            }
         }
 
+        // --- 4. INTERACTION & SELECTION ---
         function selectItem(col, el, id, name) {
+            // Prevent selection if renaming
             if (el.querySelector('.rename-input')) return;
+
+            // Visual update
             el.parentElement.querySelectorAll('.column-entry').forEach(item => item.classList.remove('selected-item'));
             el.classList.add('selected-item');
-            const ext = el.getAttribute('data-ext');
-            const fullName = (col === 3 && ext) ? `${name}.${ext}` : name;
-            activeNames[col] = fullName;
+            
+            // State update
+            activeNames[col] = name;
             currentActiveItem = id;
             currentActiveElement = el;
             currentActiveColumn = col;
+
+            // Logic Cascade
             if (col === 1) {
                 activeParentKeys[2] = id;
                 activeNames[2] = null; activeNames[3] = null;
                 if (isAdmin) document.getElementById('btnAddCol2').disabled = false;
                 renderColumn(2, id);
-                document.getElementById('col3').innerHTML = '';
+                document.getElementById('col3').innerHTML = ''; // Clear col 3
                 document.getElementById('btnAddCol3').disabled = true;
                 if (window.innerWidth < 768) navigateMobile(2);
             } else if (col === 2) {
@@ -612,7 +672,7 @@
                 if (window.innerWidth < 768) navigateMobile(3);
             } else if (col === 3) {
                 const url = el.getAttribute('data-url');
-                if (url) openPreviewModal(url, fullName);
+                if (url) openPreviewModal(url, name);
             }
             updateBreadcrumb();
         }
@@ -621,27 +681,36 @@
             const container = document.getElementById('col' + colNum);
             if (container) container.querySelectorAll('.column-entry').forEach(el => el.classList.remove('selected-item'));
             activeNames[colNum] = null;
+            
             if (colNum === 1) {
                 activeParentKeys[2] = null; activeNames[2] = null; activeNames[3] = null;
                 if (isAdmin) document.getElementById('btnAddCol2').disabled = true;
-                document.getElementById('col2').innerHTML = ''; document.getElementById('col3').innerHTML = '';
+                document.getElementById('col2').innerHTML = ''; 
+                document.getElementById('col3').innerHTML = '';
                 if (isAdmin) document.getElementById('btnAddCol3').disabled = true;
             } else if (colNum === 2) {
                 activeParentKeys[3] = null; activeNames[3] = null;
                 if (isAdmin) document.getElementById('btnAddCol3').disabled = true;
                 document.getElementById('col3').innerHTML = '';
-            } else if (colNum === 3) currentActiveItem = null;
+            } else if (colNum === 3) {
+                currentActiveItem = null;
+            }
             updateBreadcrumb();
         }
 
-        function addItem(colNum) {
-            if (!isAdmin) return;
-            if (colNum === 1) openFolderModal();
-            else if (colNum === 2) openSubfolderModal();
-            else if (colNum === 3) openAddModal();
+        function updateBreadcrumb() {
+            const container = document.getElementById('dynamicPath');
+            container.innerHTML = [1, 2, 3].filter(c => activeNames[c]).map(c => `<span class="breadcrumb-separator">/</span><span class="text-gray-900 font-bold">${activeNames[c]}</span>`).join('');
         }
 
-        // --- MANAGE FOLDERS (COLUMN 1) ---
+        async function addItem(colNum) {
+            if (!isAdmin) return;
+            if (colNum === 3) openAddModal();
+            else if (colNum === 2) openSubfolderModal();
+            else if (colNum === 1) openFolderModal();
+        }
+
+        // --- 5. MANAGEMENT: FOLDER (COL 1) ---
         function addFolderRow(name = '') {
             const body = document.getElementById('folderBody');
             const rowCount = body.children.length + 1;
@@ -651,74 +720,56 @@
                 <td><input type="text" placeholder="Nama Folder..." class="ss-input folder-name" value="${name}"></td>
                 <td><button onclick="this.closest('tr').remove(); reindexFolderRows();" class="btn-ss-del"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></button></td>
             `;
-            const input = tr.querySelector('.folder-name');
-            input.addEventListener('paste', handleFolderPaste);
+            tr.querySelector('.folder-name').addEventListener('paste', (e) => handleCommonPaste(e, addFolderRow));
             body.appendChild(tr);
-        }
-
-        function handleFolderPaste(e) {
-            const clipboardData = e.clipboardData || window.clipboardData;
-            const pastedText = clipboardData.getData('text');
-            if (!pastedText.includes('\n') && !pastedText.includes('\t')) return;
-            e.preventDefault();
-            const rowsData = pastedText.split(/\r?\n/).filter(r => r.trim());
-            const startRowElement = e.target.closest('tr');
-            const body = document.getElementById('folderBody');
-            const allTrs = Array.from(body.querySelectorAll('tr'));
-            const startRowIndex = allTrs.indexOf(startRowElement);
-
-            rowsData.forEach((rowStr, indexOffset) => {
-                const targetRowIndex = startRowIndex + indexOffset;
-                const value = rowStr.split('\t')[0].trim();
-                if (targetRowIndex >= allTrs.length) {
-                    addFolderRow(value);
-                } else {
-                    body.querySelectorAll('tr')[targetRowIndex].querySelector('.folder-name').value = value;
-                }
-            });
-            reindexFolderRows();
         }
 
         function reindexFolderRows() { document.querySelectorAll('#folderBody .ss-no').forEach((el, i) => el.innerText = i + 1); }
 
         async function openFolderModal() {
             document.getElementById('folderBody').innerHTML = '';
-            document.getElementById('folderProgressContainer').classList.remove('hidden');
-            document.getElementById('folderModalOverlay').style.display = 'flex';
+            document.getElementById('folderProgressContainer').classList.remove('hidden'); 
+            document.getElementById('folderModalOverlay').style.display = 'flex'; 
             setTimeout(() => document.getElementById('folderModalCard').classList.add('show'), 10);
+            
             try {
                 const { data } = await _supabase.from('formats1').select('name').is('parent_id', null).eq('type', 'folder').order('name', { ascending: true });
                 if (data && data.length > 0) data.forEach(item => addFolderRow(item.name));
-                else for(let i=0; i<5; i++) addFolderRow();
-            } catch (err) { for(let i=0; i<5; i++) addFolderRow(); }
+                else for(let i=0; i<3; i++) addFolderRow();
+            } catch (err) { for(let i=0; i<3; i++) addFolderRow(); }
             finally { document.getElementById('folderProgressContainer').classList.add('hidden'); }
-        }
-
-        function closeFolderModal() { 
-            document.getElementById('folderModalCard').classList.remove('show');
-            setTimeout(() => document.getElementById('folderModalOverlay').style.display = 'none', 200);
         }
 
         async function handleFolderBulkUpload() {
             if (!isAdmin) return;
             const rows = document.querySelectorAll('#folderBody tr');
-            const payload = [];
-            rows.forEach(row => {
+            const payload = Array.from(rows).map(row => {
                 const name = row.querySelector('.folder-name').value.trim();
-                if (name) payload.push({ name: name, type: 'folder', parent_id: null });
-            });
+                return name ? { name: name, type: 'folder', parent_id: null } : null;
+            }).filter(Boolean);
+
             document.getElementById('folderProgressContainer').classList.remove('hidden');
             document.getElementById('btnExecuteFolder').disabled = true;
+            
             try {
+                // Delete existing root folders
                 await _supabase.from('formats1').delete().is('parent_id', null).eq('type', 'folder');
+                // Insert new
                 if (payload.length > 0) await _supabase.from('formats1').insert(payload);
                 closeFolderModal();
-                renderColumn(1, null);
+                await renderColumn(1, null);
             } catch (err) { alert("Gagal: " + err.message); }
-            finally { document.getElementById('btnExecuteFolder').disabled = false; document.getElementById('folderProgressContainer').classList.add('hidden'); }
+            finally { 
+                document.getElementById('btnExecuteFolder').disabled = false; 
+                document.getElementById('folderProgressContainer').classList.add('hidden');
+            }
+        }
+        function closeFolderModal() { 
+            document.getElementById('folderModalCard').classList.remove('show'); 
+            setTimeout(() => document.getElementById('folderModalOverlay').style.display = 'none', 200); 
         }
 
-        // --- MANAGE SUBFOLDERS (COLUMN 2) ---
+        // --- 6. MANAGEMENT: SUBFOLDER (COL 2) ---
         function addSubfolderRow(name = '') {
             const body = document.getElementById('subfolderBody');
             const rowCount = body.children.length + 1;
@@ -728,77 +779,57 @@
                 <td><input type="text" placeholder="Nama Subfolder..." class="ss-input sub-name" value="${name}"></td>
                 <td><button onclick="this.closest('tr').remove(); reindexSubfolderRows();" class="btn-ss-del"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></button></td>
             `;
-            const input = tr.querySelector('.sub-name');
-            input.addEventListener('paste', handleSubfolderPaste);
+            tr.querySelector('.sub-name').addEventListener('paste', (e) => handleCommonPaste(e, addSubfolderRow));
             body.appendChild(tr);
         }
-
-        function handleSubfolderPaste(e) {
-            const clipboardData = e.clipboardData || window.clipboardData;
-            const pastedText = clipboardData.getData('text');
-            if (!pastedText.includes('\n') && !pastedText.includes('\t')) return;
-            e.preventDefault();
-            const rowsData = pastedText.split(/\r?\n/).filter(r => r.trim());
-            const startRowElement = e.target.closest('tr');
-            const body = document.getElementById('subfolderBody');
-            const allTrs = Array.from(body.querySelectorAll('tr'));
-            const startRowIndex = allTrs.indexOf(startRowElement);
-
-            rowsData.forEach((rowStr, indexOffset) => {
-                const targetRowIndex = startRowIndex + indexOffset;
-                const value = rowStr.split('\t')[0].trim();
-                if (targetRowIndex >= allTrs.length) {
-                    addSubfolderRow(value);
-                } else {
-                    body.querySelectorAll('tr')[targetRowIndex].querySelector('.sub-name').value = value;
-                }
-            });
-            reindexSubfolderRows();
-        }
-
         function reindexSubfolderRows() { document.querySelectorAll('#subfolderBody .ss-no').forEach((el, i) => el.innerText = i + 1); }
 
         async function openSubfolderModal() {
-            const parentId = activeParentKeys[2];
-            if (!parentId) return;
+            const folderId = activeParentKeys[2];
+            if (!folderId) return;
             document.getElementById('subfolderBody').innerHTML = '';
-            document.getElementById('subfolderProgressContainer').classList.remove('hidden');
-            document.getElementById('subfolderModalOverlay').style.display = 'flex';
+            document.getElementById('subfolderProgressContainer').classList.remove('hidden'); 
+            document.getElementById('subfolderModalOverlay').style.display = 'flex'; 
             setTimeout(() => document.getElementById('subfolderModalCard').classList.add('show'), 10);
             try {
-                const { data } = await _supabase.from('formats1').select('name').eq('parent_id', parentId).eq('type', 'folder').order('name', { ascending: true });
+                const { data } = await _supabase.from('formats1').select('name').eq('parent_id', folderId).eq('type', 'folder').order('name', { ascending: true });
                 if (data && data.length > 0) data.forEach(item => addSubfolderRow(item.name));
-                else for(let i=0; i<5; i++) addSubfolderRow();
-            } catch (err) { for(let i=0; i<5; i++) addSubfolderRow(); }
+                else for(let i=0; i<3; i++) addSubfolderRow();
+            } catch (err) { for(let i=0; i<3; i++) addSubfolderRow(); }
             finally { document.getElementById('subfolderProgressContainer').classList.add('hidden'); }
-        }
-
-        function closeSubfolderModal() { 
-            document.getElementById('subfolderModalCard').classList.remove('show');
-            setTimeout(() => document.getElementById('subfolderModalOverlay').style.display = 'none', 200);
         }
 
         async function handleSubfolderBulkUpload() {
             if (!isAdmin) return;
             const parentId = activeParentKeys[2];
+            if (!parentId) { alert("Parent ID hilang"); return; }
+
             const rows = document.querySelectorAll('#subfolderBody tr');
-            const payload = [];
-            rows.forEach(row => {
+            const payload = Array.from(rows).map(row => {
                 const name = row.querySelector('.sub-name').value.trim();
-                if (name) payload.push({ name: name, type: 'folder', parent_id: parentId });
-            });
+                return name ? { name: name, type: 'folder', parent_id: parentId } : null;
+            }).filter(Boolean);
+
             document.getElementById('subfolderProgressContainer').classList.remove('hidden');
             document.getElementById('btnExecuteSubfolder').disabled = true;
             try {
                 await _supabase.from('formats1').delete().eq('parent_id', parentId).eq('type', 'folder');
                 if (payload.length > 0) await _supabase.from('formats1').insert(payload);
                 closeSubfolderModal();
-                renderColumn(2, parentId);
+                await renderColumn(2, parentId);
+                await renderColumn(1, null); // Refresh col 1 for badges
             } catch (err) { alert("Gagal: " + err.message); }
-            finally { document.getElementById('btnExecuteSubfolder').disabled = false; document.getElementById('subfolderProgressContainer').classList.add('hidden'); }
+            finally { 
+                document.getElementById('btnExecuteSubfolder').disabled = false; 
+                document.getElementById('subfolderProgressContainer').classList.add('hidden');
+            }
+        }
+        function closeSubfolderModal() { 
+            document.getElementById('subfolderModalCard').classList.remove('show'); 
+            setTimeout(() => document.getElementById('subfolderModalOverlay').style.display = 'none', 200); 
         }
 
-        // --- MANAGE FILES (COLUMN 3) ---
+        // --- 7. MANAGEMENT: FILES (COL 3) ---
         function addRow(name = '', url = '') {
             const body = document.getElementById('spreadsheetBody');
             const rowCount = body.children.length + 1;
@@ -806,83 +837,142 @@
             tr.innerHTML = `
                 <td class="ss-no">${rowCount}</td>
                 <td><input type="text" placeholder="Nama File..." class="ss-input ss-name" value="${name}"></td>
-                <td><input type="text" placeholder="URL Drive..." class="ss-input ss-url" value="${url}"></td>
+                <td><input type="text" placeholder="URL Google Drive..." class="ss-input ss-url" value="${url}"></td>
                 <td><button onclick="this.closest('tr').remove(); reindexRows();" class="btn-ss-del"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></button></td>
             `;
-            tr.querySelectorAll('.ss-input').forEach(input => input.addEventListener('paste', handlePaste));
+            const inputs = tr.querySelectorAll('.ss-input');
+            inputs.forEach(input => input.addEventListener('paste', handleSpreadsheetPaste));
             body.appendChild(tr);
         }
+        function reindexRows() { document.querySelectorAll('#spreadsheetBody .ss-no').forEach((el, i) => el.innerText = i + 1); }
 
-        function handlePaste(e) {
+        // Paste Handler Logic (Generic for Folders)
+        function handleCommonPaste(e, addRowFunc) {
+            const clipboardData = e.clipboardData || window.clipboardData;
+            const pastedText = clipboardData.getData('text');
+            if (!pastedText.includes('\n')) return;
+            
+            e.preventDefault();
+            const rowsData = pastedText.split(/\r?\n/).filter(r => r.trim()); // Remove empty lines
+            
+            const input = e.target;
+            const tr = input.closest('tr');
+            const tbody = tr.parentElement;
+            const currentRows = Array.from(tbody.children); // Get initial rows
+            const startIndex = currentRows.indexOf(tr);
+            
+            // 1. Process First Item (Insert at Cursor)
+            if (rowsData.length > 0) {
+                const firstText = rowsData[0];
+                const start = input.selectionStart;
+                const end = input.selectionEnd;
+                // Insert text at cursor position
+                input.value = input.value.substring(0, start) + firstText + input.value.substring(end);
+            }
+
+            // 2. Process Remaining Items
+            for (let i = 1; i < rowsData.length; i++) {
+                const text = rowsData[i];
+                const targetIndex = startIndex + i;
+                
+                if (targetIndex < currentRows.length) {
+                    // Overwrite existing row
+                    const targetRow = currentRows[targetIndex];
+                    const targetInput = targetRow.querySelector('input');
+                    if (targetInput) targetInput.value = text;
+                } else {
+                    // Append new row
+                    addRowFunc(text);
+                }
+            }
+            
+            if (addRowFunc === addFolderRow) reindexFolderRows();
+            else reindexSubfolderRows();
+        }
+
+        // Paste Handler Logic (Complex for Files - columns support)
+        function handleSpreadsheetPaste(e) {
             const clipboardData = e.clipboardData || window.clipboardData;
             const pastedText = clipboardData.getData('text');
             if (!pastedText.includes('\t') && !pastedText.includes('\n')) return;
+            
             e.preventDefault();
-            
             const rowsData = pastedText.split(/\r?\n/).filter(r => r.trim());
-            const startRowElement = e.target.closest('tr');
-            const body = document.getElementById('spreadsheetBody');
-            const allTrs = Array.from(body.querySelectorAll('tr'));
-            const startRowIndex = allTrs.indexOf(startRowElement);
             
-            const isStartAtName = e.target.classList.contains('ss-name');
+            const input = e.target;
+            const startRowElement = input.closest('tr');
+            const body = document.getElementById('spreadsheetBody');
+            const initialRows = Array.from(body.querySelectorAll('tr'));
+            const startRowIndex = initialRows.indexOf(startRowElement);
+            
+            const isNameCol = input.classList.contains('ss-name');
+            const isUrlCol = input.classList.contains('ss-url');
 
-            rowsData.forEach((rowStr, rowOffset) => {
+            rowsData.forEach((rowStr, indexOffset) => {
                 const columns = rowStr.split('\t');
-                const targetRowIndex = startRowIndex + rowOffset;
+                const targetRowIndex = startRowIndex + indexOffset;
                 
-                let targetTr;
-                if (targetRowIndex >= allTrs.length) {
-                    if (isStartAtName) {
-                        addRow(columns[0] || '', columns[1] || '');
+                if (targetRowIndex < initialRows.length) {
+                    // Modify existing row
+                    const targetTr = initialRows[targetRowIndex];
+                    const nameInput = targetTr.querySelector('.ss-name');
+                    const urlInput = targetTr.querySelector('.ss-url');
+                    
+                    if (indexOffset === 0) {
+                        // First Row: Insert at Cursor
+                        const firstVal = columns[0] || '';
+                        const start = input.selectionStart;
+                        const end = input.selectionEnd;
+                        input.value = input.value.substring(0, start) + firstVal + input.value.substring(end);
+                        
+                        // Handle second column if exists (overwrite)
+                        if (isNameCol && columns[1] !== undefined) {
+                            urlInput.value = columns[1].trim();
+                        }
                     } else {
-                        addRow('', columns[0] || '');
+                        // Subsequent Rows: Overwrite
+                        if (isNameCol) {
+                            if (columns[0] !== undefined) nameInput.value = columns[0].trim();
+                            if (columns[1] !== undefined) urlInput.value = columns[1].trim();
+                        } else if (isUrlCol) {
+                            if (columns[0] !== undefined) urlInput.value = columns[0].trim();
+                        }
                     }
-                    targetTr = body.querySelectorAll('tr')[targetRowIndex];
                 } else {
-                    targetTr = allTrs[targetRowIndex];
-                }
-
-                if (targetTr) {
-                    if (isStartAtName) {
-                        if (columns[0] !== undefined) targetTr.querySelector('.ss-name').value = columns[0].trim();
-                        if (columns[1] !== undefined) targetTr.querySelector('.ss-url').value = columns[1].trim();
-                    } else {
-                        if (columns[0] !== undefined) targetTr.querySelector('.ss-url').value = columns[0].trim();
+                    // Create New Row (Append)
+                    if (isNameCol) {
+                        addRow(columns[0] || '', columns[1] || '');
+                    } else if (isUrlCol) {
+                        addRow('', columns[0] || '');
                     }
                 }
             });
             reindexRows();
         }
 
-        function reindexRows() { document.querySelectorAll('#spreadsheetBody .ss-no').forEach((el, i) => el.innerText = i + 1); }
-
-        async function openAddModal() {
-            const parentId = activeParentKeys[3];
-            if (!parentId) return;
+        async function openAddModal() { 
+            const folderId = activeParentKeys[3];
             document.getElementById('spreadsheetBody').innerHTML = '';
             document.getElementById('uploadProgressContainer').classList.remove('hidden');
-            document.getElementById('addModalOverlay').style.display = 'flex';
+            document.getElementById('addModalOverlay').style.display = 'flex'; 
             setTimeout(() => document.getElementById('addModalCard').classList.add('show'), 10);
             try {
-                const { data } = await _supabase.from('formats1').select('name, file_url').eq('parent_id', parentId).eq('type', 'file').order('name', { ascending: true });
+                const { data } = await _supabase.from('formats1').select('name, file_url').eq('parent_id', folderId).eq('type', 'file').order('name', { ascending: true });
                 if (data && data.length > 0) data.forEach(item => addRow(item.name, item.file_url));
-                else for(let i=0; i<5; i++) addRow();
-            } catch (err) { for(let i=0; i<5; i++) addRow(); }
+                else for(let i=0; i<3; i++) addRow();
+            } catch (err) { for(let i=0; i<3; i++) addRow(); }
             finally { document.getElementById('uploadProgressContainer').classList.add('hidden'); }
         }
-
         function closeAddModal() { 
-            document.getElementById('addModalCard').classList.remove('show');
-            setTimeout(() => document.getElementById('addModalOverlay').style.display = 'none', 200);
+            document.getElementById('addModalCard').classList.remove('show'); 
+            setTimeout(() => document.getElementById('addModalOverlay').style.display = 'none', 200); 
         }
 
         async function handleSpreadsheetUpload() {
             if (!isAdmin) return;
-            const parentId = activeParentKeys[3];
+            const folderId = activeParentKeys[3];
             const rows = document.querySelectorAll('#spreadsheetBody tr');
-            const payload = [];
-            rows.forEach(row => {
+            const payload = Array.from(rows).map(row => {
                 const name = row.querySelector('.ss-name').value.trim();
                 const url = row.querySelector('.ss-url').value.trim();
                 if (name && url) {
@@ -890,48 +980,77 @@
                     const idMatch = url.match(/[-\w]{25,}/);
                     if (idMatch) driveId = idMatch[0];
                     let ext = name.includes('.') ? name.split('.').pop().toUpperCase() : 'LINK';
-                    payload.push({ name: name, type: 'file', parent_id: parentId, file_url: url, drive_id: driveId, extension: ext });
+                    return { name: name, type: 'file', parent_id: folderId, file_url: url, drive_id: driveId, extension: ext };
                 }
-            });
+                return null;
+            }).filter(Boolean);
+
             document.getElementById('uploadProgressContainer').classList.remove('hidden');
             document.getElementById('btnExecuteUpload').disabled = true;
             try {
-                await _supabase.from('formats1').delete().eq('parent_id', parentId).eq('type', 'file');
+                await _supabase.from('formats1').delete().eq('parent_id', folderId).eq('type', 'file');
                 if (payload.length > 0) await _supabase.from('formats1').insert(payload);
                 closeAddModal();
-                renderColumn(3, parentId);
+                await renderColumn(3, folderId);
+                await renderColumn(2, activeParentKeys[2]); // Update counts
             } catch (err) { alert("Gagal: " + err.message); }
-            finally { document.getElementById('btnExecuteUpload').disabled = false; document.getElementById('uploadProgressContainer').classList.add('hidden'); }
+            finally { 
+                document.getElementById('btnExecuteUpload').disabled = false; 
+                document.getElementById('uploadProgressContainer').classList.add('hidden');
+            }
         }
 
-        // --- PREVIEW & ACTION HANDLERS ---
+        // --- 8. PREVIEW & ACTIONS ---
         function openPreviewModal(url, name) {
             const frame = document.getElementById('previewFrame');
-            const img = document.getElementById('previewImage');
             const title = document.getElementById('previewTitle');
             const loader = document.getElementById('previewLoader');
+            
             title.innerText = name;
             let driveId = '';
             const idMatch = url.match(/[-\w]{25,}/);
             if (idMatch) driveId = idMatch[0];
-            const ext = name.split('.').pop().toLowerCase();
-            const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp', 'bmp'];
+            
             loader.classList.remove('hidden');
-            if (driveId) {
-                frame.src = `https://drive.google.com/file/d/${driveId}/preview`;
-                frame.classList.remove('hidden'); img.classList.add('hidden'); img.src = '';
-            } else {
-                if (imageExts.includes(ext)) { img.src = url; img.classList.remove('hidden'); frame.classList.add('hidden'); frame.src = ''; }
-                else { frame.src = url; frame.classList.remove('hidden'); img.classList.add('hidden'); img.src = ''; }
-            }
+            frame.src = driveId ? `https://drive.google.com/file/d/${driveId}/preview` : url;
+            frame.classList.remove('hidden');
+            
             document.getElementById('previewModalOverlay').style.display = 'flex';
-            setTimeout(() => { document.getElementById('previewModalCard').classList.add('show'); setTimeout(() => loader.classList.add('hidden'), 2000); }, 10);
+            setTimeout(() => { 
+                document.getElementById('previewModalCard').classList.add('show'); 
+                setTimeout(() => loader.classList.add('hidden'), 3000); 
+            }, 10);
         }
 
         function closePreviewModal() {
             document.getElementById('previewModalCard').classList.remove('show');
-            setTimeout(() => { document.getElementById('previewModalOverlay').style.display = 'none'; document.getElementById('previewFrame').src = ''; document.getElementById('previewImage').src = ''; }, 200);
+            setTimeout(() => { 
+                document.getElementById('previewModalOverlay').style.display = 'none'; 
+                document.getElementById('previewFrame').src = ''; 
+            }, 200);
         }
+
+        function openMenu(e, itemId, colNum) {
+            e.stopPropagation();
+            currentActiveItem = itemId; 
+            currentActiveElement = e.currentTarget.closest('.column-entry'); 
+            currentActiveColumn = colNum;
+            
+            const rect = e.currentTarget.getBoundingClientRect();
+            const menu = document.getElementById('contextMenu');
+            
+            // Show/Hide "Buka Link" if it's a file
+            document.getElementById('menuDownload').classList.toggle('hidden', currentActiveElement.getAttribute('data-type') !== 'file');
+            
+            menu.style.display = 'block'; 
+            menu.style.top = `${rect.bottom + 5}px`; 
+            
+            // Adjust left to not go off screen
+            const leftPos = rect.left - 120;
+            menu.style.left = `${leftPos < 0 ? 10 : leftPos}px`;
+        }
+
+        function closeMenu() { document.getElementById('contextMenu').style.display = 'none'; }
 
         async function handleAction(action) {
             if (!isAdmin) return;
@@ -939,10 +1058,15 @@
                 const textSpan = currentActiveElement.querySelector('span');
                 const oldName = textSpan.innerText;
                 textSpan.classList.add('hidden');
+                
                 const input = document.createElement('input');
-                input.className = 'rename-input'; input.value = oldName;
+                input.className = 'rename-input'; 
+                input.value = oldName;
+                
                 textSpan.parentNode.insertBefore(input, textSpan);
-                input.focus(); input.select();
+                input.focus(); 
+                input.select();
+                
                 input.onblur = async () => {
                     const newName = input.value.trim();
                     if (newName && newName !== oldName) {
@@ -951,50 +1075,64 @@
                         activeNames[currentActiveColumn] = newName;
                         updateBreadcrumb();
                     }
-                    input.remove(); textSpan.classList.remove('hidden');
+                    input.remove(); 
+                    textSpan.classList.remove('hidden');
                 };
+                
                 input.onkeydown = (e) => { if(e.key==='Enter') input.blur(); };
-            } else if (action === 'delete') openDeleteModal();
-            else if (action === 'download') { const url = currentActiveElement.getAttribute('data-url'); if (url) window.open(url, '_blank'); }
+            
+            } else if (action === 'delete') {
+                openDeleteModal();
+            } else if (action === 'download') {
+                window.open(currentActiveElement.getAttribute('data-url'), '_blank');
+            }
             closeMenu();
         }
+
+        function openDeleteModal() { document.getElementById('deleteModalOverlay').style.display = 'flex'; setTimeout(() => document.getElementById('deleteModalCard').classList.add('show'), 10); }
+        function closeDeleteModal() { document.getElementById('deleteModalCard').classList.remove('show'); setTimeout(() => document.getElementById('deleteModalOverlay').style.display = 'none', 200); }
 
         async function executeDeletion() {
             if (!isAdmin || !currentActiveItem) return;
             const col = currentActiveColumn;
+            const btn = document.getElementById('btnConfirmDelete');
+            btn.innerText = "Menghapus..."; btn.disabled = true;
+
             try {
-                if (currentActiveElement.getAttribute('data-type') === 'folder') {
+                const isFolder = currentActiveElement.getAttribute('data-type') === 'folder';
+
+                // Cascade Delete Logic (Safe)
+                if (isFolder) {
                     if (col === 1) {
+                        // Delete sub-files first, then sub-folders, then main folder
                         const { data: subs } = await _supabase.from('formats1').select('id').eq('parent_id', currentActiveItem);
                         if (subs?.length > 0) {
                             const subIds = subs.map(s => s.id);
+                            // Delete items inside subfolders
                             await _supabase.from('formats1').delete().in('parent_id', subIds); 
+                            // Delete subfolders
                             await _supabase.from('formats1').delete().in('id', subIds); 
                         }
-                    } else if (col === 2) await _supabase.from('formats1').delete().eq('parent_id', currentActiveItem); 
+                    } else if (col === 2) {
+                        // Delete files inside this folder
+                        await _supabase.from('formats1').delete().eq('parent_id', currentActiveItem); 
+                    }
                 }
+
+                // Delete the item itself
                 await _supabase.from('formats1').delete().eq('id', currentActiveItem);
+                
                 closeDeleteModal();
-                renderColumn(col, activeParentKeys[col]);
-                if (col >= 2) renderColumn(1, null);
-            } catch (err) { alert("Hapus gagal: " + err.message); }
-        }
-
-        function openMenu(e, itemId, colNum) {
-            e.stopPropagation();
-            currentActiveItem = itemId; currentActiveElement = e.currentTarget.closest('.column-entry'); currentActiveColumn = colNum;
-            const rect = e.currentTarget.getBoundingClientRect();
-            const menu = document.getElementById('contextMenu');
-            document.getElementById('menuDownload').classList.toggle('hidden', currentActiveElement.getAttribute('data-type') !== 'file');
-            menu.style.display = 'block'; menu.style.top = `${rect.bottom + 5}px`; menu.style.left = `${rect.left - 120}px`;
-        }
-
-        function closeMenu() { document.getElementById('contextMenu').style.display = 'none'; }
-        function openDeleteModal() { document.getElementById('deleteModalOverlay').style.display = 'flex'; setTimeout(() => document.getElementById('deleteModalCard').classList.add('show'), 10); }
-        function closeDeleteModal() { document.getElementById('deleteModalCard').classList.remove('show'); setTimeout(() => document.getElementById('deleteModalOverlay').style.display = 'none', 200); }
-        function updateBreadcrumb() {
-            const container = document.getElementById('dynamicPath');
-            container.innerHTML = [1, 2, 3].filter(c => activeNames[c]).map(c => `<span class="breadcrumb-separator">/</span><span class="text-gray-900 font-bold">${activeNames[c]}</span>`).join('');
+                
+                // Refresh Columns
+                await renderColumn(col, activeParentKeys[col]);
+                if (col >= 2) renderColumn(1, null); // Refresh badges
+                
+            } catch (err) { 
+                alert("Gagal menghapus: " + err.message); 
+            } finally {
+                btn.innerText = "Hapus"; btn.disabled = false;
+            }
         }
     </script>
 </body>
