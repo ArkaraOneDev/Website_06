@@ -68,7 +68,7 @@
 
         .hidden-view { display: none !important; }
 
-        /* Penyesuaian Mobile Khusus untuk mencegah overflow-y dan overlap */
+        /* Penyesuaian Mobile Khusus */
         @media (max-width: 640px) {
             body { 
                 overflow: hidden; 
@@ -78,7 +78,8 @@
             }
             .fixed-panel-height { 
                 min-height: unset;
-                height: 94vh; 
+                /* Diubah menjadi 88vh agar bagian bawah lebih naik */
+                height: 88vh; 
                 max-height: 700px;
                 display: flex;
                 flex-direction: column;
@@ -156,7 +157,7 @@
                 </div>
             </div>
 
-            <!-- VIEW 2: REQUEST ACCESS FORM (Susunan kolom asli dikembalikan) -->
+            <!-- VIEW 2: REQUEST ACCESS FORM -->
             <div id="request-view" class="hidden-view p-5 sm:p-8 md:p-10 flex flex-col h-full justify-center">
                 <div class="mb-3">
                     <h2 class="text-adaptive-title font-bold text-gray-800 tracking-tight">Request Akses</h2>
@@ -234,6 +235,8 @@
 
         function createFireParticles() {
             const container = document.getElementById('fire-container');
+            if(!container) return;
+            container.innerHTML = '';
             const particleCount = window.innerWidth < 640 ? 40 : 100;
 
             for (let i = 0; i < particleCount; i++) {
@@ -253,6 +256,7 @@
         }
 
         window.addEventListener('load', createFireParticles);
+        window.addEventListener('resize', createFireParticles);
     </script>
     <script src="assets/js/login.js"></script>
 </body>
