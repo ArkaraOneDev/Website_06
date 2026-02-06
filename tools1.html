@@ -202,14 +202,36 @@
             border: 1px solid #e2e8f0;
             border-radius: 12px;
             padding: 8px 18px; 
-            margin-bottom: 12px;
             display: flex;
             align-items: center;
             font-size: 0.75rem; 
             color: #64748b;
             box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            height: 42px; /* Fixed height for alignment */
         }
         .breadcrumb-separator { margin: 0 10px; color: #cbd5e1; font-weight: 300; }
+
+        /* --- Search Bar --- */
+        .search-container {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 0 12px;
+            display: flex;
+            align-items: center;
+            height: 42px; /* Fixed height to match breadcrumb */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            /* width: 100%; Removed to allow flex sharing */
+        }
+        .search-input {
+            border: none;
+            outline: none;
+            font-size: 0.75rem;
+            width: 100%;
+            color: #334155;
+            background: transparent;
+        }
+        .search-input::placeholder { color: #94a3b8; }
 
         /* --- Mobile Logic --- */
         @media (max-width: 767px) {
@@ -414,59 +436,87 @@
         </div>
     </div>
 
-    <!-- Breadcrumb -->
-    <div class="breadcrumb-container hidden md:flex">
-        <div class="breadcrumb-item"><span>Development</span></div>
-        <span class="breadcrumb-separator">/</span>
-        <div class="breadcrumb-item"><span>Tools</span></div>
-        <div id="dynamicPath" class="flex items-center"></div>
-    </div>
+    <!-- Main Content Area with Wrapped Layout -->
+    <div class="flex-1 flex flex-col md:flex-row gap-4 overflow-hidden w-full">
+        
+        <!-- LEFT WRAPPER: Breadcrumb + Col 1 + Col 2 -->
+        <!-- "contents" on mobile makes children direct flex items of parent. "flex-[2]" on desktop gives 2/3 width -->
+        <div class="contents md:flex md:flex-[2] md:flex-col md:gap-4 md:overflow-hidden md:min-w-0">
+            
+            <!-- Breadcrumb (Desktop Only) -->
+            <div class="hidden md:flex breadcrumb-container flex-shrink-0 mb-0">
+                <div class="breadcrumb-item"><span>Development</span></div>
+                <span class="breadcrumb-separator">/</span>
+                <div class="breadcrumb-item"><span>Tools</span></div>
+                <div id="dynamicPath" class="flex items-center"></div>
+            </div>
 
-    <!-- Finder Columns -->
-    <div class="flex-1 flex flex-col md:flex-row gap-4 overflow-hidden">
-        <!-- Column 1: Folders -->
-        <div id="container-col1" class="animate-snap delay-1 flex-1 flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
-            <div class="col-header">Folders</div>
-            <div id="col1" onclick="deselectItem(1)" class="finder-col-content overflow-y-auto py-3 flex-1"></div>
-            <div class="col-footer" id="footerCol1">
-                <button onclick="addItem(1)" class="btn-add">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    Manage Folders
-                </button>
+            <!-- Columns 1 & 2 Wrapper (Inner) -->
+            <div class="contents md:flex md:flex-1 md:flex-row md:gap-4 md:overflow-hidden md:min-h-0">
+                <!-- Column 1: Folders -->
+                <div id="container-col1" class="animate-snap delay-1 flex-1 flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+                    <div class="col-header">Folders</div>
+                    <div id="col1" onclick="deselectItem(1)" class="finder-col-content overflow-y-auto py-3 flex-1"></div>
+                    <div class="col-footer" id="footerCol1">
+                        <button onclick="addItem(1)" class="btn-add">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            Manage Folders
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Column 2: Subfolders -->
+                <div id="container-col2" class="animate-snap delay-2 flex-1 flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm mobile-hidden">
+                    <div class="col-header">
+                        <button onclick="navigateMobile(1)" class="md:hidden p-1 -ml-1 hover:bg-gray-200 rounded-lg">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                        </button>
+                        Subfolders
+                    </div>
+                    <div id="col2" onclick="deselectItem(2)" class="finder-col-content overflow-y-auto py-3 flex-1 bg-gray-50/20"></div>
+                    <div class="col-footer" id="footerCol2">
+                        <button id="btnAddCol2" onclick="addItem(2)" class="btn-add" disabled>
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            Manage Subfolders
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Column 2: Subfolders -->
-        <div id="container-col2" class="animate-snap delay-2 flex-1 flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm mobile-hidden">
-            <div class="col-header">
-                <button onclick="navigateMobile(1)" class="md:hidden p-1 -ml-1 hover:bg-gray-200 rounded-lg">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+        <!-- RIGHT WRAPPER: Search + Col 3 -->
+        <!-- "contents" on mobile makes children direct flex items. "flex-1" on desktop gives 1/3 width -->
+        <div class="contents md:flex md:flex-1 md:flex-col md:gap-4 md:overflow-hidden md:min-w-0">
+            
+            <!-- Search Bar + Button Wrapper (Visible mobile & desktop) -->
+            <!-- Changed: removed 'hidden', added 'flex order-first md:order-none' -->
+            <div class="flex order-first md:order-none flex-row gap-2 flex-shrink-0 w-full">
+                <!-- Search Container (Input) -->
+                <div class="search-container flex-1">
+                    <svg class="w-4 h-4 text-gray-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    <input type="text" id="searchInput" placeholder="Search files..." class="search-input" onkeydown="checkSearch(event)" oninput="handleSearchInput(event)">
+                </div>
+                <!-- Search Button -->
+                <button onclick="executeSearch()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 rounded-xl shadow-sm transition-colors h-[42px] flex items-center justify-center">
+                    CARI
                 </button>
-                Subfolders
             </div>
-            <div id="col2" onclick="deselectItem(2)" class="finder-col-content overflow-y-auto py-3 flex-1 bg-gray-50/20"></div>
-            <div class="col-footer" id="footerCol2">
-                <button id="btnAddCol2" onclick="addItem(2)" class="btn-add" disabled>
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    Manage Subfolders
-                </button>
-            </div>
-        </div>
 
-        <!-- Column 3: Links/Files -->
-        <div id="container-col3" class="animate-snap delay-3 flex-1 flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm mobile-hidden">
-            <div class="col-header">
-                <button onclick="navigateMobile(2)" class="md:hidden p-1 -ml-1 hover:bg-gray-200 rounded-lg">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-                </button>
-                Links
-            </div>
-            <div id="col3" onclick="deselectItem(3)" class="finder-col-content overflow-y-auto py-3 flex-1"></div>
-            <div class="col-footer" id="footerCol3">
-                <button id="btnAddCol3" onclick="addItem(3)" class="btn-add" disabled>
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    Manage Links
-                </button>
+            <!-- Column 3: Links/Files -->
+            <div id="container-col3" class="animate-snap delay-3 flex-1 flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm mobile-hidden">
+                <div class="col-header">
+                    <button onclick="navigateMobile(2)" class="md:hidden p-1 -ml-1 hover:bg-gray-200 rounded-lg">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                    </button>
+                    Links
+                </div>
+                <div id="col3" onclick="deselectItem(3)" class="finder-col-content overflow-y-auto py-3 flex-1"></div>
+                <div class="col-footer" id="footerCol3">
+                    <button id="btnAddCol3" onclick="addItem(3)" class="btn-add" disabled>
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        Manage Links
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -620,10 +670,10 @@
                     } else if (item.type === 'file') {
                         // LOGIC UPDATE: Handle dummy files (no URL)
                         if (!item.file_url) {
-                            infoTagsHtml = `<span class="text-[9px] text-red-500 font-bold opacity-80 uppercase px-1.5 py-0.5 bg-red-50 rounded w-12 text-center">DUMMY</span>`;
+                            infoTagsHtml = `<span class="text-[9px] text-red-500 font-bold opacity-80 uppercase px-1.5 py-0.5 bg-red-50 rounded w-12 text-center">NULL</span>`;
                         } else {
                             // Strictly show 'LINK', ignoring specific file extensions
-                            infoTagsHtml = `<span class="text-[9px] text-indigo-500 font-bold opacity-80 uppercase px-1.5 py-0.5 bg-indigo-50 rounded w-10 text-center">LINK</span>`;
+                            infoTagsHtml = ``;
                         }
                     }
 
@@ -694,6 +744,15 @@
         }
 
         function deselectItem(colNum) {
+            // Logic: Cancel Search if active and clicking Col 1/2
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput && searchInput.value.trim() !== '') {
+                if (colNum === 1 || colNum === 2) {
+                    resetToFolderView();
+                    return; // Abort standard deselect logic
+                }
+            }
+
             const container = document.getElementById('col' + colNum);
             if (container) container.querySelectorAll('.column-entry').forEach(el => el.classList.remove('selected-item'));
             activeNames[colNum] = null;
@@ -724,6 +783,126 @@
             if (colNum === 3) openAddModal();
             else if (colNum === 2) openSubfolderModal();
             else if (colNum === 1) openFolderModal();
+        }
+
+        // --- SEARCH FUNCTIONS ---
+        function handleSearchInput(e) {
+            if (e.target.value === '') {
+                resetToFolderView();
+            }
+        }
+
+        async function resetToFolderView() {
+            const searchInput = document.getElementById('searchInput');
+            if(searchInput) searchInput.value = '';
+            
+            // Re-render columns based on state before search
+            await renderColumn(1, null);
+            
+            if (activeParentKeys[2]) {
+                await renderColumn(2, activeParentKeys[2]);
+            } else {
+                document.getElementById('col2').innerHTML = '';
+            }
+
+            if (activeParentKeys[3]) {
+                await renderColumn(3, activeParentKeys[3]);
+            } else {
+                // If we were in a folder but no subfolder selected, Col 3 should be empty
+                document.getElementById('col3').innerHTML = '';
+            }
+            
+            // If we didn't have any folder selected (e.g. root), Col 2/3 are empty
+            if (!activeParentKeys[2]) {
+                 document.getElementById('col2').innerHTML = '';
+                 document.getElementById('col3').innerHTML = '';
+            }
+
+            updateBreadcrumb();
+
+            // Mobile: Return to appropriate column
+            if (window.innerWidth < 768) {
+                if (activeParentKeys[2]) navigateMobile(2); // Go to Subfolder
+                else navigateMobile(1); // Go to Root
+            }
+        }
+
+        function checkSearch(e) {
+            if (e.key === 'Enter') {
+                executeSearch();
+            }
+        }
+
+        async function executeSearch() {
+            const query = document.getElementById('searchInput').value.trim();
+            
+            if (!query) {
+                resetToFolderView();
+                return;
+            }
+
+            // Clear Col 1 and 2
+            document.getElementById('col1').innerHTML = '';
+            document.getElementById('col2').innerHTML = '';
+            
+            // Show Loading in Col 3
+            const container3 = document.getElementById('col3');
+            container3.innerHTML = `<div class="p-8 text-center text-[10px] text-gray-400 font-bold animate-pulse tracking-widest uppercase">Mencari "${query}"...</div>`;
+
+            // Mobile: Force switch to Col 3 so results are visible
+            if (window.innerWidth < 768) navigateMobile(3);
+
+            try {
+                // Search logic: type='file' and name ilike %query%
+                const { data, error } = await _supabase
+                    .from('tools1')
+                    .select('*')
+                    .eq('type', 'file')
+                    .ilike('name', `%${query}%`)
+                    .order('name', { ascending: true });
+
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    container3.innerHTML = `<div class="mt-10 text-center opacity-20 text-[10px] font-bold uppercase tracking-widest text-gray-400 italic">Tidak ditemukan</div>`;
+                    return;
+                }
+
+                // Render Results using logic similar to renderColumn
+                container3.innerHTML = data.map(item => {
+                    const icon = `<svg class="w-4 h-4 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>`;
+                    
+                    let infoTagsHtml = '';
+                    if (!item.file_url) {
+                        infoTagsHtml = `<span class="text-[9px] text-red-500 font-bold opacity-80 uppercase px-1.5 py-0.5 bg-red-50 rounded w-12 text-center">NULL</span>`;
+                    }
+
+                    const kebabButton = isAdmin ? `<button onclick="openMenu(event, '${item.id}', 3)" class="menu-btn p-1 hover:bg-black/5 rounded-md ml-2 flex-shrink-0"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg></button>` : '';
+                    
+                    const downloadButton = (item.file_url) 
+                        ? `<button onclick="event.stopPropagation(); window.open('${item.file_url}', '_blank')" class="menu-btn p-1 hover:bg-blue-50 rounded-md ml-1 text-blue-600 flex-shrink-0" title="Buka / Download Link"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg></button>` 
+                        : '';
+
+                    return `
+                        <div onclick="event.stopPropagation(); selectItem(3, this, '${item.id}', '${item.name}')" 
+                             data-id="${item.id}" data-type="file" data-url="${item.file_url || ''}" 
+                             data-drive-id="${item.drive_id || ''}"
+                             title="${item.name}"
+                             class="column-entry group">
+                            ${icon}
+                            <span class="flex-1 truncate font-semibold text-gray-700 mr-2">${item.name}</span>
+                            <div class="flex items-center">
+                                ${infoTagsHtml}
+                                ${downloadButton}
+                                ${kebabButton}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (err) {
+                 container3.innerHTML = `<div class="p-4 text-xs text-red-500">Error: ${err.message}</div>`;
+            }
         }
 
         // --- 5. MANAGEMENT: FOLDER (COL 1) ---
