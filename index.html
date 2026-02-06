@@ -75,14 +75,18 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                /* Tambahan padding bawah untuk mendorong konten ke atas */
+                padding-bottom: 20px; 
             }
             .fixed-panel-height { 
                 min-height: unset;
-                /* Diubah menjadi 88vh agar bagian bawah lebih naik */
-                height: 88vh; 
-                max-height: 700px;
+                /* Diubah menjadi 82vh agar lebih pendek dan aman di layar panjang seperti Poco F5 */
+                height: 82vh; 
+                max-height: 650px;
                 display: flex;
                 flex-direction: column;
+                /* Sedikit margin bawah agar posisi visual lebih tinggi */
+                margin-bottom: 5vh;
             }
             .dynamic-panel {
                 flex: 1;
