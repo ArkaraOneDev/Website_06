@@ -15,84 +15,235 @@
             background-attachment: fixed;
             background-repeat: no-repeat;
             margin: 0;
-            overflow-x: hidden;
+            overflow: hidden;
+            background-color: #1a1a1a;
         }
+        
         .bg-arkara-grey { background-color: rgba(74, 74, 74, 0.9); }
         .text-arkara-orange { color: #E3722E; }        
         .bg-arkara-orange { background-color: #E3722E; } 
         .border-arkara-orange { border-color: #E3722E; }
         .focus-ring-arkara:focus { --tw-ring-color: rgba(227, 114, 46, 0.3); }
+
+        #fire-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            pointer-events: none; 
+            z-index: 50; 
+            overflow: hidden;
+        }
+
+        .fire-particle {
+            position: absolute;
+            bottom: -20px;
+            border-radius: 50%;
+            background: linear-gradient(to top, #e73d01, #f89c55, transparent);
+            filter: blur(4px);
+            opacity: 0;
+            animation: rise var(--duration) infinite ease-in;
+        }
+
+        @keyframes rise {
+            0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 0; }
+            20% { opacity: 0.6; }
+            80% { opacity: 0.3; }
+            100% { transform: translateY(-110vh) scale(0.2) rotate(360deg); opacity: 0; }
+        }
         
-        /* Memastikan background menutupi seluruh layar di mobile */
+        .main-content {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Mengunci dimensi kontainer untuk mencegah pergeseran tata letak */
+        .fixed-panel-height {
+            height: auto;
+            min-height: 580px; /* Standar tinggi untuk menampung form request di desktop */
+        }
+
+        .hidden-view { display: none !important; }
+
         @media (max-width: 640px) {
-            body {
-                background-attachment: scroll; /* Lebih halus untuk browser mobile tertentu */
+            body { background-attachment: scroll; overflow-y: auto; }
+            /* Pada mobile, tinggi dikunci lebih tinggi untuk mengikuti form request yang vertikal panjang */
+            .fixed-panel-height { 
+                min-height: 750px; 
+                display: flex;
+                flex-direction: column;
+            }
+            /* Memastikan panel form mengambil sisa ruang yang konsisten */
+            .dynamic-panel {
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
             }
         }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 sm:p-6">
 
-    <!-- Container utama: disesuaikan max-w-sm untuk mobile dan min-h-0 agar proporsional -->
-    <div class="max-w-sm md:max-w-3xl w-full opacity-95 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-0 md:min-h-[550px]">
+    <div id="fire-container"></div>
+
+    <div class="main-content max-w-sm md:max-w-3xl w-full opacity-95 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row fixed-panel-height">
         
-        <!-- Sisi Kiri / Atas (Logo): Ukuran p-4 untuk mobile agar lebih kompak -->
-        <div class="md:w-5/12 bg-arkara-grey p-5 md:p-8 text-white flex flex-col items-center justify-center text-center relative overflow-hidden">
+        <!-- Sisi Kiri (Logo) - Tetap Statis -->
+        <div class="md:w-5/12 bg-arkara-grey p-5 md:p-8 text-white flex flex-col items-center justify-center text-center relative overflow-hidden shrink-0">
             <div class="relative z-10 flex flex-col items-center w-full">
                 <img src="assets/img/logo_01.png" alt="Arkara Group Logo" class="h-12 sm:h-16 md:h-24 w-auto object-contain" onerror="this.src='https://via.placeholder.com/240x100/4A4A4A/FFFFFF?text=Arkara+Group'">
-                
-                <!-- Divider lebih tipis dan pendek di mobile -->
                 <div class="w-2/3 md:w-full h-px bg-white opacity-20 my-4 md:my-10"></div>
-                
                 <img src="assets/img/logo_02.png" alt="Logo Sekunder" class="h-auto w-24 sm:w-32 md:w-48 object-contain" onerror="this.src='https://via.placeholder.com/240x100/4A4A4A/FFFFFF?text=Logo+02'">
             </div>
         </div>
 
-        <!-- Sisi Kanan / Bawah (Form): Padding disesuaikan p-6 di mobile -->
-        <div class="md:w-7/12 p-6 sm:p-8 md:p-12 bg-white flex flex-col justify-center">
-            <div class="mb-6 md:mb-10 text-center md:text-left">
-                <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 tracking-tight leading-tight">Welcome to Arkastone</h2>
-                <p class="text-gray-500 text-[11px] sm:text-sm mt-1.5">Silakan login untuk mengakses website.</p>
+        <!-- Sisi Kanan (Dynamic Panel) -->
+        <div class="md:w-7/12 bg-white relative dynamic-panel">
+            
+            <!-- VIEW 1: LOGIN FORM -->
+            <div id="login-view" class="p-6 sm:p-8 md:p-10 flex flex-col h-full justify-center">
+                <div class="mb-6 md:mb-8 text-center md:text-left">
+                    <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 tracking-tight leading-tight">Welcome to Arkastone</h2>
+                    <p class="text-gray-500 text-[11px] sm:text-sm mt-1.5">Silakan login untuk mengakses website.</p>
+                </div>
+
+                <form id="loginForm" class="space-y-4">
+                    <div>
+                        <label class="block text-[12px] sm:text-sm font-semibold text-gray-700 mb-1.5">Username</label>
+                        <input type="text" id="username" required placeholder="Masukan username" 
+                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-arkara-orange focus:ring-4 focus-ring-arkara outline-none transition-all duration-200 bg-white/50 focus:bg-white text-sm">
+                    </div>
+
+                    <div>
+                        <label class="text-[12px] sm:text-sm font-semibold text-gray-700 block mb-1.5">Password</label>
+                        <input type="password" id="password" required placeholder="••••••••" 
+                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-arkara-orange focus:ring-4 focus-ring-arkara outline-none transition-all duration-200 bg-white/50 focus:bg-white text-sm">
+                    </div>
+
+                    <button type="submit" class="w-full bg-arkara-orange hover:bg-orange-600 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-orange-100 transform active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 mt-2 text-sm">
+                        <span>Masuk</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                    <div id="statusMessage" class="mt-1 text-center text-xs font-medium min-h-[16px]"></div>
+                </form>
+
+                <div class="mt-8 pt-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <p class="text-[10px] sm:text-xs text-gray-400 font-medium">Belum memiliki akses?</p>
+                    <button onclick="switchView('request')" class="text-[10px] sm:text-xs font-bold text-arkara-orange flex items-center gap-1.5 hover:underline decoration-2 underline-offset-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        Hubungi Developer
+                    </button>
+                </div>
             </div>
 
-            <form id="loginForm" class="space-y-3 sm:space-y-6">
-                <div>
-                    <label class="block text-[12px] sm:text-sm font-semibold text-gray-700 mb-1.5">Username</label>
-                    <input type="text" id="username" required placeholder="Masukan username" 
-                        class="w-full px-4 py-2.5 sm:py-3.5 rounded-xl border border-gray-200 focus:border-arkara-orange focus:ring-4 focus-ring-arkara outline-none transition-all duration-200 bg-white/50 focus:bg-white text-gray-800 text-sm">
+            <!-- VIEW 2: REQUEST ACCESS FORM -->
+            <div id="request-view" class="hidden-view p-6 sm:p-8 md:p-10 flex flex-col h-full overflow-y-auto">
+                <div class="mb-4">
+                    <h2 class="text-xl font-bold text-gray-800 tracking-tight">Request Akses</h2>
+                    <p class="text-gray-500 text-xs mt-1">Lengkapi data untuk permohonan akun baru.</p>
                 </div>
 
-                <div>
-                    <label class="text-[12px] sm:text-sm font-semibold text-gray-700 block mb-1.5">Password</label>
-                    <input type="password" id="password" required placeholder="••••••••" 
-                        class="w-full px-4 py-2.5 sm:py-3.5 rounded-xl border border-gray-200 focus:border-arkara-orange focus:ring-4 focus-ring-arkara outline-none transition-all duration-200 bg-white/50 focus:bg-white text-gray-800 text-sm">
-                </div>
+                <form id="requestForm" class="space-y-3">
+                    <div class="grid grid-cols-1 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-semibold text-gray-600 mb-1">Nama Lengkap</label>
+                            <input type="text" required class="w-full px-4 py-2 rounded-lg border border-gray-200 outline-none text-sm focus:border-arkara-orange">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-gray-600 mb-1">Jabatan</label>
+                            <input type="text" required class="w-full px-4 py-2 rounded-lg border border-gray-200 outline-none text-sm focus:border-arkara-orange">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-gray-600 mb-1">Nomor WhatsApp</label>
+                            <input type="tel" required class="w-full px-4 py-2 rounded-lg border border-gray-200 outline-none text-sm focus:border-arkara-orange">
+                        </div>
+                        <div class="pt-1 border-t border-dashed border-gray-100 mt-1">
+                            <label class="block text-[11px] font-semibold text-gray-600 mb-1">Request Username</label>
+                            <input type="text" required class="w-full px-4 py-2 rounded-lg border border-gray-200 outline-none text-sm focus:border-arkara-orange">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-gray-600 mb-1">Request Password</label>
+                            <input type="password" required class="w-full px-4 py-2 rounded-lg border border-gray-200 outline-none text-sm focus:border-arkara-orange">
+                        </div>
+                    </div>
 
-                <button type="submit" id="submitBtn"
-                    class="w-full bg-arkara-orange hover:bg-orange-600 text-white font-bold py-3 sm:py-4 rounded-xl shadow-lg shadow-orange-100 transform active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 mt-2 text-sm">
-                    <span id="btnText">Masuk</span>
-                    <svg id="btnIcon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    <div class="flex gap-3 pt-2">
+                        <button type="button" onclick="switchView('login')" class="flex-1 py-2.5 border border-gray-200 text-gray-600 font-semibold rounded-lg text-xs hover:bg-gray-50 transition-colors">
+                            Batal
+                        </button>
+                        <button type="submit" class="flex-1 py-2.5 bg-arkara-orange text-white font-semibold rounded-lg text-xs hover:bg-orange-600 transition-colors">
+                            Kirim Request
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- VIEW 3: SUCCESS NOTIFICATION -->
+            <div id="success-view" class="hidden-view p-6 sm:p-8 md:p-10 flex flex-col h-full items-center justify-center text-center">
+                <div class="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mb-6">
+                    <svg class="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                     </svg>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Permintaan Telah Dikirim</h2>
+                <p class="text-gray-500 text-sm leading-relaxed max-w-[250px]">
+                    Developer akan menghubungi Anda via WhatsApp jika akses telah diberikan.
+                </p>
+                <button onclick="switchView('login')" class="mt-8 text-arkara-orange font-bold text-sm hover:underline">
+                    Kembali ke Login
                 </button>
-
-                <div id="statusMessage" class="mt-2 text-center text-[11px] sm:text-sm font-medium min-h-[16px] transition-all duration-200"></div>
-            </form>
-
-            <!-- Footer area: dibuat lebih rapat -->
-            <div class="mt-6 md:mt-12 pt-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3">
-                <p class="text-[10px] sm:text-xs text-gray-400 text-center sm:text-left font-medium">Belum memiliki akses?</p>
-                <a href="mailto:support@arkara.com" class="text-[10px] sm:text-xs font-bold text-arkara-orange flex items-center gap-1.5 hover:underline decoration-2 underline-offset-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                    Hubungi Developer
-                </a>
             </div>
+
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Logika Perpindahan View
+        function switchView(viewName) {
+            const views = ['login-view', 'request-view', 'success-view'];
+            views.forEach(v => {
+                document.getElementById(v).classList.add('hidden-view');
+            });
+            document.getElementById(viewName + '-view').classList.remove('hidden-view');
+        }
+
+        // Handle Form Request
+        document.getElementById('requestForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Simulasi pengiriman data
+            switchView('success');
+            this.reset();
+        });
+
+        // Background Particles
+        function createFireParticles() {
+            const container = document.getElementById('fire-container');
+            const particleCount = 100; 
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'fire-particle';
+                const size = Math.random() * 8 + 4 + 'px';
+                particle.style.width = size;
+                particle.style.height = size;
+                particle.style.left = Math.random() * 100 + 'vw';
+                const duration = Math.random() * 5 + 3 + 's';
+                particle.style.setProperty('--duration', duration);
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                const blur = Math.random() * 4 + 2 + 'px';
+                particle.style.filter = `blur(${blur})`;
+                container.appendChild(particle);
+            }
+        }
+
+        window.addEventListener('load', createFireParticles);
+    </script>
     <script src="assets/js/login.js"></script>
 </body>
 </html>
