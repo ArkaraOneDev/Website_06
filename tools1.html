@@ -165,9 +165,13 @@
             border: 2px solid #3b82f6;
             border-radius: 6px;
             padding: 2px 8px;
-            font-size: 0.75rem;
+            /* FIX: 16px on mobile prevents zoom, revert on desktop */
+            font-size: 16px; 
             width: 100%;
             outline: none;
+        }
+        @media (min-width: 768px) {
+            .rename-input { font-size: 0.75rem; }
         }
 
         /* --- Modals --- */
@@ -226,10 +230,17 @@
         .search-input {
             border: none;
             outline: none;
-            font-size: 0.75rem;
+            /* FIX: Set to 16px for Mobile to prevent iOS Zoom */
+            font-size: 16px;
             width: 100%;
             color: #334155;
             background: transparent;
+        }
+        /* Restore smaller font for Desktop */
+        @media (min-width: 768px) {
+            .search-input {
+                font-size: 0.75rem;
+            }
         }
         .search-input::placeholder { color: #94a3b8; }
 
@@ -242,7 +253,20 @@
         .ss-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
         .ss-table th { background: #f8fafc; color: #64748b; font-weight: 700; text-transform: uppercase; padding: 10px; border: 1px solid #e2e8f0; text-align: left; }
         .ss-table td { border: 1px solid #e2e8f0; padding: 0; }
-        .ss-input { width: 100%; border: none; padding: 10px; outline: none; background: transparent; }
+        
+        .ss-input { 
+            width: 100%; 
+            border: none; 
+            padding: 10px; 
+            outline: none; 
+            background: transparent; 
+            /* FIX: Prevent Zoom on input tables too */
+            font-size: 16px;
+        }
+        @media (min-width: 768px) {
+            .ss-input { font-size: 0.75rem; }
+        }
+
         .ss-input:focus { background: #f1f5f9; }
         .ss-no { width: 40px; text-align: center; color: #94a3b8; font-weight: 600; background: #f8fafc; }
         .btn-ss-del { color: #ef4444; padding: 8px; display: flex; align-items: center; justify-content: center; width: 40px; }
